@@ -1,0 +1,150 @@
+cla<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Test</title>
+    <style>
+        body { font-family: monospace; padding: 20px; }
+        #status { margin: 10px 0; font-weight: bold; }
+        #messages { 
+            border: 1px solid #ccc; 
+            height: 400px; 
+            overflow-y: auto; 
+            padding: 10px; 
+            background: #f5f5f5;
+        }
+        .tick { 
+            margin: 5px 0; 
+            padding: 5px; 
+            background: white; 
+            border: 1px solid #ddd;
+        }
+        .error { color: red; }
+        .connected { color: green; }
+        .disconnected { color: red; }
+        button { margin: 5px; padding: 5px 10px; }
+    </style>
+</head>
+<body>
+    <h1>Continuum WebSocket Tick Stream Test</h1>
+    
+    <div>
+        <label>WebSocket URL: 
+            <input type="text" id="wsUrl" value="ws://localhost:3001/ws/ticks" style="width: 300px;">
+        </label>
+        <label>Start Tick: 
+            <input type="number" id="startTick" value="0" min="0">
+        </label>
+    </div>
+    
+    <div>
+        <button onclick="connect()">Connect</button>
+        <button onclick="disconnect()">Disconnect</button>
+        <button onclick="clearMessages()">Clear Messages</button>
+    </div>
+    
+    <div id="status" class="disconnected">Disconnected</div>
+    
+    <div id="messages"></div>
+    
+    <script>
+        let ws = null;
+        let tickCount = 0;
+        
+        function updateStatus(text, className) {
+            const status = document.getElementById('status');
+            status.textContent = text;
+            status.className = className;
+        }
+        
+        function addMessage(message, isError = false) {
+            const messages = document.getElementById('messages');
+            const div = document.createElement('div');
+            div.className = isError ? 'error' : 'tick';
+            div.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            messages.insertBefore(div, messages.firstChild);
+            
+            // Keep only last 100 messages
+            while (messages.children.length > 100) {
+                messages.removeChild(messages.lastChild);
+            }
+        }
+        
+        function connect() {
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                addMessage('Already connected', true);
+                return;
+            }
+            
+            const wsUrl = document.getElementById('wsUrl').value;
+            const startTick = document.getElementById('startTick').value;
+            
+            let url = wsUrl;
+            if (startTick && startTick !== '0') {
+                url += `?start_tick=${startTick}`;
+            }
+            
+            try {
+                ws = new WebSocket(url);
+                updateStatus('Connecting...', 'disconnected');
+                
+                ws.onopen = () => {
+                    updateStatus('Connected', 'connected');
+                    addMessage('WebSocket connection established');
+                    tickCount = 0;
+                };
+                
+                ws.onmessage = (event) => {
+                    try {
+                        const data = JSON.parse(event.data);
+                        
+                        if (data.type === 'tick') {
+                            tickCount++;
+                            const tickInfo = `Tick #${data.tick_number} - ${data.transaction_count} transactions - Hash: ${data.transaction_batch_hash.substring(0, 16)}...`;
+                            addMessage(tickInfo);
+                            updateStatus(`Connected (${tickCount} ticks received)`, 'connected');
+                        } else if (data.type === 'error') {
+                            addMessage(`Error: ${data.error}`, true);
+                        } else {
+                            addMessage(`Unknown message type: ${data.type}`, true);
+                        }
+                    } catch (e) {
+                        addMessage(`Failed to parse message: ${e.message}`, true);
+                    }
+                };
+                
+                ws.onerror = (error) => {
+                    addMessage(`WebSocket error occurred`, true);
+                };
+                
+                ws.onclose = (event) => {
+                    updateStatus('Disconnected', 'disconnected');
+                    addMessage(`WebSocket closed: ${event.code} - ${event.reason || 'No reason'}`);
+                    ws = null;
+                };
+                
+            } catch (e) {
+                addMessage(`Failed to connect: ${e.message}`, true);
+            }
+        }
+        
+        function disconnect() {
+            if (ws) {
+                ws.close();
+                ws = null;
+            } else {
+                addMessage('Not connected', true);
+            }
+        }
+        
+        function clearMessages() {
+            document.getElementById('messages').innerHTML = '';
+            tickCount = 0;
+        }
+        
+        // Auto-connect on load
+        window.onload = () => {
+            // connect();
+        };
+    </script>
+</body>
+</html>
