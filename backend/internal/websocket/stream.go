@@ -5,7 +5,9 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
+	"strings"
 	"sync"
 
 	"github.com/continuum/backend/internal/grpc"
@@ -15,9 +17,42 @@ import (
 
 var upgrader = websocket.Upgrader{
 	CheckOrigin: func(r *http.Request) bool {
-		// Allow all origins for development
-		// In production, you should restrict this
-		return true
+		origin := r.Header.Get("Origin")
+		if origin == "" {
+			// No origin header (e.g., direct connection) - allow for now
+			// In stricter security, you might want to deny this
+			return true
+		}
+
+		// Get allowed origins from environment
+		allowedOriginsEnv := os.Getenv("CORS_ALLOWED_ORIGINS")
+		if allowedOriginsEnv == "" {
+			// Default development origins
+			allowedOrigins := []string{
+				"http://localhost:3000",
+				"http://localhost:5173",
+				"http://localhost:3001",
+			}
+			for _, allowed := range allowedOrigins {
+				if origin == allowed {
+					return true
+				}
+			}
+			log.Printf("⚠️  WebSocket origin '%s' not in default allowed origins", origin)
+			return false
+		}
+
+		// Check against configured origins
+		allowedOrigins := strings.Split(allowedOriginsEnv, ",")
+		for _, allowed := range allowedOrigins {
+			allowed = strings.TrimSpace(allowed)
+			if origin == allowed {
+				return true
+			}
+		}
+
+		log.Printf("⚠️  WebSocket origin '%s' not allowed. Allowed origins: %s", origin, allowedOriginsEnv)
+		return false
 	},
 }
 

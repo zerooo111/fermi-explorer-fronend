@@ -77,8 +77,24 @@ git clone <repository-url>
 cd fermi-explorer-monorepo
 ```
 
-### 2. Backend Setup
+### 2. Quick Start (Recommended)
 
+Use the unified startup script to run both services together:
+
+```bash
+./start.sh
+```
+
+This will:
+- Start the backend on port 3001
+- Start the frontend on port 3000
+- Set up proper environment variables
+- Monitor both services
+- Provide health checks and logging
+
+### 3. Manual Setup (Alternative)
+
+#### Backend Setup
 ```bash
 cd backend
 go mod download
@@ -86,25 +102,60 @@ go build -o proxy ./cmd/proxy
 ./proxy
 ```
 
-The backend will start on port 3001 and connect to:
-- Continuum REST API: `http://localhost:8080/api/v1` (default)
-- Continuum gRPC API: `localhost:9090` (for streaming)
-
-### 3. Frontend Setup
-
+#### Frontend Setup
 ```bash
 cd frontend
 bun install
 bun run start
 ```
 
-The frontend will start on port 3000 and connect to the backend at `http://localhost:3001`.
-
 ### 4. Access the Application
 
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:3001/api/v1
 - **WebSocket**: ws://localhost:3001/ws/ticks
+
+## Unified Startup Script
+
+The `start.sh` script provides a comprehensive way to manage both services:
+
+### Basic Usage
+```bash
+./start.sh                    # Start both services
+./start.sh --help             # Show help and options
+./start.sh --check            # Check service status
+./start.sh --stop             # Stop all services
+```
+
+### Advanced Options
+```bash
+./start.sh --debug            # Enable debug logging
+./start.sh --backend-only     # Start only backend
+./start.sh --frontend-only    # Start only frontend
+./start.sh --backend-port 3002 # Custom backend port
+./start.sh --frontend-port 3001 # Custom frontend port
+```
+
+### Environment Variables
+```bash
+# Backend configuration
+export BACKEND_PORT=3001
+export CONTINUUM_REST_URL=http://localhost:8080/api/v1
+export CONTINUUM_SEQUENCER_URL=localhost:9090
+
+# Frontend configuration  
+export FRONTEND_PORT=3000
+export DEBUG=true
+
+# Then start
+./start.sh
+```
+
+### Service Management
+- **Logs**: Check `logs/backend.log` and `logs/frontend.log`
+- **Process IDs**: Stored in `/tmp/fermi-backend.pid` and `/tmp/fermi-frontend.pid`
+- **Health Checks**: Automatic service monitoring and restart on failure
+- **Cleanup**: Proper process cleanup on exit (Ctrl+C)
 
 ## Development
 

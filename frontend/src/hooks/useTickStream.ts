@@ -70,7 +70,14 @@ export function useTickStream(options: UseTickStreamOptions = {}): UseTickStream
   const [reconnectAttempt, setReconnectAttempt] = useState(0)
   
   // Memoize wsConfig to prevent unnecessary effect runs
-  const memoizedWsConfig = useMemo(() => wsConfig, [JSON.stringify(wsConfig)])
+  const memoizedWsConfig = useMemo(() => wsConfig, [
+    wsConfig.url,
+    wsConfig.startTick,
+    wsConfig.reconnectDelay,
+    wsConfig.maxReconnectDelay,
+    wsConfig.reconnectAttempts,
+    wsConfig.heartbeatInterval
+  ])
   
   const clientRef = useRef<TickStreamClient | null>(null)
   const ticksRef = useRef<Array<Tick>>([])
@@ -88,9 +95,20 @@ export function useTickStream(options: UseTickStreamOptions = {}): UseTickStream
   const handleTick = useCallback((tick: Tick) => {
     if (isUnmountedRef.current) return
     
-    // Add to buffer
-    ticksRef.current = [tick, ...ticksRef.current].slice(0, maxBufferSize)
-    setTicks([...ticksRef.current])
+    // Add to buffer with memory optimization
+    const newTicks = [tick, ...ticksRef.current].slice(0, maxBufferSize)
+    ticksRef.current = newTicks
+    
+    // Only update state if we're still mounted and buffer changed
+    setTicks(prevTicks => {
+      // Optimize: only update if the tick count actually changed or first tick is different
+      if (prevTicks.length !== newTicks.length || 
+          (newTicks.length > 0 && prevTicks.length > 0 && 
+           prevTicks[0].tick_number !== newTicks[0].tick_number)) {
+        return [...newTicks]
+      }
+      return prevTicks
+    })
 
     // Update query cache if enabled
     if (updateQueryCache) {

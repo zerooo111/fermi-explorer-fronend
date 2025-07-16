@@ -162,7 +162,7 @@ export function useStatus(options: UseStatusOptions = {}) {
     const transactionsPerSecond = transactionChange / timeDiff;
     const averageTransactionsPerTick = heightChange > 0 ? transactionChange / heightChange : 0;
 
-    // Determine trends based on recent history
+    // Determine trends based on recent history (without including performanceHistory in dependencies)
     const recentHistory = performanceHistory.slice(-5); // Last 5 measurements
     const transactionTrend = determineTrend(recentHistory.map(h => h.transactionsPerSecond).concat(transactionsPerSecond));
     const tickTrend = determineTrend(recentHistory.map(h => h.ticksPerSecond).concat(ticksPerSecond));
@@ -177,16 +177,27 @@ export function useStatus(options: UseStatusOptions = {}) {
         ticks: tickTrend,
       },
     };
-  }, [query.data, previousStatus, lastUpdateTime, trackPerformance, performanceHistory]);
+  }, [query.data, previousStatus, lastUpdateTime, trackPerformance]);
 
-  // Update performance history
+  // Update performance history - use a ref to track last added metric to avoid infinite loops
+  const lastAddedMetricRef = React.useRef<PerformanceMetrics | null>(null);
+  
   React.useEffect(() => {
     if (performanceMetrics && trackPerformance) {
-      setPerformanceHistory(prev => {
-        const newHistory = [...prev, performanceMetrics];
-        // Keep only last 20 measurements to prevent memory bloat
-        return newHistory.slice(-20);
-      });
+      // Only add if this is a genuinely new metric
+      const lastAdded = lastAddedMetricRef.current;
+      if (!lastAdded || 
+          lastAdded.timeSinceLastUpdate !== performanceMetrics.timeSinceLastUpdate ||
+          lastAdded.transactionsPerSecond !== performanceMetrics.transactionsPerSecond) {
+        
+        setPerformanceHistory(prev => {
+          const newHistory = [...prev, performanceMetrics];
+          // Keep only last 20 measurements to prevent memory bloat
+          return newHistory.slice(-20);
+        });
+        
+        lastAddedMetricRef.current = performanceMetrics;
+      }
     }
   }, [performanceMetrics, trackPerformance]);
 

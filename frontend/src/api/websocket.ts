@@ -111,7 +111,16 @@ export class TickStreamClient {
     this.cleanupHeartbeat()
 
     if (this.ws) {
-      this.ws.close(1000, 'Client disconnect')
+      // Remove all event listeners before closing to prevent memory leaks
+      this.ws.onopen = null
+      this.ws.onmessage = null
+      this.ws.onerror = null
+      this.ws.onclose = null
+      
+      // Close the connection with proper code and reason
+      if (this.ws.readyState === WebSocket.OPEN || this.ws.readyState === WebSocket.CONNECTING) {
+        this.ws.close(1000, 'Client disconnect')
+      }
       this.ws = null
     }
 

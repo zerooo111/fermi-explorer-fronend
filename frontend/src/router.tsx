@@ -9,14 +9,25 @@ import Layout from '@/components/Layout'
 import Homepage from '@/pages/Homepage'
 import TransactionPage from '@/pages/TransactionPage'
 import TickPage from '@/pages/TickPage'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
 
-// Create the root route with layout
+// Create the root route with layout and error boundary
 export const rootRoute = createRootRoute({
   component: () => (
-    <>
+    <ErrorBoundary
+      onError={(error, errorInfo) => {
+        // Log error to monitoring service in production
+        console.error('Route Error:', error, errorInfo);
+        
+        // In production, send to error tracking service
+        if (import.meta.env.PROD) {
+          // Example: Sentry.captureException(error, { extra: errorInfo });
+        }
+      }}
+    >
       <Layout />
       <TanStackRouterDevtools />
-    </>
+    </ErrorBoundary>
   ),
 })
 
