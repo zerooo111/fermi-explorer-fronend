@@ -6,10 +6,6 @@ import './styles.css'
 import reportWebVitals from './reportWebVitals.ts'
 import { router } from './router'
 import { QueryProvider } from './providers/QueryProvider'
-import { initializeEnvironment } from './config/env'
-
-// Initialize and validate environment configuration
-initializeEnvironment();
 
 const rootElement = document.getElementById('app')
 if (rootElement && !rootElement.innerHTML) {

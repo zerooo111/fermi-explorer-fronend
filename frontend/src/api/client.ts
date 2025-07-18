@@ -5,7 +5,7 @@
  * Designed for use with TanStack Query for optimal caching and performance.
  */
 
-import { getApiConfig } from '../config/env'
+import { config } from '../config/env'
 
 /**
  * API configuration interface
@@ -17,9 +17,13 @@ export interface ApiConfig {
 }
 
 /**
- * Default API configuration from environment
+ * Default API configuration
  */
-const DEFAULT_CONFIG: ApiConfig = getApiConfig()
+const DEFAULT_CONFIG: ApiConfig = {
+  baseUrl: config.api.baseUrl,
+  timeout: 30000,
+  retries: 3,
+}
 
 /**
  * Custom error class for API-specific errors
@@ -64,7 +68,7 @@ class ApiClient {
    */
   private getUrl(path: string): string {
     const cleanPath = path.startsWith('/') ? path : `/${path}`
-    console.log({ cleanPath, path })
+
     return `${this.config.baseUrl}${cleanPath}`
   }
 

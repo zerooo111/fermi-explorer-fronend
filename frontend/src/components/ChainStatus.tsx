@@ -1,149 +1,103 @@
-import React from 'react'
-import { useRealTimeMetrics } from '@/hooks/useStatus'
-import { Button } from '@/components/ui/button'
+import NumberFlow from '@number-flow/react'
+import { useQuery } from '@tanstack/react-query'
+import { useState } from 'react'
+import type { StatusResponse } from '@/api/types'
+import { apiClient } from '@/api/client'
 import { cn } from '@/lib/utils'
+import { RecentTicks } from '@/components/RecentTicks'
+import { LiveTicksTable } from '@/components/LiveTicksTable'
+import { useTickStream } from '@/hooks'
 
 interface ChainStatusProps {
   className?: string
-  showPerformanceMetrics?: boolean
-  enableRealTime?: boolean
-  compact?: boolean
 }
 
-export function ChainStatus({
-  className,
-  showPerformanceMetrics = true,
-  enableRealTime = true,
-  compact = false,
-}: ChainStatusProps) {
-  const {
-    metrics,
-    tps,
-    tickRate,
-    avgTxPerTick,
-    isLive,
-    isRealTime,
-    trends,
-    lastUpdated,
-  } = useRealTimeMetrics()
+const REFETCH_INTERVAL = 500
+const TREND_DIRECTION = 1
 
-  const formatNumber = (num: number | undefined) => {
-    if (num === undefined) return 'N/A'
-    return num.toLocaleString()
-  }
+export function ChainStatus({ className }: ChainStatusProps) {
+  const [prevUpdate, setPrevUpdate] = useState<{
+    tick: number
+    timestamp: number
+  } | null>(null)
+  const [ticksPerSecond, setTicksPerSecond] = useState<number>(0)
 
-  const formatDecimal = (num: number | undefined, decimals = 2) => {
-    if (num === undefined) return 'N/A'
-    return num.toFixed(decimals)
-  }
+  const { ticks } = useTickStream({
+    displayLimit: 10,
+    throttleMs: 200,
+  })
 
-  const getTrendIcon = (trend: 'increasing' | 'stable' | 'decreasing' | undefined) => {
-    switch (trend) {
-      case 'increasing':
-        return '📈'
-      case 'decreasing':
-        return '📉'
-      case 'stable':
-      default:
-        return '➖'
-    }
-  }
+  const { data: metrics } = useQuery({
+    queryKey: ['chain-status'],
+    queryFn: async () => {
+      const res = await apiClient.get<StatusResponse>('/api/v1/status')
+      const now = Date.now()
 
-  const getStatusColor = (isLive: boolean) => {
-    return isLive ? 'text-green-600' : 'text-yellow-600'
-  }
+      if (prevUpdate && res.latest_tick > prevUpdate.tick) {
+        const tickDiff = res.latest_tick - prevUpdate.tick
+        const timeDiff = (now - prevUpdate.timestamp) / 1000 // Convert to seconds
 
-  if (compact) {
-    return (
-      <div className={cn('flex items-center gap-4 text-sm', className)}>
-        <div className="flex items-center gap-1">
-          <div className={cn('w-2 h-2 rounded-full', isLive ? 'bg-green-500' : 'bg-yellow-500')} />
-          <span className={getStatusColor(isLive)}>
-            {isLive ? 'LIVE' : 'DELAYED'}
-          </span>
-        </div>
-        <span>Height: {formatNumber(metrics?.chainHeight)}</span>
-        <span>TX: {formatNumber(metrics?.totalTransactions)}</span>
-        {showPerformanceMetrics && (
-          <span>TPS: {formatDecimal(tps)}</span>
-        )}
-      </div>
-    )
-  }
+        if (timeDiff > 0) {
+          const tps = tickDiff / timeDiff
+          setTicksPerSecond(Math.round(tps))
+        }
+      }
+
+      setPrevUpdate({
+        tick: res.latest_tick,
+        timestamp: now,
+      })
+
+      return res
+    },
+    staleTime: 0,
+    gcTime: 0,
+    refetchInterval: REFETCH_INTERVAL,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: true,
+  })
 
   return (
-    <div className={cn('space-y-4', className)}>
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">Chain Status</h3>
-        <div className="flex items-center gap-2">
-          <div className={cn('w-2 h-2 rounded-full', isLive ? 'bg-green-500' : 'bg-yellow-500')} />
-          <span className={cn('text-sm font-medium', getStatusColor(isLive))}>
-            {isLive ? '🟢 LIVE' : '🟡 DELAYED'}
-          </span>
+    <div className={cn('flex gap-5', className)}>
+      <div className="grid grid-rows-3 divide-y divide-zinc-700 border border-zinc-700 flex-1/3">
+        <div className="bg-zinc-900 p-4 pb-0">
+          <div className="text-sm font-medium text-zinc-400 font-mono tracking-wider ">
+            CHAIN HEIGHT
+          </div>
+          <div className="text-3xl font-bold text-zinc-100 font-mono">
+            <NumberFlow
+              value={metrics?.chain_height ?? 0}
+              trend={TREND_DIRECTION}
+            />
+          </div>
+        </div>
+
+        <div className=" bg-zinc-900 p-4 pb-0">
+          <div className="text-sm font-medium text-zinc-400 font-mono tracking-wider ">
+            TOTAL TRANSACTIONS
+          </div>
+          <div className="text-3xl font-bold text-zinc-100 font-mono">
+            <NumberFlow
+              value={metrics?.total_transactions ?? 0}
+              trend={TREND_DIRECTION}
+            />
+            {/* {metrics?.total_transactions} */}
+          </div>
+        </div>
+
+        <div className=" bg-zinc-900 p-4 pb-0">
+          <div className="text-sm font-medium text-zinc-400 font-mono tracking-wider ">
+            TICKS PER SECOND
+          </div>
+          <div className="text-3xl font-bold text-zinc-100 font-mono">
+            <NumberFlow value={ticksPerSecond} trend={TREND_DIRECTION} />
+          </div>
         </div>
       </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
-          <div className="text-sm text-gray-600 dark:text-gray-400">Chain Height</div>
-          <div className="text-2xl font-bold">{formatNumber(metrics?.chainHeight)}</div>
-          <div className="text-xs text-gray-500">Latest Tick: #{metrics?.latestTick}</div>
-        </div>
-
-        <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
-          <div className="text-sm text-gray-600 dark:text-gray-400">Total Transactions</div>
-          <div className="text-2xl font-bold">{formatNumber(metrics?.totalTransactions)}</div>
-          <div className="text-xs text-gray-500">All-time processed</div>
-        </div>
-
-        {showPerformanceMetrics && (
-          <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-gray-400">Performance</div>
-            <div className="text-2xl font-bold">{formatDecimal(tps)} TPS</div>
-            <div className="text-xs text-gray-500">
-              {formatDecimal(tickRate)} ticks/sec
-            </div>
-          </div>
-        )}
-      </div>
-
-      {showPerformanceMetrics && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
-            <div className="flex items-center justify-between mb-2">
-              <div className="text-sm text-gray-600 dark:text-gray-400">Transaction Rate</div>
-              <span className="text-lg">{getTrendIcon(trends?.transactions)}</span>
-            </div>
-            <div className="text-lg font-semibold">
-              {formatDecimal(tps)} tx/sec
-            </div>
-            <div className="text-xs text-gray-500">
-              Avg {formatDecimal(avgTxPerTick)} tx/tick
-            </div>
-          </div>
-
-          <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
-            <div className="flex items-center justify-between mb-2">
-              <div className="text-sm text-gray-600 dark:text-gray-400">Tick Rate</div>
-              <span className="text-lg">{getTrendIcon(trends?.ticks)}</span>
-            </div>
-            <div className="text-lg font-semibold">
-              {formatDecimal(tickRate)} ticks/sec
-            </div>
-            <div className="text-xs text-gray-500">
-              {isRealTime ? 'Real-time' : 'Cached'}
-            </div>
-          </div>
-        </div>
-      )}
-
-      <div className="flex items-center justify-between text-xs text-gray-500">
-        <span>
-          {enableRealTime && isRealTime ? 'Auto-updating' : 'Manual refresh'}
-        </span>
-        <span>
-          {lastUpdated ? `Updated: ${lastUpdated.toLocaleTimeString()}` : 'Never updated'}
-        </span>
+      <div className="flex">
+        <RecentTicks limit={10} />
+        <LiveTicksTable ticks={ticks} />
       </div>
     </div>
   )

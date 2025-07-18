@@ -11,47 +11,55 @@ const StatusIndicator = ({
   isError: boolean
 }) => {
   const getStatus = () => {
-    if (isError) return 'Disconnected'
-    if (isConnecting) return 'Connecting...'
-    if (isHealthy) return 'Connected'
-    return 'Unknown'
+    if (isError) return 'DISCONNECTED'
+    if (isConnecting) return 'CONNECTING...'
+    if (isHealthy) return 'CONNECTED'
+    return 'UNKNOWN'
   }
 
   const getStatusColor = () => {
-    if (isError) return 'bg-red-500'
-    if (isConnecting) return 'bg-yellow-500'
-    if (isHealthy) return 'bg-green-500'
-    return 'bg-gray-300'
+    if (isError) return 'bg-red-500 border-red-400'
+    if (isConnecting) return 'bg-yellow-500 border-yellow-400'
+    if (isHealthy) return 'bg-green-500 border-green-400'
+    return 'bg-zinc-500 border-zinc-400'
+  }
+
+  const getTextColor = () => {
+    if (isError) return 'text-red-400'
+    if (isConnecting) return 'text-yellow-400'
+    if (isHealthy) return 'text-green-400'
+    return 'text-zinc-400'
   }
 
   return (
     <div
       className={cn(
-        'font-medium  flex items-center gap-2 border py-1.5 px-3 border-gray-300 bg-gray-50 hover:bg-gray-100 transition-colors duration-200 cursor-pointer',
+        'font-mono font-medium flex items-center gap-3 border border-zinc-700 py-2 px-4 bg-zinc-950 hover:bg-zinc-900 transition-colors duration-200 cursor-pointer',
       )}
     >
-      <span className={cn('size-2', getStatusColor())} />
-      {getStatus()}
+      <span className={cn('size-2 border', getStatusColor())} />
+      <span className={cn('tracking-wider text-sm', getTextColor())}>
+        {getStatus()}
+      </span>
     </div>
   )
 }
 
 export default function Header() {
   const {
-    isHealthy,
+    data,
     isLoading: isConnecting,
     isError,
-  } = useHealth({
-    enablePolling: true,
-    pollingInterval: 5000,
-  })
+  } = useHealth()
+
+  const isHealthy = data?.status === 'healthy'
 
   return (
-    <header className="border-b border-gray-300 h-14 flex items-center">
-      <nav className="px-4 container flex items-center justify-between mx-auto max-w-screen-lg">
-        <div className="text-xl font-extrabold">
-          <span> FERMI </span>
-          <span className="font-light italic">Explorer</span>
+    <header className="border-b border-zinc-700 h-16 flex items-center bg-zinc-950">
+      <nav className="px-6 container flex items-center justify-between mx-auto max-w-screen-xl">
+        <div className="text-xl font-bold font-mono tracking-tight text-zinc-100">
+          <span className="text-zinc-100">FERMI</span>
+          <span className="text-zinc-500 font-light italic ml-2">Explorer</span>
         </div>
         <StatusIndicator
           isHealthy={isHealthy}

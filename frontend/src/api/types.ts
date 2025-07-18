@@ -95,6 +95,10 @@ export interface Tick {
     ingestion_timestamp: number;
     payload_size: number;
   }>;
+  metrics?: {
+    ticks_per_second: number; // Calculated by backend
+    backend_timestamp: number; // Backend timestamp in milliseconds
+  };
 }
 
 /**

@@ -5,7 +5,7 @@
  * error handling, and TypeScript support.
  */
 
-import { env } from '../config/env'
+import { config } from '../config/env'
 import type { Tick } from './types'
 
 /**
@@ -30,6 +30,7 @@ export interface WebSocketConfig {
   maxReconnectDelay?: number
   reconnectAttempts?: number
   heartbeatInterval?: number
+  throttleMs?: number // Throttle tick processing to prevent memory overload
 }
 
 /**
@@ -46,14 +47,13 @@ export interface WebSocketCallbacks {
  * Default WebSocket configuration
  */
 const DEFAULT_CONFIG: Required<WebSocketConfig> = {
-  url: env.isDev 
-    ? `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws/ticks`
-    : env.api.baseUrl.replace('http', 'ws') + '/ws/ticks',
+  url: config.websocket.url,
   startTick: 0,
   reconnectDelay: 1000,
   maxReconnectDelay: 30000,
   reconnectAttempts: Infinity,
   heartbeatInterval: 30000,
+  throttleMs: 50, // Throttle to ~20 FPS to prevent memory overload
 }
 
 /**
@@ -68,6 +68,11 @@ export class TickStreamClient {
   private reconnectTimeout: NodeJS.Timeout | null = null
   private heartbeatInterval: NodeJS.Timeout | null = null
   private isClosing = false
+  
+  // Throttling mechanism to prevent memory overload
+  private lastTickTime = 0
+  private pendingTick: Tick | null = null
+  private throttleTimeout: NodeJS.Timeout | null = null
 
   constructor(config: WebSocketConfig = {}, callbacks: WebSocketCallbacks = {}) {
     this.config = { ...DEFAULT_CONFIG, ...config }
@@ -109,6 +114,7 @@ export class TickStreamClient {
     this.isClosing = true
     this.cleanupReconnect()
     this.cleanupHeartbeat()
+    this.cleanupThrottling()
 
     if (this.ws) {
       // Remove all event listeners before closing to prevent memory leaks
@@ -211,7 +217,7 @@ export class TickStreamClient {
           vdf_proof: message.vdf_proof,
           transactions: message.transactions,
         }
-        this.callbacks.onTick?.(tick)
+        this.handleThrottledTick(tick)
         break
 
       case 'error':
@@ -221,6 +227,46 @@ export class TickStreamClient {
 
       default:
         console.warn('Unknown message type:', (message as any).type)
+    }
+  }
+
+  /**
+   * Handle tick with throttling to prevent memory overload
+   */
+  private handleThrottledTick(tick: Tick): void {
+    const now = Date.now()
+    
+    // Always keep the latest tick
+    this.pendingTick = tick
+    
+    // If enough time has passed since last tick, process immediately
+    if (now - this.lastTickTime >= this.config.throttleMs) {
+      this.processPendingTick()
+      return
+    }
+    
+    // Otherwise, schedule processing if not already scheduled
+    if (!this.throttleTimeout) {
+      const remainingTime = this.config.throttleMs - (now - this.lastTickTime)
+      this.throttleTimeout = setTimeout(() => {
+        this.processPendingTick()
+      }, remainingTime)
+    }
+  }
+
+  /**
+   * Process the pending tick and update timing
+   */
+  private processPendingTick(): void {
+    if (this.pendingTick) {
+      this.callbacks.onTick?.(this.pendingTick)
+      this.pendingTick = null
+      this.lastTickTime = Date.now()
+    }
+    
+    if (this.throttleTimeout) {
+      clearTimeout(this.throttleTimeout)
+      this.throttleTimeout = null
     }
   }
 
@@ -289,6 +335,18 @@ export class TickStreamClient {
       clearTimeout(this.reconnectTimeout)
       this.reconnectTimeout = null
     }
+  }
+
+  /**
+   * Cleanup throttling timeout and pending tick
+   */
+  private cleanupThrottling(): void {
+    if (this.throttleTimeout) {
+      clearTimeout(this.throttleTimeout)
+      this.throttleTimeout = null
+    }
+    this.pendingTick = null
+    this.lastTickTime = 0
   }
 }
 
