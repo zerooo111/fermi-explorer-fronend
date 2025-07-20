@@ -1,23 +1,22 @@
 /**
- * Simple environment configuration for MVP
+ * Frontend environment configuration using shared config
  */
 
-// API Configuration
-export const API_BASE_URL =
-  import.meta.env.VITE_API_BASE || 'http://localhost:3001'
+import { createFrontendConfig } from '@fermi/config/frontend'
 
-// WebSocket Configuration
-export const WS_URL =
-  import.meta.env.VITE_WS_URL ||
-  API_BASE_URL.replace('http://', 'ws://').replace('https://', 'wss://') +
-    '/ws/ticks'
-
-// Simple config object
-export const config = {
-  api: {
-    baseUrl: API_BASE_URL,
-  },
-  websocket: {
-    url: WS_URL,
-  },
+// Convert import.meta.env to plain object for the shared config function
+const envVars = {
+  VITE_API_BASE: import.meta.env.VITE_API_BASE,
+  VITE_WS_URL: import.meta.env.VITE_WS_URL,
+  VITE_ENABLE_LOGGING: import.meta.env.VITE_ENABLE_LOGGING,
+  VITE_ENABLE_DEV_TOOLS: import.meta.env.VITE_ENABLE_DEV_TOOLS,
+  DEV: import.meta.env.DEV ? 'true' : 'false',
+  PROD: import.meta.env.PROD ? 'true' : 'false',
 }
+
+// Create configuration using shared utilities
+export const config = createFrontendConfig(envVars)
+
+// Legacy exports for backward compatibility
+export const API_BASE_URL = config.api.baseUrl
+export const WS_URL = config.websocket.url

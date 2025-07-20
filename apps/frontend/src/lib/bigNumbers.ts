@@ -1,14 +1,9 @@
-import BN from 'bn.js'
-
 /**
- * Big number utilities for handling large integers safely
- * Uses bn.js to avoid JavaScript number precision issues
+ * Frontend big numbers - re-exports from shared utilities
  */
 
-// Constants for common operations
-export const MICROSECONDS_TO_MILLISECONDS = new BN(1000)
-export const MILLISECONDS_TO_SECONDS = new BN(1000)
-export const MICROSECONDS_TO_SECONDS = new BN(1_000_000)
+// Re-export all shared big number utilities
+export * from '@fermi/shared-utils/big-numbers'
 
 /**
  * Create a BN instance from various input types

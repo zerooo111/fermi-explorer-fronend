@@ -1,32 +1,11 @@
 /**
- * TypeScript interfaces for Continuum Sequencer API
- * 
- * Complete type definitions for all REST API endpoints based on the API reference.
- * Designed for type safety and developer experience with TanStack Query.
+ * Frontend API types - combines shared types with frontend-specific utilities
  */
 
-/**
- * Base response interface that includes pagination metadata
- */
-export interface BaseResponse {
-  found?: boolean
-}
+// Re-export all shared API types
+export * from '@fermi/shared-types/api'
 
-/**
- * Error response format
- */
-export interface ApiErrorResponse {
-  error: string
-}
-
-/**
- * Health check endpoint response
- * GET /api/v1/health
- */
-export interface HealthResponse {
-  status: 'healthy' | 'unhealthy'
-  timestamp: number // Unix timestamp in seconds
-}
+// Additional frontend-specific types and utilities
 
 /**
  * Sequencer status endpoint response

@@ -1,14 +1,11 @@
-// Enhanced formatting utilities with NumberFlow integration
+/**
+ * Frontend formatters - re-exports from shared utilities with additional frontend-specific formatters
+ */
 
-export function formatNumber(num: number | undefined): string {
-  if (num === undefined || num === null || isNaN(num)) return 'N/A'
-  return num.toLocaleString()
-}
+// Re-export shared utilities
+export * from '@fermi/shared-utils/formatters'
 
-export function formatDecimal(num: number | undefined, decimals = 2): string {
-  if (num === undefined || num === null || isNaN(num)) return 'N/A'
-  return num.toFixed(decimals)
-}
+// Frontend-specific formatters can be added here if needed
 
 export function formatBytes(bytes: number | undefined): string {
   if (bytes === undefined || bytes === null || isNaN(bytes)) return 'N/A'
