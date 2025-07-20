@@ -31,8 +31,8 @@ NC='\033[0m' # No Color
 # Configuration
 BACKEND_PORT="${BACKEND_PORT:-3001}"
 FRONTEND_PORT="${FRONTEND_PORT:-3000}"
-BACKEND_DIR="bun-backend"
-FRONTEND_DIR="frontend"
+BACKEND_DIR="apps/backend"
+FRONTEND_DIR="apps/frontend"
 LOG_DIR="logs"
 DEBUG_MODE="${DEBUG:-false}"
 
@@ -277,25 +277,21 @@ start_backend() {
     # Change to backend directory
     cd "$BACKEND_DIR"
     
-    # Check if Go is installed
-    if ! command -v go &> /dev/null; then
-        print_error "Go is not installed. Please install Go 1.21 or later."
+    # Check if bun is installed
+    if ! command -v bun &> /dev/null; then
+        print_error "Bun is not installed. Please install Bun."
         exit 1
     fi
     
-    # Check if go.mod exists
-    if [ ! -f "go.mod" ]; then
-        print_error "go.mod not found in backend directory"
+    # Check if package.json exists
+    if [ ! -f "package.json" ]; then
+        print_error "package.json not found in backend directory"
         exit 1
     fi
     
-    # Download dependencies
+    # Install dependencies
     print_status "Installing backend dependencies..."
-    go mod download
-    
-    # Build the backend
-    print_status "Building backend..."
-    go build -o proxy ./cmd/proxy
+    bun install
     
     # Set debug mode if enabled
     local debug_flag=""
@@ -321,7 +317,7 @@ start_backend() {
     
     # Start backend in background
     print_status "Starting backend server on port $BACKEND_PORT..."
-    ./proxy -port "$BACKEND_PORT" $debug_flag > "../$BACKEND_LOG" 2>&1 &
+    bun run start > "../$BACKEND_LOG" 2>&1 &
     local backend_pid=$!
     
     # Return to root directory first
