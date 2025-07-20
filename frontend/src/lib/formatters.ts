@@ -45,6 +45,18 @@ export function calculateAge(timestamp: number): number {
   return Math.floor((now - timestampMs) / 1000)
 }
 
+// Import big number utilities for safe calculations
+import { calculateAgeFromMicroseconds, microsecondsToMilliseconds, toSafeNumber, toBN } from './bigNumbers'
+
+export function calculateAgeFromMicroTimestamp(timestamp: string | number): number {
+  return calculateAgeFromMicroseconds(timestamp)
+}
+
+export function convertMicroTimestampToDate(timestamp: string | number): Date {
+  const milliseconds = microsecondsToMilliseconds(timestamp)
+  return new Date(milliseconds)
+}
+
 // Trend calculation utilities for NumberFlow
 export function calculateTrend(oldValue: number, newValue: number): number {
   return Math.sign(newValue - oldValue)

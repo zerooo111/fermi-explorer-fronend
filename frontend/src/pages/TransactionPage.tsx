@@ -1,7 +1,13 @@
 import { useParams } from '@tanstack/react-router'
+import NumberFlow from '@number-flow/react'
 import { useTransaction } from '../hooks/useTransaction'
 import { calculateTrend } from '@/lib/formatters'
-import NumberFlow from '@number-flow/react'
+import {
+  calculateAgeFromMicroseconds,
+  microsecondsToMilliseconds,
+  toBN,
+  toSafeNumber,
+} from '@/lib/bigNumbers'
 
 export default function TransactionPage() {
   const { transactionId } = useParams({ from: '/transaction/$transactionId' })
@@ -133,7 +139,7 @@ export default function TransactionPage() {
                 </span>
                 <span className="text-zinc-100 font-mono font-medium">
                   <NumberFlow
-                    value={data.tick_number ?? 0}
+                    value={toSafeNumber(toBN(data.tick_number ?? 0))}
                     trend={trendCalculator}
                   />
                 </span>
@@ -144,7 +150,7 @@ export default function TransactionPage() {
                 </span>
                 <span className="text-zinc-100 font-mono font-medium">
                   <NumberFlow
-                    value={data.sequence_number ?? 0}
+                    value={toSafeNumber(toBN(data.sequence_number ?? 0))}
                     trend={trendCalculator}
                   />
                 </span>
@@ -162,9 +168,8 @@ export default function TransactionPage() {
                   AGE
                 </span>
                 <span className="text-zinc-100 font-mono font-medium">
-                  {Math.floor(
-                    (Date.now() * 1000 - transaction.ingestion_timestamp) /
-                      1_000_000,
+                  {calculateAgeFromMicroseconds(
+                    transaction.ingestion_timestamp,
                   )}
                   s
                 </span>
@@ -184,7 +189,7 @@ export default function TransactionPage() {
                 </span>
                 <span className="text-zinc-100 font-mono text-sm">
                   {new Date(
-                    transaction.ingestion_timestamp / 1000,
+                    microsecondsToMilliseconds(transaction.ingestion_timestamp),
                   ).toLocaleString()}
                 </span>
               </div>
@@ -194,7 +199,7 @@ export default function TransactionPage() {
                 </span>
                 <span className="text-zinc-100 font-mono text-sm">
                   <NumberFlow
-                    value={transaction.ingestion_timestamp}
+                    value={toSafeNumber(toBN(transaction.ingestion_timestamp))}
                     trend={trendCalculator}
                   />
                 </span>

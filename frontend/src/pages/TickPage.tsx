@@ -1,7 +1,13 @@
 import { useParams, Link } from '@tanstack/react-router'
+import NumberFlow from '@number-flow/react'
 import { useTick } from '@/hooks/useTick'
 import { calculateTrend } from '@/lib/formatters'
-import NumberFlow from '@number-flow/react'
+import {
+  calculateAgeFromMicroseconds,
+  microsecondsToMilliseconds,
+  toBN,
+  toSafeNumber,
+} from '@/lib/bigNumbers'
 
 export default function TickPage() {
   const { tickId } = useParams({ from: '/tick/$tickId' })
@@ -148,10 +154,15 @@ export default function TickPage() {
             <div>
               <h1 className="text-2xl font-bold font-mono tracking-tight text-zinc-100 uppercase">
                 Tick #
-                <NumberFlow value={tick.tick_number} trend={trendCalculator} />
+                <NumberFlow
+                  value={toSafeNumber(toBN(tick.tick_number))}
+                  trend={trendCalculator}
+                />
               </h1>
               <p className="text-zinc-400 font-mono text-sm mt-1">
-                {new Date(tick.timestamp / 1000).toLocaleString()}
+                {new Date(
+                  microsecondsToMilliseconds(tick.timestamp),
+                ).toLocaleString()}
               </p>
             </div>
             <span className="text-sm text-zinc-500 font-mono tracking-wide bg-zinc-800 px-3 py-1 rounded">
@@ -201,7 +212,7 @@ export default function TickPage() {
                 </span>
                 <span className="text-zinc-100 font-mono font-medium">
                   <NumberFlow
-                    value={tick.tick_number}
+                    value={toSafeNumber(toBN(tick.tick_number))}
                     trend={trendCalculator}
                   />
                 </span>
@@ -211,7 +222,10 @@ export default function TickPage() {
                   TIMESTAMP
                 </span>
                 <span className="text-zinc-100 font-mono text-sm">
-                  <NumberFlow value={tick.timestamp} trend={trendCalculator} />
+                  <NumberFlow
+                    value={toSafeNumber(toBN(tick.timestamp))}
+                    trend={trendCalculator}
+                  />
                 </span>
               </div>
               <div className="flex justify-between items-center">
@@ -219,8 +233,7 @@ export default function TickPage() {
                   AGE
                 </span>
                 <span className="text-zinc-100 font-mono font-medium">
-                  {Math.floor((Date.now() * 1000 - tick.timestamp) / 1_000_000)}
-                  s ago
+                  {calculateAgeFromMicroseconds(tick.timestamp)}s ago
                 </span>
               </div>
               <div className="flex justify-between items-center">
@@ -229,7 +242,7 @@ export default function TickPage() {
                 </span>
                 <span className="text-zinc-100 font-mono font-medium">
                   <NumberFlow
-                    value={tick.transaction_count}
+                    value={toSafeNumber(toBN(tick.transaction_count))}
                     trend={trendCalculator}
                   />
                 </span>
@@ -240,7 +253,7 @@ export default function TickPage() {
                 </span>
                 <span className="text-zinc-100 font-mono font-medium">
                   <NumberFlow
-                    value={tick.vdf_iterations}
+                    value={toSafeNumber(toBN(tick.vdf_iterations))}
                     trend={trendCalculator}
                   />
                 </span>

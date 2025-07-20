@@ -5,7 +5,7 @@
 ```
 fermi-explorer-monorepo/
 ├── frontend/              # React frontend application
-├── backend/               # Go backend proxy service
+├── bun-backend/          # Bun/TypeScript backend service
 ├── logs/                  # Runtime logs
 ├── .kiro/                 # Kiro AI assistant configuration
 ├── start.sh               # Unified startup script
@@ -56,12 +56,12 @@ frontend/src/
     └── env.ts            # Environment variables
 ```
 
-## Backend Structure (`backend/`)
+## Backend Structure (`bun-backend/`)
 
 ### Application Entry
 ```
-backend/
-├── cmd/proxy/            # Main application
+bun-backend/
+├── src/                  # TypeScript source code
 │   └── main.go           # Entry point with server setup
 ├── go.mod                # Go module definition
 ├── go.sum                # Dependency checksums
@@ -166,7 +166,7 @@ import (
 
 // Internal packages last
 import (
-    "github.com/continuum/backend/internal/handlers"
+    "github.com/continuum/bun-backend/internal/handlers"
 )
 ```
 

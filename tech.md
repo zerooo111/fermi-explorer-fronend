@@ -47,7 +47,7 @@ bun run check        # Lint + format
 
 ### Backend Commands
 ```bash
-cd backend
+cd bun-backend
 
 # Development
 make run             # Build and run
@@ -119,4 +119,4 @@ VITE_API_BASE_URL=http://localhost:3001   # Backend URL
 ## Build Outputs
 
 - **Frontend**: `frontend/dist/` - Static files for deployment
-- **Backend**: `backend/proxy` - Compiled Go binary
+- **Backend**: `bun-backend/` - Bun/TypeScript runtime

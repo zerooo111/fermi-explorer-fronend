@@ -1,22 +1,17 @@
 import { TicksTable } from './TicksTable'
-import type { Tick } from '@/api/types'
+import { useTickStream } from '@/hooks'
 
-interface LiveTicksTableProps {
-  ticks: Array<Tick>
-  showTransactions?: boolean
-}
+export function LiveTicksTable() {
+  const { ticks } = useTickStream({
+    displayLimit: 10,
+  })
 
-export function LiveTicksTable({
-  ticks,
-  showTransactions = false,
-}: LiveTicksTableProps) {
   return (
-    <TicksTable
-      ticks={ticks}
-      title="Live Ticks"
-      showTransactions={showTransactions}
-      showAge={true}
-      useNumberFlow={false}
-    />
+    <div className="space-y-4 w-40 border border-red-500">
+      <h3 className="text-lg font-bold font-mono tracking-tight text-zinc-100 uppercase">
+        Live Ticks
+      </h3>
+      <TicksTable ticks={ticks} />
+    </div>
   )
 }

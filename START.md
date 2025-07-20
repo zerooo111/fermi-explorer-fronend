@@ -120,7 +120,7 @@ cat logs/frontend.log
 ./start.sh --stop
 
 # Clean build
-rm -rf backend/proxy frontend/node_modules frontend/dist
+rm -rf bun-backend/node_modules frontend/node_modules frontend/dist
 
 # Start again
 ./start.sh

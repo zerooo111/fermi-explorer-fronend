@@ -31,7 +31,7 @@ NC='\033[0m' # No Color
 # Configuration
 BACKEND_PORT="${BACKEND_PORT:-3001}"
 FRONTEND_PORT="${FRONTEND_PORT:-3000}"
-BACKEND_DIR="backend"
+BACKEND_DIR="bun-backend"
 FRONTEND_DIR="frontend"
 LOG_DIR="logs"
 DEBUG_MODE="${DEBUG:-false}"

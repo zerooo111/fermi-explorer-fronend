@@ -1,0 +1,36 @@
+{
+  "name": "fermi-explorer-bun-backend",
+  "version": "1.0.0",
+  "description": "Bun.js backend port of fermi-explorer Go backend",
+  "main": "src/main.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "bun run --watch src/main.ts",
+    "start": "bun run src/main.ts",
+    "build": "bun build src/main.ts --outdir ./dist --target bun",
+    "lint": "eslint src --ext .ts,.js",
+    "test": "bun test",
+    "test:websocket": "bun run test-websocket.ts"
+  },
+  "dependencies": {
+    "@grpc/grpc-js": "^1.12.5",
+    "@grpc/proto-loader": "^0.7.15",
+    "hono": "^4.7.10",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/ws": "^8.5.13",
+    "bun-types": "latest",
+    "typescript": "^5.6.3"
+  },
+  "keywords": [
+    "bun",
+    "backend",
+    "grpc",
+    "websocket",
+    "fermi-explorer"
+  ],
+  "engines": {
+    "bun": ">=1.0.0"
+  }
+}

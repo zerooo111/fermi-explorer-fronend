@@ -32,7 +32,7 @@ fermi-explorer-monorepo/
 │   ├── README.md         # Frontend-specific documentation
 │   └── package.json      # Frontend dependencies
 │
-├── backend/              # Go backend proxy service
+├── bun-backend/         # Bun/TypeScript backend service
 │   ├── cmd/proxy/        # Main application entry point
 │   ├── internal/         # Internal packages
 │   │   ├── grpc/         # gRPC client wrapper
@@ -96,7 +96,7 @@ This will:
 
 #### Backend Setup
 ```bash
-cd backend
+cd bun-backend
 go mod download
 go build -o proxy ./cmd/proxy
 ./proxy
@@ -162,7 +162,7 @@ export DEBUG=true
 ### Backend Development
 
 ```bash
-cd backend
+cd bun-backend
 
 # Basic development run
 ./run.sh
@@ -264,7 +264,7 @@ The frontend automatically connects to the backend at `http://localhost:3001` du
 
 ### Backend Tests
 ```bash
-cd backend
+cd bun-backend
 go test ./...
 make test-coverage
 ```
@@ -279,7 +279,7 @@ bun run test
 
 ### Backend
 ```bash
-cd backend
+cd bun-backend
 go build -ldflags="-s -w" -o proxy ./cmd/proxy
 ./proxy -port 3001
 ```
@@ -350,4 +350,4 @@ This project is part of the Continuum ecosystem and follows the same licensing t
 
 ---
 
-For more detailed information, see the individual README files in the `frontend/` and `backend/` directories.
+For more detailed information, see the individual README files in the `frontend/` and `bun-backend/` directories.
