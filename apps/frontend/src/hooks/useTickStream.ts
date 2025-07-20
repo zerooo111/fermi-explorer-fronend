@@ -6,8 +6,8 @@
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import type { Tick } from '@/api/types'
-import type { WebSocketConfig, WebSocketState } from '@/api/websocket'
+import type { Tick, WebSocketState } from '@fermi/shared-types/api'
+import type { WebSocketConfig } from '@/api/websocket'
 import { TickStreamClient } from '@/api/websocket'
 
 /**

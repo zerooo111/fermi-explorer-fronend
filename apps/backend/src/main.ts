@@ -169,7 +169,7 @@ class Server {
         },
         websocket: {
           open: (ws) => {
-            const startTick = ws.data?.startTick || 0n;
+            const startTick = (ws.data as { startTick?: bigint })?.startTick || 0n;
             this.streamHandler?.onWebSocketConnection(ws, startTick);
           },
           message: (ws, message) => {

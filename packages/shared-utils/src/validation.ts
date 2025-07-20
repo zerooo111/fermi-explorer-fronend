@@ -7,7 +7,7 @@ interface ValidationError {
   code: string
 }
 
-interface RequestLimits {
+export interface RequestLimits {
   maxRequestSize: number
   maxResponseSize: number
   timeout: number

@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { apiClient } from '../api/client'
-import type { TransactionResponse } from '../api/types'
+import type { TransactionResponse } from '@fermi/shared-types/api'
 
 export function useTransaction(hash: string) {
   return useQuery({

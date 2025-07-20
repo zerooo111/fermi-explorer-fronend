@@ -1,6 +1,7 @@
-import * as grpc from '@grpc/grpc-js';
-import * as protoLoader from '@grpc/proto-loader';
-import { join } from 'path';
+import * as grpc from '@grpc/grpc-js'
+import * as protoLoader from '@grpc/proto-loader'
+import { join } from 'path'
+import type { VdfProof as SharedVdfProof } from '@fermi/shared-types/api'
 
 interface Transaction {
   tx_id: string;
@@ -11,11 +12,9 @@ interface Transaction {
   timestamp: string;
 }
 
-interface VdfProof {
-  input: string;
-  output: string;
-  proof: string;
-  iterations: string;
+// Use the shared VdfProof type but with string iterations for gRPC
+interface VdfProof extends Omit<SharedVdfProof, 'iterations'> {
+  iterations: string; // gRPC uses string instead of number
 }
 
 interface OrderedTransaction {

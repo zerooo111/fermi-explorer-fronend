@@ -1,7 +1,5 @@
 import { RecentTicks } from '@/components/RecentTicks'
 import { ChainStatus } from '@/components/ChainStatus'
-import { LiveTicksTable } from '@/components'
-import { useTickStream } from '@/hooks/useTickStream'
 
 export default function Homepage() {
   return (

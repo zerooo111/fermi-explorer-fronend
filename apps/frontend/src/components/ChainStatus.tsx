@@ -1,7 +1,7 @@
 import NumberFlow from '@number-flow/react'
 import { useQuery } from '@tanstack/react-query'
-import type { StatusResponse } from '@/api/types'
-import { toBN, toSafeNumber } from '@/lib/bigNumbers'
+import type { StatusResponse } from '@fermi/shared-types/api'
+import { toBN, toSafeNumber } from '@fermi/shared-utils/big-numbers'
 
 const REFETCH_INTERVAL = 500
 const TREND_DIRECTION = 1

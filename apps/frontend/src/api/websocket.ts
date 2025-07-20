@@ -6,19 +6,9 @@
  */
 
 import { config } from '../config/env'
-import type { Tick } from './types'
+import type { Tick, WebSocketMessage, WebSocketState } from '@fermi/shared-types/api'
 
-/**
- * WebSocket message types
- */
-export type WebSocketMessage = 
-  | { type: 'tick'; tick_number: number; timestamp: number; transaction_count: number; transaction_batch_hash: string; previous_output: string; vdf_proof: { input: string; output: string; proof: string; iterations: number }; transactions: Array<{ tx_id: string; sequence_number: number; nonce: number; ingestion_timestamp: number; payload_size: number }> }
-  | { type: 'error'; error: string }
-
-/**
- * WebSocket connection state
- */
-export type WebSocketState = 'connecting' | 'connected' | 'disconnected' | 'error'
+// WebSocket types are now imported from shared-types package
 
 /**
  * WebSocket client configuration

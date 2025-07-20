@@ -1,5 +1,5 @@
-import { Context } from 'hono';
-import { GrpcClient, GetStatusResponse, GetTransactionResponse, GetTickResponse } from '../grpc/client';
+import { Context } from 'hono'
+import { GrpcClient, GetStatusResponse, GetTransactionResponse, GetTickResponse } from '../grpc/client'
 import { 
   validateTransactionHash, 
   validateTickNumber, 
@@ -7,7 +7,8 @@ import {
   sanitizeInput, 
   sendErrorResponse,
   limits 
-} from '../middleware/validation';
+} from '../middleware/validation'
+import { HTTP_STATUS } from '@fermi/shared-utils/constants'
 
 export class Handler {
   private grpcClient: GrpcClient;

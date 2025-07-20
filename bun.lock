@@ -12,6 +12,9 @@
       "name": "@fermi/backend",
       "version": "1.0.0",
       "dependencies": {
+        "@fermi/config": "workspace:*",
+        "@fermi/shared-types": "workspace:*",
+        "@fermi/shared-utils": "workspace:*",
         "@grpc/grpc-js": "^1.12.5",
         "@grpc/proto-loader": "^0.7.15",
         "hono": "^4.7.10",
@@ -27,6 +30,9 @@
       "name": "@fermi/frontend",
       "version": "1.0.0",
       "dependencies": {
+        "@fermi/config": "workspace:*",
+        "@fermi/shared-types": "workspace:*",
+        "@fermi/shared-utils": "workspace:*",
         "@number-flow/react": "^0.5.10",
         "@radix-ui/react-scroll-area": "^1.2.9",
         "@radix-ui/react-slot": "^1.2.3",
@@ -64,6 +70,32 @@
         "vite": "^6.1.0",
         "vitest": "^3.0.5",
         "web-vitals": "^4.2.4",
+      },
+    },
+    "packages/config": {
+      "name": "@fermi/config",
+      "version": "1.0.0",
+      "devDependencies": {
+        "typescript": "^5.7.2",
+      },
+    },
+    "packages/shared-types": {
+      "name": "@fermi/shared-types",
+      "version": "1.0.0",
+      "devDependencies": {
+        "typescript": "^5.7.2",
+      },
+    },
+    "packages/shared-utils": {
+      "name": "@fermi/shared-utils",
+      "version": "1.0.0",
+      "dependencies": {
+        "bn.js": "^5.2.2",
+      },
+      "devDependencies": {
+        "@types/bn.js": "^5.2.0",
+        "typescript": "^5.7.2",
+        "vitest": "^3.2.4",
       },
     },
   },
@@ -222,7 +254,13 @@
 
     "@fermi/backend": ["@fermi/backend@workspace:apps/backend"],
 
+    "@fermi/config": ["@fermi/config@workspace:packages/config"],
+
     "@fermi/frontend": ["@fermi/frontend@workspace:apps/frontend"],
+
+    "@fermi/shared-types": ["@fermi/shared-types@workspace:packages/shared-types"],
+
+    "@fermi/shared-utils": ["@fermi/shared-utils@workspace:packages/shared-utils"],
 
     "@floating-ui/core": ["@floating-ui/core@1.7.2", "", { "dependencies": { "@floating-ui/utils": "^0.2.10" } }, "sha512-wNB5ooIKHQc+Kui96jE/n69rHFWAVoxn5CAzL1Xdd8FG03cgY3MLO+GF9U3W737fYDSgPWA6MReKhBQBop6Pcw=="],
 

@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { apiClient } from '../api/client'
-import type { TickResponse, RecentTicksResponse } from '../api/types'
+import type { TickResponse, RecentTicksResponse } from '@fermi/shared-types/api'
 
 export function useTick(tickNumber: number) {
   return useQuery({

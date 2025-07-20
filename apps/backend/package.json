@@ -15,6 +15,9 @@
     "clean": "rm -rf dist node_modules"
   },
   "dependencies": {
+    "@fermi/shared-types": "workspace:*",
+    "@fermi/shared-utils": "workspace:*",
+    "@fermi/config": "workspace:*",
     "@grpc/grpc-js": "^1.12.5",
     "@grpc/proto-loader": "^0.7.15",
     "hono": "^4.7.10",

@@ -1,14 +1,13 @@
 import React from 'react'
 import { differenceInMilliseconds } from 'date-fns'
 import { Link } from '@tanstack/react-router'
-import type { Tick, TickSummary } from '@/api/types'
+import type { Tick, TickSummary } from '@fermi/shared-types/api'
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 import {
   calculateAgeInMilliseconds,
   toBN,
   toSafeNumber,
-} from '@/lib/bigNumbers'
-import { calculateTrend } from '@/lib/formatters'
+} from '@fermi/shared-utils/big-numbers'
 
 interface TicksTableProps {
   ticks: Array<Tick | TickSummary>
