@@ -15,12 +15,13 @@
     "clean": "rm -rf dist node_modules"
   },
   "dependencies": {
+    "@fermi/config": "workspace:*",
     "@fermi/shared-types": "workspace:*",
     "@fermi/shared-utils": "workspace:*",
-    "@fermi/config": "workspace:*",
     "@grpc/grpc-js": "^1.12.5",
     "@grpc/proto-loader": "^0.7.15",
     "hono": "^4.7.10",
+    "prom-client": "^15.1.3",
     "ws": "^8.18.0"
   },
   "devDependencies": {

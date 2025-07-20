@@ -76,6 +76,7 @@ fermi-explorer-monorepo/
 - **WebSocket Streaming**: Real-time tick streaming for frontend consumption
 - **Shared Validation**: Uses @fermi/shared-utils for consistent validation
 - **Health Monitoring**: Built-in health checks and status endpoints
+- **Prometheus Metrics**: Comprehensive metrics for monitoring and observability
 - **Connection Management**: Efficient connection pooling and error handling
 
 ## Quick Start
@@ -232,6 +233,10 @@ All endpoints are prefixed with `/api/v1`:
 - `POST /tx` - Submit transaction
 - `GET /tick/{number}` - Get tick by number
 - `GET /ticks/recent` - Get recent ticks with pagination
+
+### Monitoring Endpoints
+
+- `GET /metrics` - Prometheus metrics for monitoring
 
 ### WebSocket Streaming
 

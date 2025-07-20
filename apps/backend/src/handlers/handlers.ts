@@ -9,6 +9,7 @@ import {
   limits 
 } from '../middleware/validation'
 import { HTTP_STATUS } from '@fermi/shared-utils/constants'
+import { getMetrics, MetricsCollector } from '../metrics/metrics'
 
 export class Handler {
   private grpcClient: GrpcClient;
@@ -66,6 +67,27 @@ export class Handler {
     });
   }
 
+  async metrics(c: Context): Promise<Response> {
+    if (c.req.method !== 'GET') {
+      return sendErrorResponse(c, 405, 'Method not allowed');
+    }
+
+    try {
+      const metrics = await getMetrics();
+      
+      return new Response(metrics, {
+        status: 200,
+        headers: {
+          'Content-Type': 'text/plain; version=0.0.4; charset=utf-8',
+          'Cache-Control': 'no-cache, no-store, must-revalidate'
+        }
+      });
+    } catch (error) {
+      console.error('❌ Failed to get metrics:', error);
+      return sendErrorResponse(c, 500, 'Failed to get metrics');
+    }
+  }
+
   async status(c: Context): Promise<Response> {
     if (c.req.method !== 'GET') {
       return sendErrorResponse(c, 405, 'Method not allowed');
@@ -74,6 +96,13 @@ export class Handler {
     try {
       const statusResponse: GetStatusResponse = await this.grpcClient.getStatus();
       
+      // Update metrics with sequencer status
+      MetricsCollector.updateSequencerStatus(
+        true, 
+        parseInt(statusResponse.current_tick),
+        parseInt(statusResponse.pending_transactions)
+      );
+      
       return c.json(statusResponse, {
         headers: {
           'Cache-Control': 'no-cache, no-store, must-revalidate'
@@ -81,6 +110,8 @@ export class Handler {
       });
     } catch (error) {
       console.error('❌ Status endpoint error:', error);
+      MetricsCollector.updateSequencerStatus(false);
+      MetricsCollector.recordError('grpc', 'error');
       return sendErrorResponse(c, 503, 'Failed to get status from sequencer');
     }
   }
@@ -94,6 +125,7 @@ export class Handler {
     
     const validationError = validateTransactionHash(txHash);
     if (validationError) {
+      MetricsCollector.recordValidationError('transaction_hash', validationError.field);
       return sendErrorResponse(c, 400, 'Invalid transaction hash', [validationError]);
     }
 
@@ -110,6 +142,9 @@ export class Handler {
       const data = await resp.json();
       console.log(`✅ Successfully retrieved transaction: ${txHash}`);
       
+      // Record successful transaction processing
+      MetricsCollector.recordApiCall('sequencer', 'get_transaction', 'success');
+      
       return c.json(data, {
         headers: {
           'Cache-Control': 'no-cache, no-store, must-revalidate'
@@ -117,6 +152,8 @@ export class Handler {
       });
     } catch (error) {
       console.error(`❌ Failed to get transaction ${txHash}:`, error);
+      MetricsCollector.recordApiCall('sequencer', 'get_transaction', 'error');
+      MetricsCollector.recordError('api', 'error');
       return sendErrorResponse(c, 500, 'Failed to get transaction');
     }
   }
@@ -130,6 +167,7 @@ export class Handler {
     
     const { value: tickNum, error: validationError } = validateTickNumber(tickNumStr);
     if (validationError) {
+      MetricsCollector.recordValidationError('tick_number', validationError.field);
       return sendErrorResponse(c, 400, 'Invalid tick number', [validationError]);
     }
 
