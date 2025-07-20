@@ -1,38 +1,45 @@
-# Fermi Explorer Bun Backend
+# Fermi Explorer Backend
 
-A high-performance Bun.js port of the Fermi Explorer Go backend, designed for rapid development and investor demonstrations.
+A high-performance TypeScript backend built with Bun runtime, designed for rapid development and optimal performance. Part of the Fermi Explorer monorepo with shared packages for type safety and code reuse.
 
 ## Features
 
 - **Fast Development**: Built with Bun.js for extremely fast startup and execution
+- **Shared Packages**: Uses @fermi/shared-types, @fermi/shared-utils, and @fermi/config
 - **HTTP API**: RESTful endpoints for transaction and tick data
 - **WebSocket Streaming**: Real-time tick streaming with throttling (24 FPS)
 - **gRPC Client**: Connects to the Continuum sequencer
 - **CORS Support**: Configurable cross-origin resource sharing
 - **Graceful Shutdown**: Proper cleanup of connections and resources
-- **Type Safety**: Full TypeScript implementation
+- **Type Safety**: Full TypeScript implementation with workspace-wide types
 
 ## Quick Start
 
-1. **Install dependencies**:
-   ```bash
-   bun install
-   ```
+### From Workspace Root
+```bash
+# Install all workspace dependencies
+bun install
 
-2. **Copy environment configuration**:
-   ```bash
-   cp .env.example .env
-   ```
+# Build shared packages
+bun run build
 
-3. **Start the development server**:
-   ```bash
-   bun run dev
-   ```
+# Start backend development
+bun run --filter '@fermi/backend' dev
+```
 
-4. **Or start in production mode**:
-   ```bash
-   bun run start
-   ```
+### From Backend Directory
+```bash
+cd apps/backend
+
+# Copy environment configuration
+cp .env.example .env
+
+# Start development server
+bun run dev
+
+# Or start in production mode
+bun run start
+```
 
 ## Configuration
 
@@ -89,22 +96,30 @@ src/
 
 ## Development
 
+### Local Development
 - **Watch mode**: `bun run dev` (auto-restarts on file changes)
 - **Build**: `bun run build`
 - **Lint**: `bun run lint`
 - **Test**: `bun run test`
+- **Type check**: `bun run typecheck`
 
-## Comparison with Go Backend
+### Workspace Development
+```bash
+# From workspace root
+bun run --filter '@fermi/backend' dev
+bun run --filter '@fermi/backend' build
+bun run --filter '@fermi/backend' test
+```
 
-| Feature | Go Backend | Bun Backend |
-|---------|------------|-------------|
-| Language | Go | TypeScript |
-| Runtime | Native | Bun.js |
-| Startup Time | ~100ms | ~10ms |
-| Development DX | Good | Excellent |
-| Hot Reload | Manual | Built-in |
-| Memory Usage | Lower | Higher |
-| Performance | Higher | Good |
+## Shared Package Integration
+
+This backend uses the following shared packages:
+
+- **@fermi/shared-types**: API interfaces, WebSocket messages, validation types
+- **@fermi/shared-utils**: Validation functions, formatters, constants
+- **@fermi/config**: Environment configuration management
+
+Changes to shared packages automatically trigger rebuilds during development.
 
 ## Performance Notes
 
@@ -115,10 +130,16 @@ src/
 
 ## Dependencies
 
+### Core Dependencies
 - **Hono**: Fast web framework
 - **@grpc/grpc-js**: gRPC client
 - **ws**: WebSocket implementation
 - **TypeScript**: Type safety
+
+### Workspace Dependencies
+- **@fermi/shared-types**: Shared TypeScript interfaces
+- **@fermi/shared-utils**: Validation and utility functions
+- **@fermi/config**: Environment configuration
 
 ## Graceful Shutdown
 

@@ -1,6 +1,6 @@
 # Fermi Explorer Monorepo
 
-A comprehensive blockchain data explorer for the Continuum Sequencer network, featuring real-time data streaming and an intuitive web interface.
+A comprehensive blockchain data explorer for the Continuum Sequencer network, featuring real-time data streaming and an intuitive web interface. Built as a Bun workspace monorepo with shared packages and unified development experience.
 
 ## Architecture Overview
 
@@ -8,12 +8,13 @@ A comprehensive blockchain data explorer for the Continuum Sequencer network, fe
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                          Fermi Explorer System                              │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│  Frontend (React + TanStack)  │  Backend (Go Proxy)  │  Continuum Sequencer │
+│  Frontend (React + TanStack)  │  Backend (Bun + TS)  │  Continuum Sequencer │
 │                               │                      │                      │
 │  • TanStack Router           │  • gRPC to REST      │  • gRPC API (9090)   │
 │  • TanStack Query            │  • WebSocket Stream  │  • REST API (8080)   │
 │  • Real-time Updates         │  • CORS Support      │  • Blockchain Data   │
 │  • Tailwind CSS              │  • Health Checks     │  • Transaction Pool  │
+│  • @fermi/* packages         │  • TypeScript        │                      │
 │                               │                      │                      │
 │  Port: 3000 (dev)            │  Port: 3001          │  Ports: 8080, 9090   │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -23,51 +24,65 @@ A comprehensive blockchain data explorer for the Continuum Sequencer network, fe
 
 ```
 fermi-explorer-monorepo/
-├── frontend/              # React frontend application
-│   ├── src/
-│   │   ├── components/    # React components
-│   │   ├── hooks/         # Custom React hooks
-│   │   ├── services/      # API services and data providers
-│   │   └── routes/        # TanStack Router routes
-│   ├── README.md         # Frontend-specific documentation
-│   └── package.json      # Frontend dependencies
+├── apps/                     # Applications
+│   ├── frontend/            # React frontend application
+│   │   ├── src/
+│   │   │   ├── components/  # React components
+│   │   │   ├── hooks/       # Custom React hooks
+│   │   │   ├── pages/       # Route pages
+│   │   │   └── api/         # API client
+│   │   └── package.json     # Frontend dependencies
+│   │
+│   └── backend/             # Bun/TypeScript backend service
+│       ├── src/
+│       │   ├── grpc/        # gRPC client wrapper
+│       │   ├── handlers/    # HTTP request handlers
+│       │   ├── middleware/  # Request middleware
+│       │   └── websocket/   # WebSocket streaming
+│       ├── README.md        # Backend documentation
+│       └── package.json     # Backend dependencies
 │
-├── bun-backend/         # Bun/TypeScript backend service
-│   ├── cmd/proxy/        # Main application entry point
-│   ├── internal/         # Internal packages
-│   │   ├── grpc/         # gRPC client wrapper
-│   │   ├── handlers/     # HTTP request handlers
-│   │   └── websocket/    # WebSocket streaming handlers
-│   ├── proto/            # Protocol buffer definitions
-│   ├── README.md         # Backend-specific documentation
-│   ├── DEVELOPMENT.md    # Development guide
-│   └── go.mod            # Go module dependencies
+├── packages/                # Shared packages
+│   ├── shared-types/        # TypeScript type definitions
+│   ├── shared-utils/        # Utility functions
+│   └── config/              # Environment configuration
 │
-└── README.md             # This file
+├── package.json             # Workspace configuration
+├── bun.lock                 # Dependency lockfile
+├── start.sh                 # Unified startup script
+└── README.md                # This file
 ```
 
 ## Features
 
+### Monorepo Benefits
+- **Shared Packages**: Centralized types, utilities, and configuration
+- **Unified Build System**: Single command to build all packages
+- **Type Safety**: Shared TypeScript definitions across frontend and backend
+- **Code Reuse**: Validation, formatting, and utility functions shared
+- **Workspace Management**: Bun workspace for efficient dependency management
+
 ### Frontend Features
 - **Real-time Blockchain Data**: Live streaming of tick data via WebSocket
-- **Type-safe API Integration**: Comprehensive TypeScript support with TanStack Query
+- **Type-safe API Integration**: Uses @fermi/shared-types for consistent APIs
 - **Intelligent Caching**: Optimized data fetching with automatic cache invalidation
 - **Responsive Design**: Modern UI built with Tailwind CSS
 - **Advanced Routing**: File-based and code-based routing options with TanStack Router
 - **Performance Optimized**: Prefetching, pagination, and memory management
 
 ### Backend Features
+- **TypeScript Backend**: Fast Bun runtime with full type safety
 - **Hybrid API Approach**: REST endpoints + gRPC streaming for optimal performance
 - **WebSocket Streaming**: Real-time tick streaming for frontend consumption
-- **CORS Support**: Configured for seamless frontend integration
+- **Shared Validation**: Uses @fermi/shared-utils for consistent validation
 - **Health Monitoring**: Built-in health checks and status endpoints
 - **Connection Management**: Efficient connection pooling and error handling
 
 ## Quick Start
 
 ### Prerequisites
-- **Frontend**: Node.js 18+ and Bun
-- **Backend**: Go 1.21+
+- **Bun**: Latest version for package management and runtime
+- **Node.js**: 18+ for frontend development
 - **Sequencer**: Continuum Sequencer running on ports 8080 (REST) and 9090 (gRPC)
 
 ### 1. Clone and Setup
@@ -86,6 +101,8 @@ Use the unified startup script to run both services together:
 ```
 
 This will:
+- Install dependencies for all workspace packages
+- Build shared packages (@fermi/*)
 - Start the backend on port 3001
 - Start the frontend on port 3000
 - Set up proper environment variables
@@ -94,19 +111,24 @@ This will:
 
 ### 3. Manual Setup (Alternative)
 
-#### Backend Setup
+#### Install Dependencies
 ```bash
-cd bun-backend
-go mod download
-go build -o proxy ./cmd/proxy
-./proxy
+bun install
 ```
 
-#### Frontend Setup
+#### Build Shared Packages
 ```bash
-cd frontend
-bun install
-bun run start
+bun run build
+```
+
+#### Start Development
+```bash
+# Start both frontend and backend
+bun run dev
+
+# Or start individually
+bun run --filter '@fermi/backend' dev
+bun run --filter '@fermi/frontend' dev
 ```
 
 ### 4. Access the Application
@@ -159,41 +181,43 @@ export DEBUG=true
 
 ## Development
 
-### Backend Development
+### Workspace Commands
 
 ```bash
-cd bun-backend
+# Install all dependencies
+bun install
 
-# Basic development run
-./run.sh
-
-# Debug mode with detailed logging
-./run.sh -d
-
-# Watch mode (auto-restart on changes)
-./run.sh -w
-
-# Development mode with all features
-./run.sh --dev
-```
-
-### Frontend Development
-
-```bash
-cd frontend
-
-# Start development server
-bun run start
-
-# Run tests
-bun run test
-
-# Build for production
+# Build all packages
 bun run build
 
-# Lint and format
+# Start development mode (both apps)
+bun run dev
+
+# Run tests across workspace
+bun run test
+
+# Lint all packages
 bun run lint
-bun run format
+
+# TypeScript check all packages
+bun run typecheck
+```
+
+### Individual Package Development
+
+```bash
+# Backend development
+bun run --filter '@fermi/backend' dev
+bun run --filter '@fermi/backend' build
+bun run --filter '@fermi/backend' test
+
+# Frontend development
+bun run --filter '@fermi/frontend' dev
+bun run --filter '@fermi/frontend' build
+bun run --filter '@fermi/frontend' test
+
+# Shared package development
+bun run --filter '@fermi/shared-*' build
 ```
 
 ## API Endpoints
@@ -244,51 +268,70 @@ The frontend automatically connects to the backend at `http://localhost:3001` du
 
 ## Technology Stack
 
+### Monorepo
+- **Bun Workspaces** - Package management and workspace orchestration
+- **TypeScript** - Shared type safety across all packages
+- **@fermi/shared-types** - Centralized API and validation types
+- **@fermi/shared-utils** - Shared utility functions and validation
+- **@fermi/config** - Environment configuration management
+
 ### Frontend
 - **React 18** - UI framework
 - **TanStack Router** - Type-safe routing
 - **TanStack Query** - Data fetching and caching
-- **TanStack Store** - State management
 - **Tailwind CSS** - Styling framework
-- **TypeScript** - Type safety
+- **Vite** - Build tool and dev server
 - **Vitest** - Testing framework
 
 ### Backend
-- **Go 1.21+** - Backend language
-- **gRPC** - High-performance RPC
-- **Gorilla WebSocket** - WebSocket implementation
+- **Bun** - Fast TypeScript runtime
+- **Hono** - Lightweight web framework
+- **gRPC** - High-performance RPC communication
+- **WebSocket** - Real-time streaming
 - **Protocol Buffers** - Data serialization
-- **HTTP/REST** - API endpoints
 
 ## Testing
 
-### Backend Tests
+### Workspace Testing
 ```bash
-cd bun-backend
-go test ./...
-make test-coverage
+# Run all tests
+bun run test
+
+# Test specific packages
+bun run --filter '@fermi/backend' test
+bun run --filter '@fermi/frontend' test
+bun run --filter '@fermi/shared-*' test
 ```
 
-### Frontend Tests
+### Type Checking
 ```bash
-cd frontend
-bun run test
+# Check all packages
+bun run typecheck
+
+# Check specific packages
+bun run --filter '@fermi/backend' typecheck
+bun run --filter '@fermi/frontend' typecheck
 ```
 
 ## Production Deployment
 
-### Backend
+### Build for Production
 ```bash
-cd bun-backend
-go build -ldflags="-s -w" -o proxy ./cmd/proxy
-./proxy -port 3001
+# Build all packages
+bun run build
 ```
 
-### Frontend
+### Backend Deployment
 ```bash
-cd frontend
-bun run build
-# Deploy dist/ directory to web server
+# Backend build output is in apps/backend/dist/
+cd apps/backend
+bun run start
+```
+
+### Frontend Deployment
+```bash
+# Frontend build output is in apps/frontend/dist/
+# Deploy dist/ directory to web server or CDN
 ```
 
 ## Monitoring and Debugging
@@ -350,4 +393,4 @@ This project is part of the Continuum ecosystem and follows the same licensing t
 
 ---
 
-For more detailed information, see the individual README files in the `frontend/` and `bun-backend/` directories.
+For more detailed information, see the individual README files in the `apps/frontend/` and `apps/backend/` directories.

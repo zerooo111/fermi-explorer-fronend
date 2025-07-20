@@ -2,7 +2,7 @@
 
 ## One-Command Startup
 
-Get the entire Fermi Explorer running with a single command:
+Get the entire Fermi Explorer monorepo running with a single command:
 
 ```bash
 ./start.sh
@@ -11,10 +11,10 @@ Get the entire Fermi Explorer running with a single command:
 ## What It Does
 
 The `start.sh` script automatically:
-- ✅ Checks prerequisites (Go, Bun)
-- ✅ Installs dependencies for both services
-- ✅ Builds the backend
-- ✅ Starts backend on port 3001
+- ✅ Checks prerequisites (Bun, Node.js)
+- ✅ Installs workspace dependencies
+- ✅ Builds shared packages (@fermi/*)
+- ✅ Builds and starts backend on port 3001
 - ✅ Starts frontend on port 3000
 - ✅ Sets up environment variables
 - ✅ Monitors service health
@@ -119,8 +119,8 @@ cat logs/frontend.log
 # Stop everything
 ./start.sh --stop
 
-# Clean build
-rm -rf bun-backend/node_modules frontend/node_modules frontend/dist
+# Clean workspace
+rm -rf node_modules apps/*/node_modules apps/*/dist packages/*/dist apps/frontend/dist
 
 # Start again
 ./start.sh
@@ -135,21 +135,40 @@ rm -rf bun-backend/node_modules frontend/node_modules frontend/dist
 
 # Make changes to code
 # Services will auto-reload on changes
+# Shared packages rebuild automatically
 
 # Stop when done
 Ctrl+C
+```
+
+### Alternative: Direct Workspace Commands
+```bash
+# Install all workspace dependencies
+bun install
+
+# Build all packages (including shared ones)
+bun run build
+
+# Start development mode for all apps
+bun run dev
 ```
 
 ### Backend Only Development
 ```bash
 # Start just backend for API development
 ./start.sh --backend-only --debug
+
+# Or use workspace command
+bun run --filter '@fermi/backend' dev
 ```
 
 ### Frontend Only Development
 ```bash
 # Start just frontend (assumes backend is running elsewhere)
 ./start.sh --frontend-only --debug
+
+# Or use workspace command
+bun run --filter '@fermi/frontend' dev
 ```
 
 ## Success Indicators
