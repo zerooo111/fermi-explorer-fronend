@@ -1,5 +1,4 @@
-export { ChainStatus } from './ChainStatus'
-export { RecentTicks } from './RecentTicks'
-export { ErrorBoundary } from './ErrorBoundary'
-export { LiveTicksTable } from './LiveTicksTable'
-export { TicksTable } from './TicksTable'
+export { ChainStatus } from "./ChainStatus";
+export { RecentTicks } from "./RecentTicks";
+export { ErrorBoundary } from "./ErrorBoundary";
+export { TicksTable } from "./TicksTable";

@@ -1,9 +1,8 @@
-import { Link, useParams } from "@tanstack/react-router";
+import {  useParams } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { useTransaction } from "@/hooks";
-import { useTick } from "@/hooks/useTick";
 
 export default function TransactionPage() {
 	const { transactionId } = useParams({ from: "/transaction/$transactionId" });

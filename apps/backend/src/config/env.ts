@@ -1,16 +1,16 @@
-import { loadBackendConfig } from '@fermi/config/backend'
-import type { BackendConfig } from '@fermi/config/backend'
+import { loadBackendConfig } from "@fermi/config/backend";
+import type { BackendConfig } from "@fermi/config/backend";
 
 // Re-export for compatibility
-export type AppConfig = BackendConfig
-export const loadConfig = loadBackendConfig
+export type AppConfig = BackendConfig;
 
 // Legacy function name for backward compatibility
 export function loadAppConfig(): BackendConfig {
   // Check for single IP configuration first
   const continuumIP = process.env.CONTINUUM_IP;
-  let grpcAddr = process.env.CONTINUUM_SEQUENCER_URL || 'localhost:9090';
-  let restAddr = process.env.CONTINUUM_REST_URL || 'http://localhost:8080/api/v1';
+  let grpcAddr = process.env.CONTINUUM_SEQUENCER_URL || "localhost:9090";
+  let restAddr =
+    process.env.CONTINUUM_REST_URL || "http://localhost:8080/api/v1";
 
   if (continuumIP) {
     grpcAddr = `${continuumIP}:9090`;
@@ -28,38 +28,45 @@ export function loadAppConfig(): BackendConfig {
   }
 
   // HTTP port configuration
-  const httpPort = process.env.HTTP_PORT || '3001';
+  const httpPort = process.env.HTTP_PORT || "3001";
   if (process.env.HTTP_PORT) {
     console.log(`🌐 Using HTTP port from env: ${httpPort}`);
   }
 
   // Debug mode
-  const debug = process.env.DEBUG === 'true';
+  const debug = process.env.DEBUG === "true";
   if (debug) {
-    console.log('🐛 Debug mode enabled');
+    console.log("🐛 Debug mode enabled");
   }
 
   // CORS configuration
   const corsOriginsEnv = process.env.CORS_ALLOWED_ORIGINS;
   let corsAllowedOrigins: string[];
-  
+
   if (corsOriginsEnv) {
-    corsAllowedOrigins = corsOriginsEnv.split(',').map(origin => origin.trim());
+    corsAllowedOrigins = corsOriginsEnv
+      .split(",")
+      .map((origin) => origin.trim());
   } else {
     corsAllowedOrigins = [
-      'http://localhost:3000',
-      'http://localhost:5173',
-      'http://localhost:3001'
+      "http://localhost:3000",
+      "http://localhost:5173",
+      "http://localhost:3001",
     ];
-    console.log('⚠️  Using default CORS origins. Set CORS_ALLOWED_ORIGINS for production.');
+    console.log(
+      "⚠️  Using default CORS origins. Set CORS_ALLOWED_ORIGINS for production."
+    );
   }
 
   // CORS credentials
-  const corsAllowCredentials = process.env.CORS_ALLOW_CREDENTIALS === 'true';
-  const environment = process.env.GO_ENV || process.env.NODE_ENV || 'development';
-  
-  if (environment === 'production' && corsAllowCredentials) {
-    console.log('⚠️  CORS credentials enabled in production. Ensure this is intended.');
+  const corsAllowCredentials = process.env.CORS_ALLOW_CREDENTIALS === "true";
+  const environment =
+    process.env.GO_ENV || process.env.NODE_ENV || "development";
+
+  if (environment === "production" && corsAllowCredentials) {
+    console.log(
+      "⚠️  CORS credentials enabled in production. Ensure this is intended."
+    );
   }
 
   return {
@@ -69,6 +76,6 @@ export function loadAppConfig(): BackendConfig {
     debug,
     corsAllowedOrigins,
     corsAllowCredentials,
-    environment
+    environment,
   };
 }
