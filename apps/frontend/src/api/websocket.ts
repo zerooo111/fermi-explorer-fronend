@@ -1,12 +1,15 @@
 /**
  * WebSocket Client for Continuum Tick Streaming
- * 
+ *
  * Provides real-time tick streaming capabilities with automatic reconnection,
  * error handling, and TypeScript support.
  */
 
-import { config } from '../config/env'
-import type { Tick, WebSocketMessage, WebSocketState } from '@fermi/shared-types/api'
+import type {
+  Tick,
+  WebSocketMessage,
+  WebSocketState,
+} from "@fermi/shared-types/api";
 
 // WebSocket types are now imported from shared-types package
 
@@ -14,59 +17,62 @@ import type { Tick, WebSocketMessage, WebSocketState } from '@fermi/shared-types
  * WebSocket client configuration
  */
 export interface WebSocketConfig {
-  url?: string
-  startTick?: number
-  reconnectDelay?: number
-  maxReconnectDelay?: number
-  reconnectAttempts?: number
-  heartbeatInterval?: number
-  throttleMs?: number // Throttle tick processing to prevent memory overload
+  url?: string;
+  startTick?: number;
+  reconnectDelay?: number;
+  maxReconnectDelay?: number;
+  reconnectAttempts?: number;
+  heartbeatInterval?: number;
+  throttleMs?: number; // Throttle tick processing to prevent memory overload
 }
 
 /**
  * WebSocket event callbacks
  */
 export interface WebSocketCallbacks {
-  onTick?: (tick: Tick) => void
-  onError?: (error: Error) => void
-  onStateChange?: (state: WebSocketState) => void
-  onReconnect?: (attempt: number) => void
+  onTick?: (tick: Tick) => void;
+  onError?: (error: Error) => void;
+  onStateChange?: (state: WebSocketState) => void;
+  onReconnect?: (attempt: number) => void;
 }
 
 /**
  * Default WebSocket configuration
  */
 const DEFAULT_CONFIG: Required<WebSocketConfig> = {
-  url: config.websocket.url,
+  url: "/ws/",
   startTick: 0,
   reconnectDelay: 1000,
   maxReconnectDelay: 30000,
   reconnectAttempts: Infinity,
   heartbeatInterval: 30000,
   throttleMs: 50, // Throttle to ~20 FPS to prevent memory overload
-}
+};
 
 /**
  * WebSocket client for tick streaming
  */
 export class TickStreamClient {
-  private ws: WebSocket | null = null
-  private config: Required<WebSocketConfig>
-  private callbacks: WebSocketCallbacks
-  private state: WebSocketState = 'disconnected'
-  private reconnectAttempt = 0
-  private reconnectTimeout: NodeJS.Timeout | null = null
-  private heartbeatInterval: NodeJS.Timeout | null = null
-  private isClosing = false
-  
-  // Throttling mechanism to prevent memory overload
-  private lastTickTime = 0
-  private pendingTick: Tick | null = null
-  private throttleTimeout: NodeJS.Timeout | null = null
+  private ws: WebSocket | null = null;
+  private config: Required<WebSocketConfig>;
+  private callbacks: WebSocketCallbacks;
+  private state: WebSocketState = "disconnected";
+  private reconnectAttempt = 0;
+  private reconnectTimeout: NodeJS.Timeout | null = null;
+  private heartbeatInterval: NodeJS.Timeout | null = null;
+  private isClosing = false;
 
-  constructor(config: WebSocketConfig = {}, callbacks: WebSocketCallbacks = {}) {
-    this.config = { ...DEFAULT_CONFIG, ...config }
-    this.callbacks = callbacks
+  // Throttling mechanism to prevent memory overload
+  private lastTickTime = 0;
+  private pendingTick: Tick | null = null;
+  private throttleTimeout: NodeJS.Timeout | null = null;
+
+  constructor(
+    config: WebSocketConfig = {},
+    callbacks: WebSocketCallbacks = {}
+  ) {
+    this.config = { ...DEFAULT_CONFIG, ...config };
+    this.callbacks = callbacks;
   }
 
   /**
@@ -74,26 +80,26 @@ export class TickStreamClient {
    */
   connect(): void {
     if (this.ws?.readyState === WebSocket.OPEN) {
-      console.warn('WebSocket already connected')
-      return
+      console.warn("WebSocket already connected");
+      return;
     }
 
-    this.isClosing = false
-    this.updateState('connecting')
+    this.isClosing = false;
+    this.updateState("connecting");
 
     try {
-      const url = new URL(this.config.url)
+      const url = new URL(this.config.url);
       if (this.config.startTick > 0) {
-        url.searchParams.set('start_tick', this.config.startTick.toString())
+        url.searchParams.set("start_tick", this.config.startTick.toString());
       }
 
-      this.ws = new WebSocket(url.toString())
-      this.setupEventHandlers()
+      this.ws = new WebSocket(url.toString());
+      this.setupEventHandlers();
     } catch (error) {
-      console.error('Failed to create WebSocket:', error)
-      this.updateState('error')
-      this.callbacks.onError?.(error as Error)
-      this.scheduleReconnect()
+      console.error("Failed to create WebSocket:", error);
+      this.updateState("error");
+      this.callbacks.onError?.(error as Error);
+      this.scheduleReconnect();
     }
   }
 
@@ -101,33 +107,36 @@ export class TickStreamClient {
    * Disconnect from the WebSocket server
    */
   disconnect(): void {
-    this.isClosing = true
-    this.cleanupReconnect()
-    this.cleanupHeartbeat()
-    this.cleanupThrottling()
+    this.isClosing = true;
+    this.cleanupReconnect();
+    this.cleanupHeartbeat();
+    this.cleanupThrottling();
 
     if (this.ws) {
       // Remove all event listeners before closing to prevent memory leaks
-      this.ws.onopen = null
-      this.ws.onmessage = null
-      this.ws.onerror = null
-      this.ws.onclose = null
-      
+      this.ws.onopen = null;
+      this.ws.onmessage = null;
+      this.ws.onerror = null;
+      this.ws.onclose = null;
+
       // Close the connection with proper code and reason
-      if (this.ws.readyState === WebSocket.OPEN || this.ws.readyState === WebSocket.CONNECTING) {
-        this.ws.close(1000, 'Client disconnect')
+      if (
+        this.ws.readyState === WebSocket.OPEN ||
+        this.ws.readyState === WebSocket.CONNECTING
+      ) {
+        this.ws.close(1000, "Client disconnect");
       }
-      this.ws = null
+      this.ws = null;
     }
 
-    this.updateState('disconnected')
+    this.updateState("disconnected");
   }
 
   /**
    * Get current connection state
    */
   getState(): WebSocketState {
-    return this.state
+    return this.state;
   }
 
   /**
@@ -135,9 +144,9 @@ export class TickStreamClient {
    */
   send(message: any): void {
     if (this.ws?.readyState === WebSocket.OPEN) {
-      this.ws.send(JSON.stringify(message))
+      this.ws.send(JSON.stringify(message));
     } else {
-      console.warn('Cannot send message: WebSocket not connected')
+      console.warn("Cannot send message: WebSocket not connected");
     }
   }
 
@@ -145,10 +154,10 @@ export class TickStreamClient {
    * Update start tick and reconnect
    */
   updateStartTick(startTick: number): void {
-    this.config.startTick = startTick
+    this.config.startTick = startTick;
     if (this.ws?.readyState === WebSocket.OPEN) {
-      this.disconnect()
-      this.connect()
+      this.disconnect();
+      this.connect();
     }
   }
 
@@ -156,40 +165,40 @@ export class TickStreamClient {
    * Setup WebSocket event handlers
    */
   private setupEventHandlers(): void {
-    if (!this.ws) return
+    if (!this.ws) return;
 
     this.ws.onopen = () => {
-      console.log('WebSocket connected')
-      this.updateState('connected')
-      this.reconnectAttempt = 0
-      this.setupHeartbeat()
-    }
+      console.log("WebSocket connected");
+      this.updateState("connected");
+      this.reconnectAttempt = 0;
+      this.setupHeartbeat();
+    };
 
     this.ws.onmessage = (event) => {
       try {
-        const message = JSON.parse(event.data) as WebSocketMessage
-        this.handleMessage(message)
+        const message = JSON.parse(event.data) as WebSocketMessage;
+        this.handleMessage(message);
       } catch (error) {
-        console.error('Failed to parse WebSocket message:', error)
-        this.callbacks.onError?.(new Error('Invalid message format'))
+        console.error("Failed to parse WebSocket message:", error);
+        this.callbacks.onError?.(new Error("Invalid message format"));
       }
-    }
+    };
 
     this.ws.onerror = (event) => {
-      console.error('WebSocket error:', event)
-      this.updateState('error')
-      this.callbacks.onError?.(new Error('WebSocket connection error'))
-    }
+      console.error("WebSocket error:", event);
+      this.updateState("error");
+      this.callbacks.onError?.(new Error("WebSocket connection error"));
+    };
 
     this.ws.onclose = (event) => {
-      console.log('WebSocket closed:', event.code, event.reason)
-      this.cleanupHeartbeat()
-      
+      console.log("WebSocket closed:", event.code, event.reason);
+      this.cleanupHeartbeat();
+
       if (!this.isClosing) {
-        this.updateState('disconnected')
-        this.scheduleReconnect()
+        this.updateState("disconnected");
+        this.scheduleReconnect();
       }
-    }
+    };
   }
 
   /**
@@ -197,7 +206,7 @@ export class TickStreamClient {
    */
   private handleMessage(message: WebSocketMessage): void {
     switch (message.type) {
-      case 'tick':
+      case "tick":
         const tick: Tick = {
           tick_number: message.tick_number,
           timestamp: message.timestamp,
@@ -206,17 +215,17 @@ export class TickStreamClient {
           previous_output: message.previous_output,
           vdf_proof: message.vdf_proof,
           transactions: message.transactions,
-        }
-        this.handleThrottledTick(tick)
-        break
+        };
+        this.handleThrottledTick(tick);
+        break;
 
-      case 'error':
-        console.error('Server error:', message.error)
-        this.callbacks.onError?.(new Error(message.error))
-        break
+      case "error":
+        console.error("Server error:", message.error);
+        this.callbacks.onError?.(new Error(message.error));
+        break;
 
       default:
-        console.warn('Unknown message type:', (message as any).type)
+        console.warn("Unknown message type:", (message as any).type);
     }
   }
 
@@ -224,23 +233,23 @@ export class TickStreamClient {
    * Handle tick with throttling to prevent memory overload
    */
   private handleThrottledTick(tick: Tick): void {
-    const now = Date.now()
-    
+    const now = Date.now();
+
     // Always keep the latest tick
-    this.pendingTick = tick
-    
+    this.pendingTick = tick;
+
     // If enough time has passed since last tick, process immediately
     if (now - this.lastTickTime >= this.config.throttleMs) {
-      this.processPendingTick()
-      return
+      this.processPendingTick();
+      return;
     }
-    
+
     // Otherwise, schedule processing if not already scheduled
     if (!this.throttleTimeout) {
-      const remainingTime = this.config.throttleMs - (now - this.lastTickTime)
+      const remainingTime = this.config.throttleMs - (now - this.lastTickTime);
       this.throttleTimeout = setTimeout(() => {
-        this.processPendingTick()
-      }, remainingTime)
+        this.processPendingTick();
+      }, remainingTime);
     }
   }
 
@@ -249,14 +258,14 @@ export class TickStreamClient {
    */
   private processPendingTick(): void {
     if (this.pendingTick) {
-      this.callbacks.onTick?.(this.pendingTick)
-      this.pendingTick = null
-      this.lastTickTime = Date.now()
+      this.callbacks.onTick?.(this.pendingTick);
+      this.pendingTick = null;
+      this.lastTickTime = Date.now();
     }
-    
+
     if (this.throttleTimeout) {
-      clearTimeout(this.throttleTimeout)
-      this.throttleTimeout = null
+      clearTimeout(this.throttleTimeout);
+      this.throttleTimeout = null;
     }
   }
 
@@ -265,8 +274,8 @@ export class TickStreamClient {
    */
   private updateState(state: WebSocketState): void {
     if (this.state !== state) {
-      this.state = state
-      this.callbacks.onStateChange?.(state)
+      this.state = state;
+      this.callbacks.onStateChange?.(state);
     }
   }
 
@@ -274,13 +283,13 @@ export class TickStreamClient {
    * Setup heartbeat to keep connection alive
    */
   private setupHeartbeat(): void {
-    this.cleanupHeartbeat()
-    
+    this.cleanupHeartbeat();
+
     this.heartbeatInterval = setInterval(() => {
       if (this.ws?.readyState === WebSocket.OPEN) {
-        this.send({ type: 'ping' })
+        this.send({ type: "ping" });
       }
-    }, this.config.heartbeatInterval)
+    }, this.config.heartbeatInterval);
   }
 
   /**
@@ -288,8 +297,8 @@ export class TickStreamClient {
    */
   private cleanupHeartbeat(): void {
     if (this.heartbeatInterval) {
-      clearInterval(this.heartbeatInterval)
-      this.heartbeatInterval = null
+      clearInterval(this.heartbeatInterval);
+      this.heartbeatInterval = null;
     }
   }
 
@@ -297,24 +306,29 @@ export class TickStreamClient {
    * Schedule reconnection attempt
    */
   private scheduleReconnect(): void {
-    if (this.isClosing || this.reconnectAttempt >= this.config.reconnectAttempts) {
-      return
+    if (
+      this.isClosing ||
+      this.reconnectAttempt >= this.config.reconnectAttempts
+    ) {
+      return;
     }
 
-    this.cleanupReconnect()
-    
+    this.cleanupReconnect();
+
     const delay = Math.min(
       this.config.reconnectDelay * Math.pow(2, this.reconnectAttempt),
       this.config.maxReconnectDelay
-    )
+    );
 
-    console.log(`Reconnecting in ${delay}ms (attempt ${this.reconnectAttempt + 1})`)
-    
+    console.log(
+      `Reconnecting in ${delay}ms (attempt ${this.reconnectAttempt + 1})`
+    );
+
     this.reconnectTimeout = setTimeout(() => {
-      this.reconnectAttempt++
-      this.callbacks.onReconnect?.(this.reconnectAttempt)
-      this.connect()
-    }, delay)
+      this.reconnectAttempt++;
+      this.callbacks.onReconnect?.(this.reconnectAttempt);
+      this.connect();
+    }, delay);
   }
 
   /**
@@ -322,8 +336,8 @@ export class TickStreamClient {
    */
   private cleanupReconnect(): void {
     if (this.reconnectTimeout) {
-      clearTimeout(this.reconnectTimeout)
-      this.reconnectTimeout = null
+      clearTimeout(this.reconnectTimeout);
+      this.reconnectTimeout = null;
     }
   }
 
@@ -332,11 +346,11 @@ export class TickStreamClient {
    */
   private cleanupThrottling(): void {
     if (this.throttleTimeout) {
-      clearTimeout(this.throttleTimeout)
-      this.throttleTimeout = null
+      clearTimeout(this.throttleTimeout);
+      this.throttleTimeout = null;
     }
-    this.pendingTick = null
-    this.lastTickTime = 0
+    this.pendingTick = null;
+    this.lastTickTime = 0;
   }
 }
 
@@ -347,5 +361,5 @@ export function createTickStreamClient(
   config?: WebSocketConfig,
   callbacks?: WebSocketCallbacks
 ): TickStreamClient {
-  return new TickStreamClient(config, callbacks)
+  return new TickStreamClient(config, callbacks);
 }

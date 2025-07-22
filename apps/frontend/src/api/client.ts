@@ -5,25 +5,23 @@
  * Designed for use with TanStack Query for optimal caching and performance.
  */
 
-import { config } from '../config/env'
-
 /**
  * API configuration interface
  */
 export interface ApiConfig {
-  baseUrl: string
-  timeout: number
-  retries: number
+  baseUrl: string;
+  timeout: number;
+  retries: number;
 }
 
 /**
  * Default API configuration
  */
 const DEFAULT_CONFIG: ApiConfig = {
-  baseUrl: config.api.baseUrl,
+  baseUrl: "/",
   timeout: 30000,
   retries: 3,
-}
+};
 
 /**
  * Custom error class for API-specific errors
@@ -33,10 +31,10 @@ export class ApiError extends Error {
     message: string,
     public status: number,
     public statusText: string,
-    public endpoint: string,
+    public endpoint: string
   ) {
-    super(message)
-    this.name = 'ApiError'
+    super(message);
+    this.name = "ApiError";
   }
 }
 
@@ -44,12 +42,9 @@ export class ApiError extends Error {
  * Network connectivity error
  */
 export class NetworkError extends Error {
-  constructor(
-    message: string,
-    public endpoint: string,
-  ) {
-    super(message)
-    this.name = 'NetworkError'
+  constructor(message: string, public endpoint: string) {
+    super(message);
+    this.name = "NetworkError";
   }
 }
 
@@ -57,26 +52,24 @@ export class NetworkError extends Error {
  * HTTP client class with built-in error handling and retry logic
  */
 class ApiClient {
-  private config: ApiConfig
+  private config: ApiConfig;
 
   constructor(config: Partial<ApiConfig> = {}) {
-    this.config = { ...DEFAULT_CONFIG, ...config }
+    this.config = { ...DEFAULT_CONFIG, ...config };
   }
 
   /**
    * Get the full URL for an API endpoint
    */
   private getUrl(path: string): string {
-    const cleanPath = path.startsWith('/') ? path : `/${path}`
-
-    return `${this.config.baseUrl}${cleanPath}`
+    return path;
   }
 
   /**
    * Sleep utility for retry delays
    */
   private sleep(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms))
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   /**
@@ -85,22 +78,22 @@ class ApiClient {
   private isRetryableError(error: unknown): boolean {
     if (error instanceof ApiError) {
       // Retry on server errors and rate limiting
-      return error.status >= 500 || error.status === 429
+      return error.status >= 500 || error.status === 429;
     }
 
     if (error instanceof NetworkError) {
-      return true
+      return true;
     }
 
     // Retry on network failures
-    return error instanceof TypeError && error.message.includes('fetch')
+    return error instanceof TypeError && error.message.includes("fetch");
   }
 
   /**
    * Calculate exponential backoff delay
    */
   private getRetryDelay(attempt: number): number {
-    return Math.min(1000 * Math.pow(2, attempt), 10000) // Cap at 10 seconds
+    return Math.min(1000 * Math.pow(2, attempt), 10000); // Cap at 10 seconds
   }
 
   /**
@@ -108,51 +101,51 @@ class ApiClient {
    */
   private async makeRequest<T>(
     path: string,
-    options: RequestInit = {},
+    options: RequestInit = {}
   ): Promise<T> {
-    const url = this.getUrl(path)
-    const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), this.config.timeout)
+    const url = this.getUrl(path);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), this.config.timeout);
 
     const requestOptions: RequestInit = {
       ...options,
       signal: controller.signal,
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         ...options.headers,
       },
-    }
+    };
 
-    let lastError: unknown
+    let lastError: unknown;
 
     for (let attempt = 0; attempt <= this.config.retries; attempt++) {
       try {
-        const response = await fetch(url, requestOptions)
-        clearTimeout(timeoutId)
+        const response = await fetch(url, requestOptions);
+        clearTimeout(timeoutId);
 
         // Handle different response statuses
         if (response.ok) {
           // Special handling for 204 No Content
           if (response.status === 204) {
-            return {} as T
+            return {} as T;
           }
 
-          const data = await response.json()
-          return data as T
+          const data = await response.json();
+          return data as T;
         }
 
         // Handle specific error responses
         if (response.status === 404) {
           // For 404s, return a "not found" response rather than throwing
-          return { found: false } as T
+          return { found: false } as T;
         }
 
         // Try to parse error message from response
-        let errorMessage = `HTTP ${response.status}: ${response.statusText}`
+        let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
         try {
-          const errorData = await response.json()
+          const errorData = await response.json();
           if (errorData.error) {
-            errorMessage = errorData.error
+            errorMessage = errorData.error;
           }
         } catch {
           // Ignore JSON parse errors for error responses
@@ -162,8 +155,8 @@ class ApiClient {
           errorMessage,
           response.status,
           response.statusText,
-          path,
-        )
+          path
+        );
 
         // Don't retry client errors (except rate limiting)
         if (
@@ -171,44 +164,44 @@ class ApiClient {
           response.status < 500 &&
           response.status !== 429
         ) {
-          throw apiError
+          throw apiError;
         }
 
-        lastError = apiError
+        lastError = apiError;
       } catch (error) {
-        clearTimeout(timeoutId)
+        clearTimeout(timeoutId);
 
         // Handle abort/timeout errors
-        if (error instanceof DOMException && error.name === 'AbortError') {
+        if (error instanceof DOMException && error.name === "AbortError") {
           lastError = new NetworkError(
             `Request timeout after ${this.config.timeout}ms`,
-            path,
-          )
+            path
+          );
         } else if (error instanceof TypeError) {
-          lastError = new NetworkError(`Network error: ${error.message}`, path)
+          lastError = new NetworkError(`Network error: ${error.message}`, path);
         } else {
-          lastError = error
+          lastError = error;
         }
       }
 
       // Don't retry on the last attempt
       if (attempt < this.config.retries && this.isRetryableError(lastError)) {
-        const delay = this.getRetryDelay(attempt)
-        await this.sleep(delay)
-        continue
+        const delay = this.getRetryDelay(attempt);
+        await this.sleep(delay);
+        continue;
       }
 
-      break
+      break;
     }
 
-    throw lastError
+    throw lastError;
   }
 
   /**
    * GET request
    */
   async get<T>(path: string): Promise<T> {
-    return this.makeRequest<T>(path, { method: 'GET' })
+    return this.makeRequest<T>(path, { method: "GET" });
   }
 
   /**
@@ -216,9 +209,9 @@ class ApiClient {
    */
   async post<T>(path: string, data?: unknown): Promise<T> {
     return this.makeRequest<T>(path, {
-      method: 'POST',
+      method: "POST",
       body: data ? JSON.stringify(data) : undefined,
-    })
+    });
   }
 
   /**
@@ -226,60 +219,60 @@ class ApiClient {
    */
   async put<T>(path: string, data?: unknown): Promise<T> {
     return this.makeRequest<T>(path, {
-      method: 'PUT',
+      method: "PUT",
       body: data ? JSON.stringify(data) : undefined,
-    })
+    });
   }
 
   /**
    * DELETE request
    */
   async delete<T>(path: string): Promise<T> {
-    return this.makeRequest<T>(path, { method: 'DELETE' })
+    return this.makeRequest<T>(path, { method: "DELETE" });
   }
 
   /**
    * Update API configuration
    */
   updateConfig(newConfig: Partial<ApiConfig>): void {
-    this.config = { ...this.config, ...newConfig }
+    this.config = { ...this.config, ...newConfig };
   }
 
   /**
    * Get current configuration
    */
   getConfig(): ApiConfig {
-    return { ...this.config }
+    return { ...this.config };
   }
 }
 
 /**
  * Default API client instance
  */
-export const apiClient = new ApiClient()
+export const apiClient = new ApiClient();
 
 /**
  * Create a new API client with custom configuration
  */
 export const createApiClient = (config: Partial<ApiConfig> = {}): ApiClient => {
-  return new ApiClient(config)
-}
+  return new ApiClient(config);
+};
 
 /**
  * Utility function to check if an error is an API error
  */
 export const isApiError = (error: unknown): error is ApiError => {
-  return error instanceof ApiError
-}
+  return error instanceof ApiError;
+};
 
 /**
  * Utility function to check if an error is a network error
  */
 export const isNetworkError = (error: unknown): error is NetworkError => {
-  return error instanceof NetworkError
-}
+  return error instanceof NetworkError;
+};
 
 /**
  * Export the ApiClient class for advanced usage
  */
-export { ApiClient }
+export { ApiClient };
