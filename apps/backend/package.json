@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "bun run --watch src/main.ts",
     "start": "bun run src/main.ts",
-    "build": "bun build src/main.ts --outdir ./dist --target bun",
+    "build": "rm -rf dist && bun build src/main.ts --outdir ./dist --target bun && cp -r proto dist/",
     "lint": "eslint src --ext .ts,.js",
     "typecheck": "tsc --noEmit",
     "test": "bun test",

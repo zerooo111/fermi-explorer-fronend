@@ -1,7 +1,8 @@
-import * as grpc from '@grpc/grpc-js'
-import * as protoLoader from '@grpc/proto-loader'
-import { join } from 'path'
-import type { VdfProof as SharedVdfProof } from '@fermi/shared-types/api'
+import * as grpc from "@grpc/grpc-js";
+import * as protoLoader from "@grpc/proto-loader";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
+import type { VdfProof as SharedVdfProof } from "@fermi/shared-types/api";
 
 interface Transaction {
   tx_id: string;
@@ -13,7 +14,7 @@ interface Transaction {
 }
 
 // Use the shared VdfProof type but with string iterations for gRPC
-interface VdfProof extends Omit<SharedVdfProof, 'iterations'> {
+interface VdfProof extends Omit<SharedVdfProof, "iterations"> {
   iterations: string; // gRPC uses string instead of number
 }
 
@@ -68,9 +69,22 @@ export class GrpcClient {
   }
 
   private connect(): void {
-    const PROTO_PATH = join(process.cwd(), 'proto', 'sequencer.proto');
-    
-    const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
+    // Handle both development and production environments
+    let protoPath: string;
+
+    // Check if we're running from a bundled file (production)
+    if (
+      process.argv[0]?.includes("bun") &&
+      process.argv[1]?.includes("dist/main.js")
+    ) {
+      // Running from built bundle - proto should be in dist/proto
+      protoPath = join(process.cwd(), "dist", "proto", "sequencer.proto");
+    } else {
+      // Development mode - proto is in the proto directory
+      protoPath = join(process.cwd(), "proto", "sequencer.proto");
+    }
+
+    const packageDefinition = protoLoader.loadSync(protoPath, {
       keepCase: true,
       longs: String,
       enums: String,
@@ -78,8 +92,11 @@ export class GrpcClient {
       oneofs: true,
     });
 
-    const protoDescriptor = grpc.loadPackageDefinition(packageDefinition) as any;
-    const SequencerService = protoDescriptor.continuum.sequencer.v1.SequencerService;
+    const protoDescriptor = grpc.loadPackageDefinition(
+      packageDefinition
+    ) as any;
+    const SequencerService =
+      protoDescriptor.continuum.sequencer.v1.SequencerService;
 
     this.client = new SequencerService(
       this.address,
@@ -129,7 +146,9 @@ export class GrpcClient {
     });
   }
 
-  async submitTransaction(transaction: Transaction): Promise<SubmitTransactionResponse> {
+  async submitTransaction(
+    transaction: Transaction
+  ): Promise<SubmitTransactionResponse> {
     return new Promise((resolve, reject) => {
       this.client.SubmitTransaction(
         { transaction },
@@ -144,22 +163,28 @@ export class GrpcClient {
     });
   }
 
-  streamTicks(startTick: bigint = 0n, onTick: (tick: Tick) => void, onError?: (error: any) => void): () => void {
-    const stream = this.client.StreamTicks({ start_tick: startTick.toString() });
-    
-    stream.on('data', (tick: Tick) => {
+  streamTicks(
+    startTick: bigint = 0n,
+    onTick: (tick: Tick) => void,
+    onError?: (error: any) => void
+  ): () => void {
+    const stream = this.client.StreamTicks({
+      start_tick: startTick.toString(),
+    });
+
+    stream.on("data", (tick: Tick) => {
       onTick(tick);
     });
 
-    stream.on('error', (error: any) => {
-      console.error('gRPC stream error:', error);
+    stream.on("error", (error: any) => {
+      console.error("gRPC stream error:", error);
       if (onError) {
         onError(error);
       }
     });
 
-    stream.on('end', () => {
-      console.log('gRPC stream ended');
+    stream.on("end", () => {
+      console.log("gRPC stream ended");
     });
 
     // Return cleanup function
@@ -173,4 +198,12 @@ export class GrpcClient {
   }
 }
 
-export type { Tick, Transaction, VdfProof, OrderedTransaction, GetStatusResponse, GetTransactionResponse, GetTickResponse };
+export type {
+  Tick,
+  Transaction,
+  VdfProof,
+  OrderedTransaction,
+  GetStatusResponse,
+  GetTransactionResponse,
+  GetTickResponse,
+};
