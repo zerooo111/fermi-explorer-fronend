@@ -1,0 +1,22 @@
+[Unit]
+Description=Fermi Explorer Backend Service
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/fermi-explorer-monorepo/apps/backend
+ExecStart=/home/ubuntu/.bun/bin/bun run src/main.ts
+Restart=always
+RestartSec=10
+StandardOutput=append:/var/log/fermi-backend/backend.log
+StandardError=append:/var/log/fermi-backend/backend-error.log
+Environment="NODE_ENV=production"
+Environment="PORT=3001"
+
+# Security
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

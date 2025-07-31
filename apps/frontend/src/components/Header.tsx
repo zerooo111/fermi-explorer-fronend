@@ -34,11 +34,11 @@ const StatusIndicator = ({
   return (
     <div
       className={cn(
-        'font-mono font-medium flex items-center gap-3 border border-zinc-700 py-2 px-4 bg-zinc-950 hover:bg-zinc-900 transition-colors duration-200 cursor-pointer',
+        'font-mono font-medium flex items-center gap-2 sm:gap-3 border border-zinc-700 py-1.5 sm:py-2 px-2 sm:px-4 bg-zinc-950 hover:bg-zinc-900 transition-colors duration-200 cursor-pointer text-xs sm:text-sm',
       )}
     >
       <span className={cn('size-2 border', getStatusColor())} />
-      <span className={cn('tracking-wider text-sm', getTextColor())}>
+      <span className={cn('tracking-wider', getTextColor())}>
         {getStatus()}
       </span>
     </div>
@@ -55,11 +55,11 @@ export default function Header() {
   const isHealthy = data?.status === 'healthy'
 
   return (
-    <header className="border-b border-zinc-700 h-16 flex items-center bg-zinc-950">
-      <nav className="px-6 container flex items-center justify-between mx-auto max-w-screen-xl">
-        <div className="text-xl font-bold font-mono tracking-tight text-zinc-100">
+    <header className="border-b border-zinc-700 h-14 sm:h-16 flex items-center bg-zinc-950">
+      <nav className="px-4 sm:px-6 container flex items-center justify-between mx-auto max-w-screen-xl">
+        <div className="text-lg sm:text-xl font-bold font-mono tracking-tight text-zinc-100">
           <span className="text-zinc-100">FERMI</span>
-          <span className="text-zinc-500 font-light italic ml-2">Explorer</span>
+          <span className="text-zinc-500 font-light italic ml-1 sm:ml-2 text-sm sm:text-base">Explorer</span>
         </div>
         <StatusIndicator
           isHealthy={isHealthy}

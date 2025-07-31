@@ -3,7 +3,7 @@ import { ChainStatus } from '@/components/ChainStatus'
 
 export default function Homepage() {
   return (
-    <div className="space-y-8 container mx-auto max-w-screen-xl px-6">
+    <div className="space-y-6 sm:space-y-8 container mx-auto max-w-screen-xl px-0 sm:px-6">
       <ChainStatus />
       <RecentTicks limit={10} />
     </div>

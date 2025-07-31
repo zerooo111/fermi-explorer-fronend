@@ -136,3 +136,31 @@ number-flow {
     padding: 0 1rem;
   }
 }
+
+/* Mobile responsive typography */
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+/* Mobile responsive scrollbar */
+@media (max-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+}
+
+/* Mobile table styles */
+@media (max-width: 640px) {
+  .mobile-scroll-table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .mobile-scroll-table table {
+    min-width: 100%;
+  }
+}

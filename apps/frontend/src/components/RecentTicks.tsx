@@ -23,14 +23,14 @@ export function RecentTicks({ limit = 50 }: RecentTicksProps) {
 
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-bold font-mono tracking-tight text-zinc-100 uppercase">
+      <h3 className="text-base sm:text-lg font-bold font-mono tracking-tight text-zinc-100 uppercase px-4 sm:px-0">
         Recent Ticks
       </h3>
       <TicksTable ticks={data?.ticks ?? []} />
-      <div className="flex items-center justify-between">
-        <span className="text-sm text-zinc-400">Last updated</span>
-        <span className="text-sm text-zinc-400 font-mono font-medium">
-          {format(dataUpdatedAt, "MM/dd/yyyy")}
+      <div className="flex items-center justify-between px-4 sm:px-0">
+        <span className="text-xs sm:text-sm text-zinc-400">Last updated</span>
+        <span className="text-xs sm:text-sm text-zinc-400 font-mono font-medium">
+          <span className="hidden sm:inline">{format(dataUpdatedAt, "MM/dd/yyyy")}</span>
           <NumberFlow value={Number(format(dataUpdatedAt, "HH"))} trend={1} />:
           <NumberFlow value={Number(format(dataUpdatedAt, "mm"))} trend={1} />:
           <NumberFlow value={Number(format(dataUpdatedAt, "ss"))} trend={1} />.

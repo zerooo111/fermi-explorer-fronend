@@ -1,0 +1,21 @@
+[Unit]
+Description=Fermi Explorer Frontend Service
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/fermi-explorer-monorepo/apps/frontend
+ExecStart=/home/ubuntu/.bun/bin/bun run preview --host 0.0.0.0 --port 3000
+Restart=always
+RestartSec=10
+StandardOutput=append:/var/log/fermi-frontend/frontend.log
+StandardError=append:/var/log/fermi-frontend/frontend-error.log
+Environment="NODE_ENV=production"
+
+# Security
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

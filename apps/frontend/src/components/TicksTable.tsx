@@ -31,7 +31,7 @@ export function TicksTable({ ticks }: TicksTableProps) {
 
       return (
         <TableRow key={tick.tick_number} className="hover:bg-zinc-900/50 h-10">
-          <TableCell className="font-mono font-medium text-zinc-300 tabular-nums text-sm text-left min-w-32">
+          <TableCell className="font-mono font-medium text-zinc-300 tabular-nums text-xs sm:text-sm text-left min-w-[80px] sm:min-w-32">
             <Link
               to="/tick/$tickId"
               params={{ tickId: tick.tick_number.toString() }}
@@ -40,12 +40,14 @@ export function TicksTable({ ticks }: TicksTableProps) {
               {toSafeNumber(toBN(tick.tick_number))}
             </Link>
           </TableCell>
-          <TableCell className="text-zinc-400 text-sm text-left font-mono">
-            <div>{toSafeNumber(toBN(tick.transaction_count))} txns</div>
+          <TableCell className="text-zinc-400 text-xs sm:text-sm text-left font-mono">
+            <div className="sm:hidden">{toSafeNumber(toBN(tick.transaction_count))} txs</div>
+            <div className="hidden sm:block">{toSafeNumber(toBN(tick.transaction_count))} txns</div>
           </TableCell>
 
-          <TableCell className="text-zinc-600 font-mono text-sm text-right min-w-36 whitespace-nowrap">
-            {millisecondsAgo} ms ago
+          <TableCell className="text-zinc-600 font-mono text-xs sm:text-sm text-right min-w-[90px] sm:min-w-36 whitespace-nowrap">
+            <span className="sm:hidden">{Math.round(millisecondsAgo / 1000)}s ago</span>
+            <span className="hidden sm:inline">{millisecondsAgo} ms ago</span>
           </TableCell>
         </TableRow>
       )
@@ -57,7 +59,7 @@ export function TicksTable({ ticks }: TicksTableProps) {
   if (ticks.length === 0) {
     return (
       <div className="text-center py-8">
-        <p className="text-sm text-zinc-500 font-mono tracking-wide">
+        <p className="text-xs sm:text-sm text-zinc-500 font-mono tracking-wide">
           NO TICKS AVAILABLE
         </p>
       </div>
@@ -65,13 +67,15 @@ export function TicksTable({ ticks }: TicksTableProps) {
   }
 
   const tableContent = (
-    <Table className="w-full">
-      <TableBody>
-        {ticks.map((tick) => (
-          <TickRow key={tick.tick_number} tick={tick} />
-        ))}
-      </TableBody>
-    </Table>
+    <div className="mobile-scroll-table">
+      <Table className="w-full">
+        <TableBody>
+          {ticks.map((tick) => (
+            <TickRow key={tick.tick_number} tick={tick} />
+          ))}
+        </TableBody>
+      </Table>
+    </div>
   )
 
   return tableContent

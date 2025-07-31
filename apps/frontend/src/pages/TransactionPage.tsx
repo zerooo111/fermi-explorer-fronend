@@ -18,7 +18,7 @@ export default function TransactionPage() {
 	// Handle loading state
 	if (isLoading) {
 		return (
-			<div className="container mx-auto px-6 py-8">
+			<div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
 				<Loader2 className="animate-spin " /> Loading ...
 			</div>
 		);
@@ -27,16 +27,16 @@ export default function TransactionPage() {
 	// Handle error state
 	if (isError) {
 		return (
-			<div className="container mx-auto px-6 py-8">
-				<pre>{JSON.stringify(error.message)}</pre>
+			<div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
+				<pre className="text-xs sm:text-sm">{JSON.stringify(error.message)}</pre>
 			</div>
 		);
 	}
 
 	if (!txData?.found) {
 		return (
-			<div className="container mx-auto px-6 py-8 flex flex-col gap-4">
-				Tick not found
+			<div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 flex flex-col gap-3 sm:gap-4">
+				<span className="text-base sm:text-lg">Transaction not found</span>
 				<a href="/" className={buttonVariants({ variant: "default" })}>
 					{" "}
 					Return to home
@@ -47,42 +47,44 @@ export default function TransactionPage() {
 
 	// Tick found
 	return (
-		<div className="container mx-auto px-6 py-8">
-			<h1> Transaction: {txData.tx_hash}</h1>
-			<Table className="w-full">
-				<TableBody>
+		<div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
+			<h1 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6 break-all"> Transaction: {txData.tx_hash}</h1>
+			<div className="mobile-scroll-table">
+				<Table className="w-full">
+					<TableBody>
 					{/* Sequence number */}
 					<TableRow>
-						<TableCell>Sequencer number </TableCell>
-						<TableCell>{txData.sequence_number}</TableCell>
+						<TableCell className="text-xs sm:text-sm font-mono">Sequencer number </TableCell>
+						<TableCell className="text-xs sm:text-sm font-mono">{txData.sequence_number}</TableCell>
 					</TableRow>
 					{/* Tick number */}
 					<TableRow>
-						<TableCell>Tick number</TableCell>
-						<TableCell>{txData.tick_number}</TableCell>
+						<TableCell className="text-xs sm:text-sm font-mono">Tick number</TableCell>
+						<TableCell className="text-xs sm:text-sm font-mono">{txData.tick_number}</TableCell>
 					</TableRow>
 					{/* Ingestions timestamp */}
 					<TableRow>
-						<TableCell>Ingestion Timestamp </TableCell>
-						<TableCell>{txData.transaction?.ingestion_timestamp}</TableCell>
+						<TableCell className="text-xs sm:text-sm font-mono">Ingestion Timestamp </TableCell>
+						<TableCell className="text-xs sm:text-sm font-mono">{txData.transaction?.ingestion_timestamp}</TableCell>
 					</TableRow>
 					{/* Nonce */}
 					<TableRow>
-						<TableCell>Nonce</TableCell>
-						<TableCell>{txData.transaction?.nonce}</TableCell>
+						<TableCell className="text-xs sm:text-sm font-mono">Nonce</TableCell>
+						<TableCell className="text-xs sm:text-sm font-mono">{txData.transaction?.nonce}</TableCell>
 					</TableRow>
 					{/* Payload size */}
 					<TableRow>
-						<TableCell>Payload size</TableCell>
-						<TableCell>{txData.transaction?.payload_size}</TableCell>
+						<TableCell className="text-xs sm:text-sm font-mono">Payload size</TableCell>
+						<TableCell className="text-xs sm:text-sm font-mono">{txData.transaction?.payload_size}</TableCell>
 					</TableRow>
 					{/* Payload size */}
 					<TableRow>
-						<TableCell>Tx Hash</TableCell>
-						<TableCell>{txData.tx_hash}</TableCell>
+						<TableCell className="text-xs sm:text-sm font-mono">Tx Hash</TableCell>
+						<TableCell className="text-xs sm:text-sm font-mono break-all">{txData.tx_hash}</TableCell>
 					</TableRow>
-				</TableBody>
-			</Table>
+					</TableBody>
+				</Table>
+			</div>
 		</div>
 	);
 }
