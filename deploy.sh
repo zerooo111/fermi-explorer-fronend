@@ -86,7 +86,7 @@ pm2 stop all || true
 # Start backend
 print_status "Starting backend..."
 cd "$DEPLOY_DIR/apps/backend"
-pm2 start "bun run start" --name "fermi-backend"
+HTTP_PORT=3001 pm2 start bun --name "fermi-backend" -- run start
 
 # Start frontend preview server
 print_status "Starting frontend..."

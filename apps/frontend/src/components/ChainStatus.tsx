@@ -5,6 +5,7 @@ import { toBN, toSafeNumber } from "@fermi/shared-utils/big-numbers";
 import { useEffect, useRef, useState } from "react";
 import { cx } from "class-variance-authority";
 import { cn } from "@/lib/utils";
+import { getApiUrl } from "@/lib/api";
 
 const REFETCH_INTERVAL = 500;
 const TREND_DIRECTION = 1;
@@ -44,7 +45,7 @@ export function ChainStatus() {
   const { data: metrics } = useQuery({
     queryKey: ["chain-status"],
     queryFn: async () => {
-      const res = (await fetch("api/v1/status").then((r) =>
+      const res = (await fetch(getApiUrl("/api/v1/status")).then((r) =>
         r.json()
       )) as StatusResponse;
       return res;

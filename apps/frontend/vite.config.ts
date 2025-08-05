@@ -14,6 +14,9 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),
+      '@fermi/shared-utils': resolve(__dirname, '../../packages/shared-utils/src'),
+      '@fermi/shared-types': resolve(__dirname, '../../packages/shared-types/src'),
+      '@fermi/config': resolve(__dirname, '../../packages/config/src'),
     },
   },
   test: {

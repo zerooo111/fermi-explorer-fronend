@@ -10,6 +10,7 @@ import type {
   WebSocketMessage,
   WebSocketState,
 } from "@fermi/shared-types/api";
+import { getWsUrl } from "@/lib/api";
 
 // WebSocket types are now imported from shared-types package
 
@@ -88,7 +89,8 @@ export class TickStreamClient {
     this.updateState("connecting");
 
     try {
-      const url = new URL(this.config.url);
+      const wsUrl = getWsUrl(this.config.url);
+      const url = new URL(wsUrl, window.location.origin);
       if (this.config.startTick > 0) {
         url.searchParams.set("start_tick", this.config.startTick.toString());
       }
