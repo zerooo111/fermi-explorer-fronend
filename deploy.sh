@@ -104,6 +104,13 @@ bun run vite build
 # Stop existing processes
 print_status "Stopping existing processes..."
 pm2 stop all || true
+pm2 delete all || true
+
+# Kill any processes using our ports
+print_status "Cleaning up ports..."
+sudo fuser -k 3001/tcp || true
+sudo fuser -k 4173/tcp || true
+sleep 2  # Give time for ports to be released
 
 # Start backend
 print_status "Starting backend..."
