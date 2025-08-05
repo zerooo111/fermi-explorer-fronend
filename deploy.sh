@@ -74,6 +74,28 @@ print_status "Installing all dependencies with bun..."
 cd "$DEPLOY_DIR"
 bun install
 
+# Fix workspace dependencies (temporary workaround for production)
+print_status "Fixing workspace dependencies..."
+if [ -f "$DEPLOY_DIR/fix-workspaces.sh" ]; then
+    bash "$DEPLOY_DIR/fix-workspaces.sh"
+else
+    # Create symlinks manually if script doesn't exist
+    mkdir -p node_modules/@fermi
+    ln -sf ../../packages/shared-utils node_modules/@fermi/shared-utils
+    ln -sf ../../packages/shared-types node_modules/@fermi/shared-types  
+    ln -sf ../../packages/config node_modules/@fermi/config
+    
+    mkdir -p apps/backend/node_modules/@fermi
+    ln -sf ../../../../packages/shared-utils apps/backend/node_modules/@fermi/shared-utils
+    ln -sf ../../../../packages/shared-types apps/backend/node_modules/@fermi/shared-types
+    ln -sf ../../../../packages/config apps/backend/node_modules/@fermi/config
+    
+    mkdir -p apps/frontend/node_modules/@fermi
+    ln -sf ../../../../packages/shared-utils apps/frontend/node_modules/@fermi/shared-utils
+    ln -sf ../../../../packages/shared-types apps/frontend/node_modules/@fermi/shared-types
+    ln -sf ../../../../packages/config apps/frontend/node_modules/@fermi/config
+fi
+
 # Build frontend (skip TypeScript check for MVP)
 print_status "Building frontend..."
 cd "$DEPLOY_DIR/apps/frontend"
