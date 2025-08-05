@@ -74,7 +74,11 @@ export function ChainStatus() {
           // Calculate tick time in milliseconds (time per tick)
           if (tickDiff > 0) {
             const timePerTick = (timeDiff * 1000) / tickDiff; // Convert back to ms
-            setTickTime(Math.round(timePerTick));
+            setTickTime(Math.round(timePerTick * 1000) / 1000); // Round to 3 decimal places (microsecond precision)
+          } else {
+            // If no ticks occurred, show the elapsed time since last tick
+            const elapsedTime = Math.round(timeDiff * 1000 * 1000) / 1000; // Also show with microsecond precision
+            setTickTime(elapsedTime);
           }
         }
       }
