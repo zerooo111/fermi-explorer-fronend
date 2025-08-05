@@ -91,7 +91,7 @@ HTTP_PORT=3001 pm2 start bun --name "fermi-backend" -- run start
 # Start frontend preview server
 print_status "Starting frontend..."
 cd "$DEPLOY_DIR/apps/frontend"
-pm2 start bun --name "fermi-frontend" -- run preview --host 0.0.0.0 --port 4173
+pm2 start bun --name "fermi-frontend" -- run serve -- --host 0.0.0.0 --port 4173
 
 # Save PM2 configuration
 pm2 save
