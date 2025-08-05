@@ -69,12 +69,12 @@ else
     cd "$DEPLOY_DIR"
 fi
 
-# Install dependencies
-print_status "Installing backend dependencies..."
-cd "$DEPLOY_DIR/apps/backend"
+# Install dependencies from root (monorepo)
+print_status "Installing dependencies..."
+cd "$DEPLOY_DIR"
 npm install
 
-print_status "Installing frontend dependencies..."
+print_status "Installing frontend dependencies with bun..."
 cd "$DEPLOY_DIR/apps/frontend"
 bun install
 
