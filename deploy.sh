@@ -1,90 +1,117 @@
 #!/bin/bash
 
-# Deployment Script for EC2
-# Run this script on EC2 after setup-ec2.sh
+# Simple EC2 deployment script for Fermi Explorer
+# Run this script on your EC2 instance after SSH-ing in
 
-set -e
+set -e  # Exit on error
 
-APP_DIR="/var/www/fermi-explorer"
-REPO_URL="https://github.com/YOUR_USERNAME/fermi-explorer-monorepo.git"  # Update this
+echo "🚀 Starting Fermi Explorer deployment..."
 
-echo "🚀 Deploying Fermi Explorer..."
+# Colors for output
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+NC='\033[0m' # No Color
 
-# Navigate to app directory
-cd $APP_DIR
+# Configuration
+REPO_URL="https://github.com/zerooo111/fermi-explorer-monorepo.git"  # UPDATE THIS
+DEPLOY_DIR="/home/ubuntu/fermi-explorer"
+BRANCH="main"
 
-# Clone or pull latest code
-if [ ! -d ".git" ]; then
-    echo "📥 Cloning repository..."
-    git clone $REPO_URL .
+# Function to print colored output
+print_status() {
+    echo -e "${GREEN}✓ $1${NC}"
+}
+
+print_error() {
+    echo -e "${RED}✗ $1${NC}"
+}
+
+# Check if running on EC2
+if [ ! -f /etc/os-release ]; then
+    print_error "This script should be run on the EC2 instance"
+    exit 1
+fi
+
+# Install dependencies if not already installed
+print_status "Checking system dependencies..."
+if ! command -v git &> /dev/null; then
+    sudo apt-get update
+    sudo apt-get install -y git
+fi
+
+if ! command -v node &> /dev/null; then
+    print_status "Installing Node.js..."
+    curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+    sudo apt-get install -y nodejs
+fi
+
+if ! command -v bun &> /dev/null; then
+    print_status "Installing Bun..."
+    curl -fsSL https://bun.sh/install | bash
+    source ~/.bashrc
+fi
+
+if ! command -v pm2 &> /dev/null; then
+    print_status "Installing PM2..."
+    sudo npm install -g pm2
+fi
+
+# Clone or update repository
+if [ -d "$DEPLOY_DIR" ]; then
+    print_status "Updating existing repository..."
+    cd "$DEPLOY_DIR"
+    git fetch origin
+    git reset --hard origin/$BRANCH
+    git pull origin $BRANCH
 else
-    echo "📥 Pulling latest changes..."
-    git pull origin main
+    print_status "Cloning repository..."
+    git clone -b $BRANCH "$REPO_URL" "$DEPLOY_DIR"
+    cd "$DEPLOY_DIR"
 fi
 
 # Install dependencies
-echo "📦 Installing dependencies..."
-/home/ubuntu/.bun/bin/bun install
+print_status "Installing backend dependencies..."
+cd "$DEPLOY_DIR/apps/backend"
+npm install
 
-# Build the application
-echo "🔨 Building application..."
-/home/ubuntu/.bun/bin/bun run build
+print_status "Installing frontend dependencies..."
+cd "$DEPLOY_DIR/apps/frontend"
+bun install
 
-# Copy environment file if it doesn't exist
-if [ ! -f "apps/backend/.env" ]; then
-    echo "📝 Creating environment file..."
-    cp apps/backend/.env.example apps/backend/.env
-    echo "⚠️  Please update apps/backend/.env with your configuration"
-fi
+# Build frontend
+print_status "Building frontend..."
+bun run build
 
-# Set up PM2 processes
-echo "🔄 Setting up PM2 processes..."
+# Stop existing processes
+print_status "Stopping existing processes..."
+pm2 stop all || true
 
-# Create PM2 ecosystem file
-cat > ecosystem.config.js << 'EOF'
-module.exports = {
-  apps: [
-    {
-      name: 'fermi-backend',
-      script: '/home/ubuntu/.bun/bin/bun',
-      args: 'run start',
-      cwd: '/var/www/fermi-explorer/apps/backend',
-      env: {
-        NODE_ENV: 'production',
-        HTTP_PORT: 3001
-      },
-      error_file: '/var/log/fermi-backend-error.log',
-      out_file: '/var/log/fermi-backend-out.log',
-      log_file: '/var/log/fermi-backend.log',
-      time: true
-    },
-    {
-      name: 'fermi-frontend',
-      script: 'serve',
-      args: '-s dist -l 3000',
-      cwd: '/var/www/fermi-explorer/apps/frontend',
-      env: {
-        NODE_ENV: 'production'
-      },
-      error_file: '/var/log/fermi-frontend-error.log',
-      out_file: '/var/log/fermi-frontend-out.log',
-      log_file: '/var/log/fermi-frontend.log',
-      time: true
-    }
-  ]
-};
-EOF
+# Start backend
+print_status "Starting backend..."
+cd "$DEPLOY_DIR/apps/backend"
+pm2 start npm --name "fermi-backend" -- start
 
-# Install serve for frontend
-sudo npm install -g serve
+# Start frontend preview server
+print_status "Starting frontend..."
+cd "$DEPLOY_DIR/apps/frontend"
+pm2 start bun --name "fermi-frontend" -- run preview --host 0.0.0.0 --port 4173
 
-# Start PM2 processes
-pm2 start ecosystem.config.js
+# Save PM2 configuration
 pm2 save
-pm2 startup
+pm2 startup | grep sudo | bash
 
-echo "✅ Deployment complete!"
-echo "🌐 Frontend should be running on port 3000"
-echo "🔧 Backend should be running on port 3001"
-echo "📊 Check status with: pm2 status"
-echo "📝 Check logs with: pm2 logs"
+# Show status
+print_status "Deployment complete!"
+echo ""
+echo "Services status:"
+pm2 status
+
+echo ""
+echo "📝 Notes:"
+echo "- Frontend is running on port 4173"
+echo "- Backend is running on port 3000"
+echo "- Make sure your Nginx configuration is set up correctly"
+echo "- You can view logs with: pm2 logs"
+echo "- To restart services: pm2 restart all"
+echo ""
+echo "🌐 Your app should be accessible at: https://54.178.73.8"
