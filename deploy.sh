@@ -69,17 +69,14 @@ else
     cd "$DEPLOY_DIR"
 fi
 
-# Install dependencies from root (monorepo)
-print_status "Installing dependencies..."
+# Install all dependencies using bun (supports workspaces)
+print_status "Installing all dependencies with bun..."
 cd "$DEPLOY_DIR"
-npm install
-
-print_status "Installing frontend dependencies with bun..."
-cd "$DEPLOY_DIR/apps/frontend"
 bun install
 
 # Build frontend
 print_status "Building frontend..."
+cd "$DEPLOY_DIR/apps/frontend"
 bun run build
 
 # Stop existing processes
@@ -89,7 +86,7 @@ pm2 stop all || true
 # Start backend
 print_status "Starting backend..."
 cd "$DEPLOY_DIR/apps/backend"
-pm2 start npm --name "fermi-backend" -- start
+pm2 start "bun run start" --name "fermi-backend"
 
 # Start frontend preview server
 print_status "Starting frontend..."
