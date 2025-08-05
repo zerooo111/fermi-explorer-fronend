@@ -3,6 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import type { StatusResponse } from "@fermi/shared-types/api";
 import { toBN, toSafeNumber } from "@fermi/shared-utils/big-numbers";
 import { useEffect, useRef, useState } from "react";
+import { cx } from "class-variance-authority";
+import { cn } from "@/lib/utils";
 
 const REFETCH_INTERVAL = 500;
 const TREND_DIRECTION = 1;
@@ -11,13 +13,17 @@ const MetricCard = ({
   title,
   value,
   trend,
+  className,
 }: {
   title: string;
   value: number;
   trend: number;
+  className?: string;
 }) => {
   return (
-    <div className="bg-zinc-900 p-3 sm:p-4 pb-0 flex-1 min-w-0">
+    <div
+      className={cn("bg-zinc-900 p-3 sm:p-4 pb-0 flex-1 min-w-0", className)}
+    >
       <div className="text-xs sm:text-sm font-medium text-zinc-400 font-mono tracking-wider truncate">
         {title}
       </div>
@@ -30,6 +36,7 @@ const MetricCard = ({
 
 export function ChainStatus() {
   const [tps, setTps] = useState(0);
+  const [tickTime, setTickTime] = useState(0);
   const previousTickRef = useRef<{ tick: number; timestamp: number } | null>(
     null
   );
@@ -63,6 +70,12 @@ export function ChainStatus() {
         if (timeDiff > 0 && tickDiff >= 0) {
           const calculatedTps = tickDiff / timeDiff;
           setTps(Math.round(calculatedTps * 10) / 10); // Round to 1 decimal place
+
+          // Calculate tick time in milliseconds (time per tick)
+          if (tickDiff > 0) {
+            const timePerTick = (timeDiff * 1000) / tickDiff; // Convert back to ms
+            setTickTime(Math.round(timePerTick));
+          }
         }
       }
 
@@ -74,26 +87,33 @@ export function ChainStatus() {
   }, [metrics?.current_tick]);
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-px bg-zinc-700 border border-zinc-700 overflow-hidden">
+    <div className="grid divide-x divide-y bg-zinc-700 divide-zinc-700 border border-zinc-700 overflow-hidden">
       <MetricCard
         title="CHAIN HEIGHT"
         value={toSafeNumber(toBN(metrics?.current_tick ?? "0"))}
         trend={TREND_DIRECTION}
+        className="col-span-2"
       />
 
       <MetricCard
-        title="TOTAL TXS"
+        title="TOTAL TXNs"
         value={toSafeNumber(toBN(metrics?.total_transactions ?? "0"))}
         trend={TREND_DIRECTION}
       />
 
       <MetricCard
-        title="TXS/SEC"
+        title="TXNs PER SEC"
         value={Math.round(metrics?.transactions_per_second ?? 0)}
         trend={TREND_DIRECTION}
       />
 
-      <MetricCard title="TICKS/SEC" value={tps} trend={TREND_DIRECTION} />
+      <MetricCard title="TICKS PER SEC" value={tps} trend={TREND_DIRECTION} />
+
+      <MetricCard
+        title="TICK TIME (MS)"
+        value={tickTime}
+        trend={TREND_DIRECTION}
+      />
     </div>
   );
 }
