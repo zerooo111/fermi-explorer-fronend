@@ -115,22 +115,7 @@ sleep 2  # Give time for ports to be released
 # Start backend
 print_status "Starting backend..."
 cd "$DEPLOY_DIR/apps/backend"
-
-# Create default .env if it doesn't exist
-if [ ! -f .env ]; then
-    print_status "Creating default .env file..."
-    cp .env.example .env || cat > .env << 'EOF'
-HTTP_PORT=3001
-DEBUG=false
-CONTINUUM_IP=localhost
-CORS_ALLOWED_ORIGINS=https://54.178.73.8,http://54.178.73.8
-CORS_ALLOW_CREDENTIALS=false
-NODE_ENV=production
-EOF
-    echo "⚠️  Please update .env with your Continuum node IP!"
-fi
-
-pm2 start bun --name "fermi-backend" -- run start
+HTTP_PORT=3001 pm2 start bun --name "fermi-backend" -- run start
 
 # Start frontend preview server
 print_status "Starting frontend..."
