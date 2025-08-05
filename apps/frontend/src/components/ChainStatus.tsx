@@ -87,33 +87,36 @@ export function ChainStatus() {
   }, [metrics?.current_tick]);
 
   return (
-    <div className="grid divide-x divide-y bg-zinc-700 divide-zinc-700 border border-zinc-700 overflow-hidden">
-      <MetricCard
-        title="CHAIN HEIGHT"
-        value={toSafeNumber(toBN(metrics?.current_tick ?? "0"))}
-        trend={TREND_DIRECTION}
-        className="col-span-2"
-      />
+    <div className="flex flex-col gap-4">
+      <div className="grid-cols-2 grid divide-x divide-zinc-700 border border-zinc-700">
+        <MetricCard
+          title="CHAIN HEIGHT"
+          value={toSafeNumber(toBN(metrics?.current_tick ?? "0"))}
+          trend={TREND_DIRECTION}
+        />
 
-      <MetricCard
-        title="TOTAL TXNs"
-        value={toSafeNumber(toBN(metrics?.total_transactions ?? "0"))}
-        trend={TREND_DIRECTION}
-      />
+        <MetricCard
+          title="TOTAL TXNs"
+          value={toSafeNumber(toBN(metrics?.total_transactions ?? "0"))}
+          trend={TREND_DIRECTION}
+        />
+      </div>
 
-      <MetricCard
-        title="TXNs PER SEC"
-        value={Math.round(metrics?.transactions_per_second ?? 0)}
-        trend={TREND_DIRECTION}
-      />
+      <div className="grid-cols-3 grid divide-x divide-zinc-700 border border-zinc-700">
+        <MetricCard
+          title="TXNs PER SEC"
+          value={Math.round(metrics?.transactions_per_second ?? 0)}
+          trend={TREND_DIRECTION}
+        />
 
-      <MetricCard title="TICKS PER SEC" value={tps} trend={TREND_DIRECTION} />
+        <MetricCard title="TICKS PER SEC" value={tps} trend={TREND_DIRECTION} />
 
-      <MetricCard
-        title="TICK TIME (MS)"
-        value={tickTime}
-        trend={TREND_DIRECTION}
-      />
+        <MetricCard
+          title="TICK TIME (MS)"
+          value={tickTime}
+          trend={TREND_DIRECTION}
+        />
+      </div>
     </div>
   );
 }
