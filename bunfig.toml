@@ -1,0 +1,4 @@
+# Bun configuration for the monorepo
+[install]
+# Ensure workspace dependencies are linked correctly
+workspaces = true

@@ -72,7 +72,7 @@ fi
 # Install all dependencies using bun (supports workspaces)
 print_status "Installing all dependencies with bun..."
 cd "$DEPLOY_DIR"
-bun install
+bun install --production=false  # Ensure dev dependencies are installed for building
 
 # Build frontend (skip TypeScript check for MVP)
 print_status "Building frontend..."

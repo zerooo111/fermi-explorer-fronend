@@ -18,7 +18,10 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@fermi/shared-utils/*": ["../../packages/shared-utils/src/*"],
+      "@fermi/shared-types/*": ["../../packages/shared-types/src/*"],
+      "@fermi/config/*": ["../../packages/config/src/*"]
     }
   },
   "include": [
