@@ -3,7 +3,6 @@ import { useQuery } from "@tanstack/react-query";
 import type { StatusResponse } from "@fermi/shared-types/api";
 import { toBN, toSafeNumber } from "@fermi/shared-utils/big-numbers";
 import { useEffect, useRef, useState } from "react";
-import { cx } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 import { getApiUrl } from "@/lib/api";
 
