@@ -52,6 +52,7 @@ export function loadAppConfig(): BackendConfig {
       "http://localhost:3000",
       "http://localhost:5173",
       "http://localhost:3001",
+      "http://localhost:4000",
     ];
     console.log(
       "⚠️  Using default CORS origins. Set CORS_ALLOWED_ORIGINS for production."

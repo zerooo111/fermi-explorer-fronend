@@ -2,8 +2,6 @@ syntax = "proto3";
 
 package continuum.sequencer.v1;
 
-option go_package = "github.com/continuum/backend/proto";
-
 service SequencerService {
   // Submit a transaction for ordering
   rpc SubmitTransaction(SubmitTransactionRequest) returns (SubmitTransactionResponse);

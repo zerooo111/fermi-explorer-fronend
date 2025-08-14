@@ -80,10 +80,16 @@ class Server {
     this.app.post("/api/v1/tx", requestSizeLimit(), (c) =>
       handler.submitTransaction(c)
     );
+    this.app.post("/api/v1/tx/batch", requestSizeLimit(), (c) =>
+      handler.submitBatch(c)
+    );
 
     // Tick routes
     this.app.get("/api/v1/tick/:number", (c) => handler.getTick(c));
     this.app.get("/api/v1/ticks/recent", (c) => handler.getRecentTicks(c));
+
+    // Chain state route
+    this.app.get("/api/v1/chain/state", (c) => handler.getChainState(c));
 
     // Root endpoint
     this.app.get("/", (c) => {
@@ -95,8 +101,11 @@ class Server {
           status: "/api/v1/status",
           metrics: "/metrics",
           transaction: "/api/v1/tx/{hash}",
+          submit_transaction: "/api/v1/tx",
+          submit_batch: "/api/v1/tx/batch",
           tick: "/api/v1/tick/{number}",
           recent_ticks: "/api/v1/ticks/recent",
+          chain_state: "/api/v1/chain/state",
           websocket: "/ws/ticks",
         },
       });

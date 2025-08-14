@@ -53,10 +53,21 @@ interface GetTickResponse {
   found: boolean;
 }
 
+interface GetChainStateResponse {
+  chain_height: string;
+  total_transactions: string;
+  recent_ticks: Tick[];
+  tx_to_tick_sample: { [key: string]: string };
+}
+
 interface SubmitTransactionResponse {
   sequence_number: string;
   expected_tick: string;
   tx_hash: string;
+}
+
+interface SubmitBatchResponse {
+  responses: SubmitTransactionResponse[];
 }
 
 export class GrpcClient {
@@ -163,6 +174,38 @@ export class GrpcClient {
     });
   }
 
+  async submitBatch(
+    transactions: Transaction[]
+  ): Promise<SubmitBatchResponse> {
+    return new Promise((resolve, reject) => {
+      this.client.SubmitBatch(
+        { transactions },
+        (error: any, response: SubmitBatchResponse) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(response);
+          }
+        }
+      );
+    });
+  }
+
+  async getChainState(tickLimit?: number): Promise<GetChainStateResponse> {
+    return new Promise((resolve, reject) => {
+      this.client.GetChainState(
+        { tick_limit: tickLimit || 0 },
+        (error: any, response: GetChainStateResponse) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(response);
+          }
+        }
+      );
+    });
+  }
+
   streamTicks(
     startTick: bigint = 0n,
     onTick: (tick: Tick) => void,
@@ -206,4 +249,6 @@ export type {
   GetStatusResponse,
   GetTransactionResponse,
   GetTickResponse,
+  GetChainStateResponse,
+  SubmitBatchResponse,
 };
