@@ -18,7 +18,7 @@ service SequencerService {
   // Get transaction info by hash
   rpc GetTransaction(GetTransactionRequest) returns (GetTransactionResponse);
   
-  // Get tick by number
+  // Get tick by numberf
   rpc GetTick(GetTickRequest) returns (GetTickResponse);
   
   // Get chain state summary

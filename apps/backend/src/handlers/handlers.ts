@@ -275,38 +275,64 @@ export class Handler {
 
     try {
       const body = await c.req.json();
-
-      
+      console.log("bodyReceived", body);
       // Validate transaction structure according to spec
       if (!body.transaction) {
         return sendErrorResponse(c, 400, "Transaction object is required");
       }
 
       const transaction = body.transaction;
-      
+
       // Validate required fields
       if (!transaction.tx_id || typeof transaction.tx_id !== "string") {
-        return sendErrorResponse(c, 400, "tx_id is required and must be a string");
+        return sendErrorResponse(
+          c,
+          400,
+          "tx_id is required and must be a string"
+        );
       }
-      
+
       if (!transaction.payload || !Array.isArray(transaction.payload)) {
-        return sendErrorResponse(c, 400, "payload is required and must be a byte array");
+        return sendErrorResponse(
+          c,
+          400,
+          "payload is required and must be a byte array"
+        );
       }
-      
+
       if (!transaction.signature || !Array.isArray(transaction.signature)) {
-        return sendErrorResponse(c, 400, "signature is required and must be a byte array");
+        return sendErrorResponse(
+          c,
+          400,
+          "signature is required and must be a byte array"
+        );
       }
-      
+
       if (!transaction.public_key || !Array.isArray(transaction.public_key)) {
-        return sendErrorResponse(c, 400, "public_key is required and must be a byte array");
+        return sendErrorResponse(
+          c,
+          400,
+          "public_key is required and must be a byte array"
+        );
       }
-      
-      if (transaction.nonce === undefined || typeof transaction.nonce !== "number") {
-        return sendErrorResponse(c, 400, "nonce is required and must be a number");
+
+      if (
+        transaction.nonce === undefined ||
+        typeof transaction.nonce !== "number"
+      ) {
+        return sendErrorResponse(
+          c,
+          400,
+          "nonce is required and must be a number"
+        );
       }
-      
+
       if (!transaction.timestamp || typeof transaction.timestamp !== "number") {
-        return sendErrorResponse(c, 400, "timestamp is required and must be a number");
+        return sendErrorResponse(
+          c,
+          400,
+          "timestamp is required and must be a number"
+        );
       }
 
       // Prepare transaction for gRPC client
@@ -316,21 +342,32 @@ export class Handler {
         signature: new Uint8Array(transaction.signature),
         public_key: new Uint8Array(transaction.public_key),
         nonce: transaction.nonce.toString(),
-        timestamp: transaction.timestamp.toString()
+        timestamp: transaction.timestamp.toString(),
       };
+
+      console.log("grpcPayload", grpcTransaction);
 
       // Submit transaction using gRPC client
       const response = await this.grpcClient.submitTransaction(grpcTransaction);
-      
+
       console.log("✅ Successfully submitted transaction", response);
-      MetricsCollector.recordApiCall("sequencer", "submit_transaction", "success");
+
+      MetricsCollector.recordApiCall(
+        "sequencer",
+        "submit_transaction",
+        "success"
+      );
 
       return c.json(response);
     } catch (error) {
       console.error("❌ Failed to submit transaction:", error);
-      MetricsCollector.recordApiCall("sequencer", "submit_transaction", "error");
+      MetricsCollector.recordApiCall(
+        "sequencer",
+        "submit_transaction",
+        "error"
+      );
       MetricsCollector.recordError("grpc", "error");
-      
+
       if (error instanceof SyntaxError) {
         return sendErrorResponse(c, 400, "Invalid JSON in request body");
       }
@@ -346,7 +383,7 @@ export class Handler {
     try {
       const body = await c.req.json();
       console.log("submitBatch:body", body);
-      
+
       // Basic validation of batch structure
       if (!body.transactions || !Array.isArray(body.transactions)) {
         return sendErrorResponse(c, 400, "Transactions array is required");
@@ -360,30 +397,60 @@ export class Handler {
       const grpcTransactions = [];
       for (let i = 0; i < body.transactions.length; i++) {
         const transaction = body.transactions[i];
-        
+
         // Validate required fields for each transaction
         if (!transaction.tx_id || typeof transaction.tx_id !== "string") {
-          return sendErrorResponse(c, 400, `Transaction ${i}: tx_id is required and must be a string`);
+          return sendErrorResponse(
+            c,
+            400,
+            `Transaction ${i}: tx_id is required and must be a string`
+          );
         }
-        
+
         if (!transaction.payload || !Array.isArray(transaction.payload)) {
-          return sendErrorResponse(c, 400, `Transaction ${i}: payload is required and must be a byte array`);
+          return sendErrorResponse(
+            c,
+            400,
+            `Transaction ${i}: payload is required and must be a byte array`
+          );
         }
-        
+
         if (!transaction.signature || !Array.isArray(transaction.signature)) {
-          return sendErrorResponse(c, 400, `Transaction ${i}: signature is required and must be a byte array`);
+          return sendErrorResponse(
+            c,
+            400,
+            `Transaction ${i}: signature is required and must be a byte array`
+          );
         }
-        
+
         if (!transaction.public_key || !Array.isArray(transaction.public_key)) {
-          return sendErrorResponse(c, 400, `Transaction ${i}: public_key is required and must be a byte array`);
+          return sendErrorResponse(
+            c,
+            400,
+            `Transaction ${i}: public_key is required and must be a byte array`
+          );
         }
-        
-        if (transaction.nonce === undefined || typeof transaction.nonce !== "number") {
-          return sendErrorResponse(c, 400, `Transaction ${i}: nonce is required and must be a number`);
+
+        if (
+          transaction.nonce === undefined ||
+          typeof transaction.nonce !== "number"
+        ) {
+          return sendErrorResponse(
+            c,
+            400,
+            `Transaction ${i}: nonce is required and must be a number`
+          );
         }
-        
-        if (!transaction.timestamp || typeof transaction.timestamp !== "number") {
-          return sendErrorResponse(c, 400, `Transaction ${i}: timestamp is required and must be a number`);
+
+        if (
+          !transaction.timestamp ||
+          typeof transaction.timestamp !== "number"
+        ) {
+          return sendErrorResponse(
+            c,
+            400,
+            `Transaction ${i}: timestamp is required and must be a number`
+          );
         }
 
         grpcTransactions.push({
@@ -392,14 +459,16 @@ export class Handler {
           signature: new Uint8Array(transaction.signature),
           public_key: new Uint8Array(transaction.public_key),
           nonce: transaction.nonce.toString(),
-          timestamp: transaction.timestamp.toString()
+          timestamp: transaction.timestamp.toString(),
         });
       }
 
       // Submit batch using gRPC client
       const response = await this.grpcClient.submitBatch(grpcTransactions);
-      
-      console.log(`✅ Successfully submitted ${body.transactions.length} transactions`);
+
+      console.log(
+        `✅ Successfully submitted ${body.transactions.length} transactions`
+      );
       MetricsCollector.recordApiCall("sequencer", "submit_batch", "success");
 
       return c.json(response);
@@ -407,7 +476,7 @@ export class Handler {
       console.error("❌ Failed to submit batch transactions:", error);
       MetricsCollector.recordApiCall("sequencer", "submit_batch", "error");
       MetricsCollector.recordError("grpc", "error");
-      
+
       if (error instanceof SyntaxError) {
         return sendErrorResponse(c, 400, "Invalid JSON in request body");
       }
