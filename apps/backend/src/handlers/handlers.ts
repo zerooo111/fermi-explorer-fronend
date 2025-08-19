@@ -292,15 +292,8 @@ export class Handler {
         );
       }
 
-      if (!transaction.payload || !Array.isArray(transaction.payload)) {
-        return sendErrorResponse(
-          c,
-          400,
-          "payload is required and must be a byte array"
-        );
-      }
 
-      if (!transaction.signature || !Array.isArray(transaction.signature)) {
+      if (!transaction.signature) {
         return sendErrorResponse(
           c,
           400,
@@ -308,7 +301,7 @@ export class Handler {
         );
       }
 
-      if (!transaction.public_key || !Array.isArray(transaction.public_key)) {
+      if (!transaction.public_key) {
         return sendErrorResponse(
           c,
           400,
@@ -327,7 +320,7 @@ export class Handler {
         );
       }
 
-      if (!transaction.timestamp || typeof transaction.timestamp !== "number") {
+      if (!transaction.timestamp) {
         return sendErrorResponse(
           c,
           400,
@@ -338,9 +331,9 @@ export class Handler {
       // Prepare transaction for gRPC client
       const grpcTransaction = {
         tx_id: transaction.tx_id,
-        payload: new Uint8Array(transaction.payload),
-        signature: new Uint8Array(transaction.signature),
-        public_key: new Uint8Array(transaction.public_key),
+        payload: transaction.payload,
+        signature: transaction.signature,
+        public_key: transaction.public_key,
         nonce: transaction.nonce.toString(),
         timestamp: transaction.timestamp.toString(),
       };
