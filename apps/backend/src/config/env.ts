@@ -11,6 +11,7 @@ export function loadAppConfig(): BackendConfig {
   let grpcAddr = process.env.CONTINUUM_SEQUENCER_URL || "localhost:9090";
   let restAddr =
     process.env.CONTINUUM_REST_URL || "http://localhost:8080/api/v1";
+  let matchEngineUrl = process.env.MATCH_ENGINE_URL || "http://localhost:8081/api/v1";
 
   if (continuumIP) {
     grpcAddr = `${continuumIP}:9090`;
@@ -24,6 +25,9 @@ export function loadAppConfig(): BackendConfig {
     }
     if (process.env.CONTINUUM_REST_URL) {
       console.log(`🔗 Using REST URL from env: ${restAddr}`);
+    }
+    if (process.env.MATCH_ENGINE_URL) {
+      console.log(`🎯 Using Match Engine URL from env: ${matchEngineUrl}`);
     }
   }
 
@@ -74,6 +78,7 @@ export function loadAppConfig(): BackendConfig {
     httpPort,
     grpcAddr,
     restAddr,
+    matchEngineUrl,
     debug,
     corsAllowedOrigins,
     corsAllowCredentials,

@@ -21,10 +21,12 @@ import { getMetrics, MetricsCollector } from "../metrics/metrics";
 export class Handler {
   private grpcClient: GrpcClient;
   private restBaseURL: string;
+  private matchEngineURL: string;
 
-  constructor(grpcClient: GrpcClient, restBaseURL: string) {
+  constructor(grpcClient: GrpcClient, restBaseURL: string, matchEngineURL: string) {
     this.grpcClient = grpcClient;
     this.restBaseURL = restBaseURL;
+    this.matchEngineURL = matchEngineURL;
   }
 
   private async makeSecureRequest(
@@ -511,6 +513,81 @@ export class Handler {
         503,
         "Failed to get chain state from sequencer"
       );
+    }
+  }
+
+  async getMarkets(c: Context): Promise<Response> {
+    if (c.req.method !== "GET") {
+      return sendErrorResponse(c, 405, "Method not allowed");
+    }
+
+    try {
+      const resp = await this.makeSecureRequest(
+        "GET",
+        `${this.matchEngineURL}/markets`
+      );
+
+      if (!resp.ok) {
+        return sendErrorResponse(c, 502, "Failed to get markets");
+      }
+
+      const data = await resp.json();
+      console.log("✅ Successfully retrieved markets");
+
+      MetricsCollector.recordApiCall("match_engine", "get_markets", "success");
+
+      return c.json(data, {
+        headers: {
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+        },
+      });
+    } catch (error) {
+      console.error("❌ Failed to get markets:", error);
+      MetricsCollector.recordApiCall("match_engine", "get_markets", "error");
+      MetricsCollector.recordError("api", "error");
+      return sendErrorResponse(c, 500, "Failed to get markets");
+    }
+  }
+
+  async getMarketOrderbook(c: Context): Promise<Response> {
+    if (c.req.method !== "GET") {
+      return sendErrorResponse(c, 405, "Method not allowed");
+    }
+
+    const marketId = sanitizeInput(c.req.param("marketId") || "");
+
+    if (!marketId) {
+      return sendErrorResponse(c, 400, "Market ID is required");
+    }
+
+    try {
+      const resp = await this.makeSecureRequest(
+        "GET",
+        `${this.matchEngineURL}/markets/${marketId}/orderbook`
+      );
+
+      if (!resp.ok) {
+        if (resp.status === 404) {
+          return sendErrorResponse(c, 404, "Market not found");
+        }
+        return sendErrorResponse(c, 502, "Failed to get market orderbook");
+      }
+
+      const data = await resp.json();
+      console.log(`✅ Successfully retrieved orderbook for market: ${marketId}`);
+
+      MetricsCollector.recordApiCall("match_engine", "get_orderbook", "success");
+
+      return c.json(data, {
+        headers: {
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+        },
+      });
+    } catch (error) {
+      console.error(`❌ Failed to get orderbook for market ${marketId}:`, error);
+      MetricsCollector.recordApiCall("match_engine", "get_orderbook", "error");
+      MetricsCollector.recordError("api", "error");
+      return sendErrorResponse(c, 500, "Failed to get market orderbook");
     }
   }
 }
