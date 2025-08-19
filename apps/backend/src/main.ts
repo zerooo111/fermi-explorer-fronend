@@ -66,7 +66,11 @@ class Server {
     this.streamHandler = new BunStreamHandler(this.grpcClient);
 
     // Initialize handlers
-    const handler = new Handler(this.grpcClient, this.config.restAddr, this.config.matchEngineUrl);
+    const handler = new Handler(
+      this.grpcClient,
+      this.config.restAddr,
+      this.config.matchEngineUrl
+    );
 
     // Health and status routes
     this.app.get("/api/v1/health", (c) => handler.health(c));
@@ -92,8 +96,10 @@ class Server {
     this.app.get("/api/v1/chain/state", (c) => handler.getChainState(c));
 
     // Market routes
-    this.app.get("/me/markets", (c) => handler.getMarkets(c));
-    this.app.get("/me/markets/:marketId/orderbook", (c) => handler.getMarketOrderbook(c));
+    this.app.get("/api/v1/me/markets", (c) => handler.getMarkets(c));
+    this.app.get("/api/v1/me/markets/:marketId/orderbook", (c) =>
+      handler.getMarketOrderbook(c)
+    );
 
     // Root endpoint
     this.app.get("/", (c) => {
@@ -111,8 +117,8 @@ class Server {
           recent_ticks: "/api/v1/ticks/recent",
           chain_state: "/api/v1/chain/state",
           websocket: "/ws/ticks",
-          markets: "/me/markets",
-          market_orderbook: "/me/markets/{marketId}/orderbook",
+          markets: "/api/v1/me/markets",
+          market_orderbook: "api/v1/me/markets/{marketId}/orderbook",
         },
       });
     });
@@ -245,7 +251,9 @@ class Server {
       );
       console.log(`📡 Proxying gRPC from: ${this.config.grpcAddr}`);
       console.log(`🔗 Proxying REST from: ${this.config.restAddr}`);
-      console.log(`🎯 Proxying Match Engine from: ${this.config.matchEngineUrl}`);
+      console.log(
+        `🎯 Proxying Match Engine from: ${this.config.matchEngineUrl}`
+      );
       console.log("✅ Server started successfully");
     } catch (error) {
       console.error("❌ Failed to start server:", error);
