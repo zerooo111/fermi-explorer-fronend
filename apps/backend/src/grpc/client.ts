@@ -91,8 +91,21 @@ export class GrpcClient {
       // Running from built bundle - proto should be in dist/proto
       protoPath = join(process.cwd(), "dist", "proto", "sequencer.proto");
     } else {
-      // Development mode - proto is in the proto directory
-      protoPath = join(process.cwd(), "proto", "sequencer.proto");
+      // Development mode - check multiple possible locations for proto file
+      const possiblePaths = [
+        join(process.cwd(), "proto", "sequencer.proto"), // Current directory
+        join(process.cwd(), "apps", "backend", "proto", "sequencer.proto"), // From root
+        join(__dirname, "..", "..", "proto", "sequencer.proto"), // From src relative
+      ];
+      
+      protoPath = possiblePaths.find(path => {
+        try {
+          require('fs').accessSync(path);
+          return true;
+        } catch {
+          return false;
+        }
+      }) || possiblePaths[0]; // Fallback to first path if none found
     }
 
     const packageDefinition = protoLoader.loadSync(protoPath, {

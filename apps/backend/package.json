@@ -7,6 +7,8 @@
   "scripts": {
     "dev": "bun run --watch src/main.ts",
     "start": "bun run src/main.ts",
+    "ingestor": "bun run src/ingestor/index.ts",
+    "ingestor:node": "node src/ingestor-node/index.mjs",
     "build": "rm -rf dist && bun build src/main.ts --outdir ./dist --target bun && cp -r proto dist/",
     "tick-streamer": "bun run src/tick-streamer-main.ts",
     "tick-streamer:dev": "bun run --watch src/tick-streamer-main.ts",
@@ -15,6 +17,7 @@
     "lint": "eslint src --ext .ts,.js",
     "typecheck": "tsc --noEmit",
     "test": "bun test",
+    "test:ingestor": "bun run test-ingestor.ts",
     "test:websocket": "bun run test-websocket.ts",
     "test:tick-logger": "bun run test-tick-logger.ts",
     "clean": "rm -rf dist node_modules"
