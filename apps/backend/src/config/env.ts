@@ -1,11 +1,16 @@
-import { loadBackendConfig } from "@fermi/config/backend";
-import type { BackendConfig } from "@fermi/config/backend";
-
-// Re-export for compatibility
-export type AppConfig = BackendConfig;
+export interface AppConfig {
+  httpPort: string
+  grpcAddr: string
+  restAddr: string
+  matchEngineUrl: string
+  debug: boolean
+  corsAllowedOrigins: string[]
+  corsAllowCredentials: boolean
+  environment: string
+}
 
 // Legacy function name for backward compatibility
-export function loadAppConfig(): BackendConfig {
+export function loadAppConfig(): AppConfig {
   // Check for single IP configuration first
   const continuumIP = process.env.CONTINUUM_IP;
   let grpcAddr = process.env.CONTINUUM_SEQUENCER_URL || "localhost:9090";

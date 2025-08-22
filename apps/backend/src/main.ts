@@ -8,8 +8,6 @@ import {
   simpleLogging,
   requestSizeLimit,
 } from "./middleware/validation";
-import { metricsMiddleware } from "./middleware/metrics";
-import { initializeMetrics } from "./metrics/metrics";
 import { BunStreamHandler } from "./websocket/bun-stream";
 
 class Server {
@@ -22,9 +20,6 @@ class Server {
   constructor() {
     this.app = new Hono();
 
-    // Initialize metrics first
-    initializeMetrics();
-
     this.setupMiddleware();
     this.setupRoutes();
   }
@@ -32,9 +27,6 @@ class Server {
   private setupMiddleware(): void {
     // Panic recovery middleware
     this.app.use("*", panicRecovery());
-
-    // Metrics middleware (before logging to track all requests)
-    this.app.use("*", metricsMiddleware());
 
     // Logging middleware
     this.app.use("*", simpleLogging());
@@ -76,9 +68,6 @@ class Server {
     this.app.get("/api/v1/health", (c) => handler.health(c));
     this.app.get("/api/v1/status", (c) => handler.status(c));
 
-    // Metrics endpoint (Prometheus format)
-    this.app.get("/metrics", (c) => handler.metrics(c));
-
     // Transaction routes
     this.app.get("/api/v1/tx/:hash", (c) => handler.getTransaction(c));
     this.app.post("/api/v1/tx", requestSizeLimit(), (c) =>
@@ -109,7 +98,6 @@ class Server {
         endpoints: {
           health: "/api/v1/health",
           status: "/api/v1/status",
-          metrics: "/metrics",
           transaction: "/api/v1/tx/{hash}",
           submit_transaction: "/api/v1/tx",
           submit_batch: "/api/v1/tx/batch",
@@ -245,9 +233,6 @@ class Server {
       );
       console.log(
         `🔌 WebSocket: ws://localhost:${this.config.httpPort}/ws/ticks`
-      );
-      console.log(
-        `📊 Metrics: http://localhost:${this.config.httpPort}/metrics`
       );
       console.log(`📡 Proxying gRPC from: ${this.config.grpcAddr}`);
       console.log(`🔗 Proxying REST from: ${this.config.restAddr}`);
