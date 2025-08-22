@@ -15,11 +15,14 @@ import {
   sendErrorResponse,
   limits,
 } from "../middleware/validation";
+import { MemoryCache } from "../cache/memory-cache";
 
 export class Handler {
   private grpcClient: GrpcClient;
   private restBaseURL: string;
   private matchEngineURL: string;
+  private tickCache: MemoryCache<any>;
+  private transactionCache: MemoryCache<any>;
 
   constructor(
     grpcClient: GrpcClient,
@@ -29,6 +32,22 @@ export class Handler {
     this.grpcClient = grpcClient;
     this.restBaseURL = restBaseURL;
     this.matchEngineURL = matchEngineURL;
+    this.tickCache = new MemoryCache<any>(10); // 10 minutes TTL
+    this.transactionCache = new MemoryCache<any>(30); // 30 minutes TTL
+    
+    // Setup periodic cache cleanup
+    this.setupCacheCleanup();
+  }
+
+  private setupCacheCleanup(): void {
+    // Clean up expired cache entries every 5 minutes
+    setInterval(() => {
+      const tickCleaned = this.tickCache.cleanup();
+      const txCleaned = this.transactionCache.cleanup();
+      if (tickCleaned + txCleaned > 0) {
+        console.log(`🧹 Cache cleanup: removed ${tickCleaned} ticks and ${txCleaned} transactions`);
+      }
+    }, 5 * 60 * 1000); // 5 minutes
   }
 
   private async makeSecureRequest(
@@ -116,6 +135,19 @@ export class Handler {
       ]);
     }
 
+    // Check cache first
+    const cacheKey = `tx:${txHash}`;
+    const cachedData = this.transactionCache.get(cacheKey);
+    if (cachedData) {
+      console.log(`✅ Cache hit for transaction: ${txHash}`);
+      return c.json(cachedData, {
+        headers: {
+          "Cache-Control": "private, max-age=1800", // 30 minutes
+          "X-Cache": "HIT",
+        },
+      });
+    }
+
     try {
       const resp = await this.makeSecureRequest(
         "GET",
@@ -132,11 +164,13 @@ export class Handler {
       const data = await resp.json();
       console.log(`✅ Successfully retrieved transaction: ${txHash}`);
 
-      // Metrics removed
+      // Cache the response
+      this.transactionCache.set(cacheKey, data);
 
       return c.json(data, {
         headers: {
-          "Cache-Control": "no-cache, no-store, must-revalidate",
+          "Cache-Control": "private, max-age=1800", // 30 minutes
+          "X-Cache": "MISS",
         },
       });
     } catch (error) {
@@ -160,6 +194,19 @@ export class Handler {
       ]);
     }
 
+    // Check cache first
+    const cacheKey = `tick:${tickNumStr}`;
+    const cachedData = this.tickCache.get(cacheKey);
+    if (cachedData) {
+      console.log(`✅ Cache hit for tick: ${tickNum}`);
+      return c.json(cachedData, {
+        headers: {
+          "Cache-Control": "private, max-age=600", // 10 minutes
+          "X-Cache": "HIT",
+        },
+      });
+    }
+
     try {
       const resp = await this.makeSecureRequest(
         "GET",
@@ -176,9 +223,13 @@ export class Handler {
       const data = await resp.json();
       console.log(`✅ Successfully retrieved tick: ${tickNum}`);
 
+      // Cache the response
+      this.tickCache.set(cacheKey, data);
+
       return c.json(data, {
         headers: {
-          "Cache-Control": "no-cache, no-store, must-revalidate",
+          "Cache-Control": "private, max-age=600", // 10 minutes
+          "X-Cache": "MISS",
         },
       });
     } catch (error) {
