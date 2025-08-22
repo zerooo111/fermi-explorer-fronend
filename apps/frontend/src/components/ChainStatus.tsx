@@ -63,7 +63,6 @@ export function ChainStatus() {
 
       if (previousTickRef.current) {
         const tickDiff = currentTick - previousTickRef.current.tick;
-        const refetchIntervalSeconds = REFETCH_INTERVAL / 1000; // Convert to seconds
 
         if (tickDiff >= 0) {
           // Randomize TPS between >9256 and <=10256
