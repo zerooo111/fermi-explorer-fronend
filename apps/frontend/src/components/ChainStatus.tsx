@@ -60,32 +60,30 @@ export function ChainStatus() {
   useEffect(() => {
     if (metrics?.current_tick) {
       const currentTick = toSafeNumber(toBN(metrics.current_tick));
-      const currentTimestamp = Date.now();
 
       if (previousTickRef.current) {
         const tickDiff = currentTick - previousTickRef.current.tick;
-        const timeDiff =
-          (currentTimestamp - previousTickRef.current.timestamp) / 1000; // Convert to seconds
+        const refetchIntervalSeconds = REFETCH_INTERVAL / 1000; // Convert to seconds
 
-        if (timeDiff > 0 && tickDiff >= 0) {
-          const calculatedTps = tickDiff / timeDiff;
+        if (tickDiff >= 0) {
+          // Calculate TPS using refetch interval instead of network latency
+          const calculatedTps = tickDiff / refetchIntervalSeconds;
           setTps(Math.round(calculatedTps * 10) / 10); // Round to 1 decimal place
 
-          // Calculate tick time in milliseconds (time per tick)
-          if (tickDiff > 0) {
-            const timePerTick = (timeDiff * 1000) / tickDiff; // Convert back to ms
-            setTickTime(Math.round(timePerTick * 1000) / 1000); // Round to 3 decimal places (microsecond precision)
+          // Calculate tick time using 1/TPS formula
+          if (calculatedTps > 0) {
+            const tickRate = 1 / calculatedTps; // Time per tick in seconds
+            setTickTime(Math.round(tickRate * 1000 * 1000) / 1000); // Convert to ms and round to 3 decimal places
           } else {
-            // If no ticks occurred, show the elapsed time since last tick
-            const elapsedTime = Math.round(timeDiff * 1000 * 1000) / 1000; // Also show with microsecond precision
-            setTickTime(elapsedTime);
+            // No ticks occurred in this interval
+            setTickTime(0);
           }
         }
       }
 
       previousTickRef.current = {
         tick: currentTick,
-        timestamp: currentTimestamp,
+        timestamp: Date.now(),
       };
     }
   }, [metrics?.current_tick]);
