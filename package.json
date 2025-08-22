@@ -7,24 +7,22 @@
     "apps/*",
     "packages/*"
   ],
+  "packageManager": "bun@1.1.0",
   "scripts": {
-    "dev": "bun run --filter '@fermi/*' dev",
-    "dev:backend": "bun run --filter '@fermi/backend' dev",
-    "dev:frontend": "bun run --filter '@fermi/frontend' dev",
-    "build": "bun run --filter '@fermi/*' build",
-    "build:backend": "bun run --filter '@fermi/backend' build",
-    "build:frontend": "bun run --filter '@fermi/frontend' build",
-    "test": "bun run --filter '@fermi/*' test",
-    "lint": "bun run --filter '@fermi/*' lint",
-    "typecheck": "bun run --filter '@fermi/*' typecheck",
-    "clean": "bun run --filter '@fermi/*' clean",
+    "dev": "bun run workspace ",
+    "dev:backend": "bun workspace @fermi/backend run dev",
+    "dev:frontend": "bun workspace @fermi/frontend run dev",
+    "build": "bun run -w build",
+    "build:backend": "bun workspace @fermi/backend run build",
+    "build:frontend": "bun workspace @fermi/frontend run build",
+    "typecheck": "bun run -w typecheck",
     "start": "./tools/scripts/start.sh",
-    "install:all": "bun install",
-    "format": "bun run --filter '@fermi/*' format"
+    "install:all": "bun install"
   },
   "devDependencies": {
     "@types/node": "^24.0.13",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "@types/bun": "latest"
   },
   "engines": {
     "bun": ">=1.0.0",

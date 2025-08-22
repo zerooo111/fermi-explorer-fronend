@@ -38,9 +38,6 @@
       ],
       "@fermi/shared-types/*": [
         "../../packages/shared-types/src/*"
-      ],
-      "@fermi/config/*": [
-        "../../packages/config/src/*"
       ]
     },
     "strictNullChecks": true
