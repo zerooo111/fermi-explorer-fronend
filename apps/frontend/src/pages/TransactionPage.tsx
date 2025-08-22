@@ -5,7 +5,7 @@ import { useTransaction } from "@/hooks";
 import { useEffect } from "react";
 
 export default function TransactionPage() {
-  const { transactionId } = useParams({ from: "/transaction/$transactionId" });
+  const { transactionId } = useParams({ from: "/tx/$transactionId" });
 
   // Use the simplified useTick hook
   const {
