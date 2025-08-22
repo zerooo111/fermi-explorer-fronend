@@ -28,7 +28,7 @@ const MetricCard = ({
         {title}
       </div>
       <div className="text-xl sm:text-3xl font-bold text-zinc-100 font-mono">
-        <NumberFlow value={value} trend={trend} />
+        <NumberFlow format={{ currency: "USD" }} value={value} trend={trend} />
       </div>
     </div>
   );
