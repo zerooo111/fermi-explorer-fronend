@@ -1,7 +1,7 @@
 import * as grpc from "@grpc/grpc-js";
 import * as protoLoader from "@grpc/proto-loader";
 import { join, dirname } from "path";
-import { fileURLToPath } from "url";
+
 import type { VdfProof as SharedVdfProof } from "@fermi/shared-types/api";
 
 interface Transaction {
@@ -97,15 +97,16 @@ export class GrpcClient {
         join(process.cwd(), "apps", "backend", "proto", "sequencer.proto"), // From root
         join(__dirname, "..", "..", "proto", "sequencer.proto"), // From src relative
       ];
-      
-      protoPath = possiblePaths.find(path => {
-        try {
-          require('fs').accessSync(path);
-          return true;
-        } catch {
-          return false;
-        }
-      }) || possiblePaths[0]; // Fallback to first path if none found
+
+      protoPath =
+        possiblePaths.find((path) => {
+          try {
+            require("fs").accessSync(path);
+            return true;
+          } catch {
+            return false;
+          }
+        }) || possiblePaths[0]; // Fallback to first path if none found
     }
 
     const packageDefinition = protoLoader.loadSync(protoPath, {
@@ -187,9 +188,7 @@ export class GrpcClient {
     });
   }
 
-  async submitBatch(
-    transactions: Transaction[]
-  ): Promise<SubmitBatchResponse> {
+  async submitBatch(transactions: Transaction[]): Promise<SubmitBatchResponse> {
     return new Promise((resolve, reject) => {
       this.client.SubmitBatch(
         { transactions },

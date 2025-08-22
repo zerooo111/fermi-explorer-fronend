@@ -8,6 +8,8 @@
     "dev": "bun run --watch src/main.ts",
     "start": "bun run src/main.ts",
     "ingestor": "bun run src/ingestor/index.ts",
+    "ingestor:dev": "bun run --watch src/ingestor/index.ts",
+    "ingestor:prod": "NODE_ENV=production bun run dist/main.js --ingestor",
     "ingestor:node": "node src/ingestor-node/index.mjs",
     "build": "rm -rf dist && bun build src/main.ts --outdir ./dist --target bun && cp -r proto dist/",
     "lint": "eslint src --ext .ts,.js",

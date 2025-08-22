@@ -13,9 +13,7 @@
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "allowJs": true,
-    "types": [
-      "bun-types"
-    ],
+    "types": ["bun-types"],
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
@@ -23,11 +21,6 @@
       "@fermi/shared-types/*": ["../../packages/shared-types/src/*"]
     }
   },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "include": ["src/**/*", "../../packages/**/*"],
+  "exclude": ["node_modules", "dist"]
 }
