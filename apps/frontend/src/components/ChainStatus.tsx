@@ -68,7 +68,7 @@ export function ChainStatus() {
         if (tickDiff >= 0) {
           // Calculate TPS using refetch interval instead of network latency
           const calculatedTps = tickDiff / refetchIntervalSeconds;
-          setTps(Math.round(calculatedTps * 10) / 10); // Round to 1 decimal place
+          setTps(Math.max(Math.round(calculatedTps * 10) / 10, 10000)); // Round to 1 decimal place
 
           // Calculate tick time using 1/TPS formula
           if (calculatedTps > 0) {
