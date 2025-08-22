@@ -1,5 +1,4 @@
-import { Link, useParams } from "@tanstack/react-router";
-import { Loader2 } from "lucide-react";
+import { useParams } from "@tanstack/react-router";
 import { buttonVariants } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { useTick } from "@/hooks/useTick";
@@ -13,40 +12,25 @@ export default function TickPage() {
   // Use the simplified useTick hook
   const { data: tickData, isLoading, isError, error } = useTick(tickNumber);
 
-  const isValidTickNumber = !isNaN(tickNumber) && tickNumber > 0;
-
-  // Trend calculation for NumberFlow
-
-  // Handle invalid tick number
-  if (!isValidTickNumber) {
-    return (
-      <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 max-w-screen-xl">
-        <div className="max-w-4xl mx-auto">
-          <div className="border border-red-700 bg-red-950 p-4 sm:p-6">
-            <h1 className="text-lg sm:text-2xl font-bold font-mono tracking-tight text-red-400 mb-3 sm:mb-4 uppercase">
-              Invalid Tick Number
-            </h1>
-            <p className="text-red-500 font-mono text-xs sm:text-sm mb-3 sm:mb-4">
-              "{tickId}" is not a valid tick number. Tick numbers must be
-              positive integers.
-            </p>
-            <Link
-              to="/"
-              className="inline-block bg-red-600 text-white px-3 py-1.5 sm:px-4 sm:py-2 hover:bg-red-700 transition-colors font-mono text-xs sm:text-sm uppercase tracking-wide"
-            >
-              Return to Home
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   // Handle loading state
   if (isLoading) {
     return (
       <div className="container max-w-screen-xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-        <Loader2 className="animate-spin " /> Loading ...
+        <div className="animate-pulse">
+          <div className="h-6 sm:h-8 bg-neutral-800 rounded mb-4 sm:mb-6 w-1/2"></div>
+          <div className="mobile-scroll-table">
+            <div className="w-full">
+              <div className="space-y-0">
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className="flex">
+                    <div className="h-10 bg-neutral-900/50 flex-1 border-b border-neutral-800"></div>
+                    <div className="h-10 bg-neutral-800/50 flex-1 border-b border-neutral-800"></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -54,20 +38,23 @@ export default function TickPage() {
   // Handle error state
   if (isError) {
     return (
-      <div className="container max-w-screen-xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-        <pre className="text-xs sm:text-sm">
-          {JSON.stringify(error.message)}
-        </pre>
+      <div className="container max-w-screen-xl flex items-center justify-center mx-auto px-4 sm:px-6 py-6 sm:py-8 flex-col gap-3 sm:gap-4">
+        <span className="text-base sm:text-2xl">Error loading tick</span>
+        <p className="text-sm sm:text-base text-neutral-400 text-center">
+          {error?.message || 'Failed to load tick data'}
+        </p>
+        <a href="/" className={buttonVariants({ variant: "default" })}>
+          Return to home
+        </a>
       </div>
     );
   }
 
   if (!tickData?.found) {
     return (
-      <div className="container max-w-screen-xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex flex-col gap-3 sm:gap-4">
-        <span className="text-base sm:text-lg">Tick not found</span>
+      <div className="container max-w-screen-xl flex items-center justify-center mx-auto px-4 sm:px-6 py-6 sm:py-8 flex-col gap-3 sm:gap-4">
+        <span className="text-base sm:text-2xl">Tick not found</span>
         <a href="/" className={buttonVariants({ variant: "default" })}>
-          {" "}
           Return to home
         </a>
       </div>
@@ -86,7 +73,7 @@ export default function TickPage() {
           <TableBody>
             {/* Transaction Batch Hash */}
             <TableRow>
-              <TableCell className="text-xs sm:text-sm font-mono">
+              <TableCell className="text-xs py-2 bg-neutral-900/50 sm:text-sm font-mono">
                 Transaction batch hash{" "}
               </TableCell>
               <TableCell className="text-xs sm:text-sm font-mono break-all">
@@ -95,7 +82,7 @@ export default function TickPage() {
             </TableRow>
             {/* Timestamp */}
             <TableRow>
-              <TableCell className="text-xs sm:text-sm font-mono">
+              <TableCell className="text-xs py-2 bg-neutral-900/50 sm:text-sm font-mono">
                 Timestamp{" "}
               </TableCell>
               <TableCell className="text-xs sm:text-sm font-mono">
@@ -104,7 +91,7 @@ export default function TickPage() {
             </TableRow>
             {/* Transaction count */}
             <TableRow>
-              <TableCell className="text-xs sm:text-sm font-mono">
+              <TableCell className="text-xs py-2 bg-neutral-900/50 sm:text-sm font-mono">
                 Transaction count{" "}
               </TableCell>
               <TableCell className="text-xs sm:text-sm font-mono">
@@ -113,20 +100,22 @@ export default function TickPage() {
             </TableRow>
             {/* Vdf Iterations */}
             <TableRow>
-              <TableCell className="text-xs sm:text-sm font-mono">
+              <TableCell className="text-xs py-2 bg-neutral-900/50 sm:text-sm font-mono">
                 Vdf Iteration
               </TableCell>
               <TableCell className="text-xs sm:text-sm font-mono">
                 {tickData.tick?.vdf_iterations}
               </TableCell>
             </TableRow>
-            {/* Vdf Iterations */}
-            <TableRow>
-              <TableCell></TableCell>
-              <TableCell>{tickData.tick_number}</TableCell>
-            </TableRow>
           </TableBody>
         </Table>
+
+        <div className="mt-8">
+          <a href="/" className={buttonVariants({ variant: "default" })}>
+            {" "}
+            Return to home
+          </a>
+        </div>
       </div>
     </div>
   );

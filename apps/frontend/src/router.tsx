@@ -41,7 +41,7 @@ const indexRoute = createRoute({
 // About route
 const transactionRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/transaction/$transactionId',
+  path: '/tx/$transactionId',
   component: TransactionPage,
 })
 

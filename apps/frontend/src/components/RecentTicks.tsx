@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import { TicksTable } from "./TicksTable";
 import type { RecentTicksResponse } from "@/api/types";
-import { apiClient } from "@/api/client";
 import { queryKeys } from "@/api/queryKeys";
 import { format } from "date-fns";
 import NumberFlow from "@number-flow/react";
@@ -14,8 +14,10 @@ interface RecentTicksProps {
 export function RecentTicks({ limit = 50 }: RecentTicksProps) {
   const { data, dataUpdatedAt } = useQuery<RecentTicksResponse, Error>({
     queryKey: queryKeys.ticks.recent({ limit }),
-    queryFn: () =>
-      apiClient.get<RecentTicksResponse>(`/api/v1/ticks/recent?limit=${limit}`),
+    queryFn: async () => {
+      const response = await axios.get<RecentTicksResponse>(`/api/v1/ticks/recent?limit=${limit}`)
+      return response.data
+    },
     refetchInterval: 500,
     staleTime: 0,
     gcTime: 0,

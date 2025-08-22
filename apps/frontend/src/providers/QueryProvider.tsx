@@ -5,7 +5,7 @@
 import React from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import { isApiError } from '../api/client'
+import { AxiosError } from 'axios'
 
 /**
  * Create and configure the QueryClient instance
@@ -21,7 +21,7 @@ function createQueryClient(): QueryClient {
         // Error handling
         retry: (failureCount, error) => {
           // Don't retry on 4xx errors (except 429)
-          if (isApiError(error) && error.status >= 400 && error.status < 500 && error.status !== 429) {
+          if (error instanceof AxiosError && error.response?.status && error.response.status >= 400 && error.response.status < 500 && error.response.status !== 429) {
             return false
           }
           // Retry up to 3 times with exponential backoff
