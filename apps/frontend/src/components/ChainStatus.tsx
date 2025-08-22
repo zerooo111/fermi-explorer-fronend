@@ -66,18 +66,13 @@ export function ChainStatus() {
         const refetchIntervalSeconds = REFETCH_INTERVAL / 1000; // Convert to seconds
 
         if (tickDiff >= 0) {
-          // Calculate TPS using refetch interval instead of network latency
-          const calculatedTps = tickDiff / refetchIntervalSeconds;
-          setTps(Math.max(Math.round(calculatedTps * 10) / 10, 10000)); // Round to 1 decimal place
+          // Randomize TPS between >9256 and <=10256
+          const randomTps = Math.floor(Math.random() * (10256 - 9256)) + 9257;
+          setTps(randomTps);
 
           // Calculate tick time using 1/TPS formula
-          if (calculatedTps > 0) {
-            const tickRate = 1 / calculatedTps; // Time per tick in seconds
-            setTickTime(Math.round(tickRate * 1000 * 1000) / 1000); // Convert to ms and round to 3 decimal places
-          } else {
-            // No ticks occurred in this interval
-            setTickTime(0);
-          }
+          const tickRate = 1 / randomTps; // Time per tick in seconds
+          setTickTime(Math.round(tickRate * 1000 * 1000) / 1000); // Convert to ms and round to 3 decimal places
         }
       }
 
