@@ -120,7 +120,13 @@ export default function TransactionPage() {
                   Tick Number
                 </TableCell>
                 <TableCell className="text-xs sm:text-sm font-mono">
-                  {txData.data.tick_number}
+                  <a
+                    href={`/tick/${txData.data.tick_number}`}
+                    target="_blank"
+                    className="hover:text-zinc-100 hover:underline"
+                  >
+                    {txData.data.tick_number}
+                  </a>
                 </TableCell>
               </TableRow>
               <TableRow>
