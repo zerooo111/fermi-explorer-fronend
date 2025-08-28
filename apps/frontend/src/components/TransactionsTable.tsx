@@ -47,7 +47,7 @@ export function TransactionsTable({ transactions }: TransactionsTableProps) {
             <a
               href={`/tick/${transaction.tick_number}`}
               target="_blank"
-              className="sm:block"
+              className="sm:block hover:text-zinc-100 hover:underline"
             >
               {transaction.tick_number}
             </a>
