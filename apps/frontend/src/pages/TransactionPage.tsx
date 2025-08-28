@@ -3,7 +3,6 @@ import { buttonVariants } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { useTransaction } from "@/hooks";
 import { useEffect, useState } from "react";
-import type { TransactionResponse } from "@fermi/shared-types/api";
 
 export default function TransactionPage() {
   const { transactionId } = useParams({ from: "/tx/$transactionId" });

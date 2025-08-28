@@ -3,7 +3,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { useTick } from "@/hooks/useTick";
 import { TickDetailView } from "@/components/TickDetailView";
-import type { TickResponse, ContinuumTickResponse, DatabaseTickResponse } from "@fermi/shared-types/api";
+import type { ContinuumTickResponse, DatabaseTickResponse } from "@fermi/shared-types/api";
 
 export default function TickPage() {
   const { tickId } = useParams({ from: "/tick/$tickId" });

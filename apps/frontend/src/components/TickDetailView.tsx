@@ -1,4 +1,3 @@
-import React from "react";
 
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { TransactionsTable } from "@/components/TransactionsTable";
