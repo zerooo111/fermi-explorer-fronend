@@ -44,26 +44,33 @@ export interface StatusResponse {
  * Transaction data structure as returned in API responses
  */
 export interface TransactionData {
-  tx_id: string // Hex-encoded original transaction ID
+  tick_number: number
+  sequence_number: number
+  tx_hash: string
+  tx_id: string
   nonce: number
-  ingestion_timestamp: number // Microseconds since Unix epoch
-  payload_size: number // Size in bytes
+  payload: string
+  timestamp: number
+  public_key: string
+  signature: string
+  ingestion_timestamp: number
+  processed_at: string
+  payload_size: number
+  payload_type: string
+  version: number
 }
 
 /**
- * Transaction lookup endpoint response
+ * Transaction lookup endpoint response (new format)
  * GET /api/v1/tx/{hash}
  */
-export interface TransactionResponse extends BaseResponse {
-  tx_hash?: string // 8-character hex hash
-  tick_number?: number
-  sequence_number?: number
-  found: boolean
-  transaction?: TransactionData
+export interface TransactionResponse {
+  data: TransactionData
+  source: string
 }
 
 /**
- * Detailed tick information
+ * Basic tick information (continuum source)
  */
 export interface TickData {
   tick_number: number
@@ -73,6 +80,51 @@ export interface TickData {
   vdf_iterations: number
   previous_output: string // Hex-encoded VDF output
 }
+
+/**
+ * Detailed tick information (database source)
+ */
+export interface DetailedTickData {
+  tick_number: number
+  timestamp_us: number
+  vdf_input: string
+  vdf_output: string
+  vdf_iterations: number
+  vdf_proof: string
+  previous_output: string
+  transaction_batch_hash: string
+  transaction_count: number
+  processed_at: string
+  ingestion_ts: number
+  version: number
+  transactions?: TransactionData[]
+}
+
+/**
+ * Continuum source tick response
+ */
+export interface ContinuumTickResponse {
+  data: {
+    found: boolean
+    tick: TickData
+    tick_number: number
+  }
+  source: 'continuum'
+}
+
+/**
+ * Database source tick response
+ */
+export interface DatabaseTickResponse {
+  data: DetailedTickData
+  source: 'db'
+}
+
+/**
+ * Tick lookup endpoint response (union of both formats)
+ * GET /api/v1/tick/{number}
+ */
+export type TickResponse = ContinuumTickResponse | DatabaseTickResponse
 
 /**
  * VDF Proof structure
@@ -110,16 +162,6 @@ export interface Tick {
     ticks_per_second: number // Calculated by backend
     backend_timestamp: number // Backend timestamp in milliseconds
   }
-}
-
-/**
- * Tick lookup endpoint response
- * GET /api/v1/tick/{number}
- */
-export interface TickResponse extends BaseResponse {
-  tick_number?: number
-  found: boolean
-  tick?: TickData
 }
 
 /**

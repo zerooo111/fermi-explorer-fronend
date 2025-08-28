@@ -1,21 +1,41 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { TicksTable } from "./TicksTable";
-import type { RecentTicksResponse } from "@/api/types";
+import { TransactionsTable } from "./TransactionsTable";
 import { queryKeys } from "@/api/queryKeys";
 import { format } from "date-fns";
 import NumberFlow from "@number-flow/react";
 
-interface RecentTicksProps {
-  limit?: number;
-  showAge?: boolean;
+interface Transaction {
+  tick_number: number;
+  sequence_number: number;
+  tx_hash: string;
+  tx_id: string;
+  nonce: number;
+  payload: string;
+  timestamp: number;
+  public_key: string;
+  signature: string;
+  ingestion_timestamp: number;
+  processed_at: string;
+  payload_size: number;
+  payload_type: string;
+  version: number;
 }
 
-export function RecentTicks({ limit = 50 }: RecentTicksProps) {
-  const { data, dataUpdatedAt } = useQuery<RecentTicksResponse, Error>({
-    queryKey: queryKeys.ticks.recent({ limit }),
+interface RecentTransactionsResponse {
+  count: number;
+  transactions: Transaction[];
+}
+
+interface RecentTransactionsProps {
+  limit?: number;
+}
+
+export function RecentTransactions({ limit = 50 }: RecentTransactionsProps) {
+  const { data, dataUpdatedAt } = useQuery<RecentTransactionsResponse, Error>({
+    queryKey: [...queryKeys.transactions.all(), 'recent', { limit }],
     queryFn: async () => {
-      const response = await axios.get<RecentTicksResponse>(`/api/v1/ticks/recent?limit=${limit}`)
+      const response = await axios.get<RecentTransactionsResponse>(`/api/v1/tx/recent?limit=${limit}`)
       return response.data
     },
     refetchInterval: 1000,
@@ -24,11 +44,11 @@ export function RecentTicks({ limit = 50 }: RecentTicksProps) {
   });
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 flex-1">
       <h3 className="text-base sm:text-lg font-bold font-mono tracking-tight text-zinc-100 uppercase px-4 sm:px-0">
-        Recent Ticks
+        Recent Transactions
       </h3>
-      <TicksTable ticks={data?.ticks ?? []} />
+      <TransactionsTable transactions={data?.transactions ?? []} />
       <div className="flex items-center justify-between px-4 sm:px-0">
         <span className="text-xs sm:text-sm text-zinc-400">Last updated</span>
         <span className="text-xs sm:text-sm text-zinc-400 font-mono font-medium">

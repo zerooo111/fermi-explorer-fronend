@@ -2,7 +2,14 @@ import React from "react";
 import { differenceInMilliseconds } from "date-fns";
 import { Link } from "@tanstack/react-router";
 import type { Tick, TickSummary } from "@fermi/shared-types/api";
-import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import {
   calculateAgeInMilliseconds,
   toBN,
@@ -30,7 +37,7 @@ export function TicksTable({ ticks }: TicksTableProps) {
       }
 
       return (
-        <TableRow key={tick.tick_number} className="divide-x-0 h-10">
+        <TableRow key={tick.tick_number} className="h-10">
           <TableCell className="font-mono font-medium text-zinc-300 tabular-nums text-xs sm:text-sm text-left min-w-[80px] sm:min-w-32">
             <Link
               to="/tick/$tickId"
@@ -75,6 +82,15 @@ export function TicksTable({ ticks }: TicksTableProps) {
   const tableContent = (
     <div className="mobile-scroll-table">
       <Table className="w-full">
+        <TableHeader>
+          <TableRow>
+            <TableHead className="whitespace-nowrap">Tick #</TableHead>
+            <TableHead className="whitespace-nowrap">Tx Count</TableHead>
+            <TableHead className="min-w-[90px] sm:min-w-36 text-right">
+              Timestamp
+            </TableHead>
+          </TableRow>
+        </TableHeader>
         <TableBody>
           {ticks.map((tick) => (
             <TickRow key={tick.tick_number} tick={tick} />
