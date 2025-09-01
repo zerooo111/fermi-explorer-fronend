@@ -114,15 +114,6 @@ export function TickDetailView({ tickData }: TickDetailViewProps) {
               </TableCell>
             </TableRow>
 
-            {/* Ingestion Timestamp */}
-            <TableRow>
-              <TableCell className="text-xs whitespace-nowrap py-2 bg-neutral-900/50 sm:text-sm font-mono">
-                Ingestion Timestamp
-              </TableCell>
-              <TableCell className="text-xs sm:text-sm font-mono">
-                {tickData.ingestion_ts}
-              </TableCell>
-            </TableRow>
 
             {/* Version */}
             <TableRow>

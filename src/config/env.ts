@@ -13,10 +13,6 @@ const getEnvNumber = (key: string, defaultValue: number): number => {
   return value ? parseInt(value, 10) : defaultValue
 }
 
-const getEnvBoolean = (key: string, defaultValue: boolean): boolean => {
-  const value = import.meta.env[key]
-  return value ? value.toLowerCase() === 'true' : defaultValue
-}
 
 // ===========================================
 // API Configuration
