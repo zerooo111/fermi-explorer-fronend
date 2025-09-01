@@ -136,14 +136,6 @@ export default function TransactionPage() {
               </TableRow>
               <TableRow>
                 <TableCell className="text-xs py-2 bg-neutral-900/50 sm:text-sm font-mono whitespace-nowrap">
-                  Public Key
-                </TableCell>
-                <TableCell className="text-xs sm:text-sm font-mono break-all">
-                  {txData.data.public_key}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="text-xs py-2 bg-neutral-900/50 sm:text-sm font-mono whitespace-nowrap">
                   Signature
                 </TableCell>
                 <TableCell className="text-xs sm:text-sm font-mono break-all">

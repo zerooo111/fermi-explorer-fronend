@@ -15,7 +15,6 @@ interface Transaction {
   nonce: number;
   payload: string;
   timestamp: number;
-  public_key: string;
   signature: string;
   ingestion_timestamp: number;
   processed_at: string;

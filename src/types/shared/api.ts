@@ -81,7 +81,6 @@ export interface TransactionData {
   payload: string
   payload_decoded?: PayloadDecoded
   timestamp: number
-  public_key: string
   signature: string
   ingestion_timestamp: number
   processed_at: string
