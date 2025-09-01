@@ -40,7 +40,7 @@ export function TickDetailView({ tickData }: TickDetailViewProps) {
                 Transaction Count
               </TableCell>
               <TableCell className="text-xs sm:text-sm font-mono">
-                {tickData.transaction_count}
+                {tickData.transactions?.length}
               </TableCell>
             </TableRow>
 
