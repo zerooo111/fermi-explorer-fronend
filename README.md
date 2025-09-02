@@ -1,6 +1,6 @@
-# Fermi Explorer
+# Fermi Explorer Frontend
 
-A modern React-based blockchain explorer for the Fermi Continuum network. This application provides real-time monitoring of ticks (blocks), transactions, and network status through an intuitive web interface.
+A modern React-based blockchain explorer frontend for the Fermi Continuum network. This application provides real-time monitoring of ticks (blocks), transactions, and network status through an intuitive web interface.
 
 ## Overview
 
