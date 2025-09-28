@@ -16,9 +16,6 @@ export default defineConfig(({ mode }) => {
   // Default values
   const DEV_PORT = parseInt(env.VITE_DEV_PORT || '5173')
   const PREVIEW_PORT = parseInt(env.VITE_PREVIEW_PORT || '4173')
-  const ALLOWED_HOSTS = env.VITE_ALLOWED_HOSTS 
-    ? env.VITE_ALLOWED_HOSTS.split(',').map(host => host.trim())
-    : ['localhost', '127.0.0.1', 'explorer.fermilabs.xyz']
 
   return {
     plugins: [viteReact(), tailwindcss()],
@@ -38,7 +35,6 @@ export default defineConfig(({ mode }) => {
     preview: {
       port: PREVIEW_PORT,
       host: true, // Allow external connections
-      allowedHosts: ALLOWED_HOSTS,
     },
   }
 })

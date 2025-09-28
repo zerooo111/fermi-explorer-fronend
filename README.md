@@ -5,14 +5,16 @@ A modern React-based blockchain explorer frontend for the Fermi Continuum networ
 ## Overview
 
 Fermi Explorer is a frontend application that connects to the Fermi Continuum sequencer to display:
+
 - **Real-time tick data** - Live stream of network activity
-- **Transaction details** - Comprehensive transaction information and history  
+- **Transaction details** - Comprehensive transaction information and history
 - **Network status** - Current network health and performance metrics
 - **Chain exploration** - Browse historical ticks and transactions
 
 ## Features
 
 ### Core Functionality
+
 - 🔄 **Real-time Updates** - WebSocket connection for live data streaming
 - 📊 **Network Metrics** - Current tick, transaction rates, and network uptime
 - 🔍 **Search & Browse** - Search transactions by hash or browse by tick number
@@ -20,6 +22,7 @@ Fermi Explorer is a frontend application that connects to the Fermi Continuum se
 - ⚡ **Performance** - Efficient data caching and optimized rendering
 
 ### Technical Highlights
+
 - Built with **React 19** and **TypeScript** for type safety
 - **TanStack Router** for client-side routing
 - **TanStack Query** for efficient data fetching and caching
@@ -29,6 +32,7 @@ Fermi Explorer is a frontend application that connects to the Fermi Continuum se
 ## Quick Start
 
 ### Prerequisites
+
 - **Node.js** 18+ or **Bun** runtime
 - **Backend API** running on your configured endpoint
 
@@ -46,7 +50,7 @@ cp .env.example .env.local
 
 # Start development server
 npm run dev
-# or  
+# or
 bun run dev
 ```
 
@@ -64,20 +68,21 @@ npm run serve
 
 ### Available Scripts
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start development server on port 3000 |
-| `npm run build` | Build optimized production bundle |
-| `npm run serve` | Preview production build |
-| `npm run test` | Run unit tests with Vitest |
-| `npm run lint` | Lint code with ESLint |
-| `npm run typecheck` | Type check with TypeScript |
-| `npm run format` | Format code with Prettier |
-| `npm run clean` | Clean build artifacts and dependencies |
+| Command             | Description                            |
+| ------------------- | -------------------------------------- |
+| `npm run dev`       | Start development server on port 3000  |
+| `npm run build`     | Build optimized production bundle      |
+| `npm run serve`     | Preview production build               |
+| `npm run test`      | Run unit tests with Vitest             |
+| `npm run lint`      | Lint code with ESLint                  |
+| `npm run typecheck` | Type check with TypeScript             |
+| `npm run format`    | Format code with Prettier              |
+| `npm run clean`     | Clean build artifacts and dependencies |
 
 ## Architecture
 
 ### Project Structure
+
 ```
 src/
 ├── api/           # API types and WebSocket connections
@@ -95,11 +100,13 @@ src/
 ### Key Components
 
 #### Data Layer
+
 - **API Client** (`src/lib/api.ts`) - Axios-based HTTP client with error handling
 - **WebSocket Manager** (`src/api/websocket.ts`) - Real-time data streaming
 - **React Query Integration** - Caching, background updates, and optimistic updates
 
 #### UI Components
+
 - **ChainStatus** - Network health and performance dashboard
 - **RecentTicks** - Live feed of latest network activity
 - **RecentTransactions** - Transaction history with pagination
@@ -107,6 +114,7 @@ src/
 - **TransactionsTable** - Sortable, searchable transaction listing
 
 #### Custom Hooks
+
 - `useTickStream` - WebSocket connection for real-time tick updates
 - `useTick` - Fetch individual tick data with fallback sources
 - `useTransaction` - Transaction lookup with caching
@@ -116,18 +124,19 @@ src/
 
 The frontend connects to a backend API with the following endpoints:
 
-| Endpoint | Purpose |
-|----------|---------|
-| `GET /api/v1/health` | Network health check |
-| `GET /api/v1/status` | Current network statistics |
-| `GET /api/v1/tick/{number}` | Detailed tick information |
-| `GET /api/v1/tx/{hash}` | Transaction details |
-| `GET /api/v1/ticks/recent` | Recent tick summaries |
-| `WebSocket /ws` | Real-time tick stream |
+| Endpoint                    | Purpose                    |
+| --------------------------- | -------------------------- |
+| `GET /api/v1/health`        | Network health check       |
+| `GET /api/v1/status`        | Current network statistics |
+| `GET /api/v1/tick/{number}` | Detailed tick information  |
+| `GET /api/v1/tx/{hash}`     | Transaction details        |
+| `GET /api/v1/ticks/recent`  | Recent tick summaries      |
+| `WebSocket /ws`             | Real-time tick stream      |
 
 ### Configuration
 
 #### Environment Variables
+
 Create a `.env.local` file based on `.env.example`:
 
 ```bash
@@ -137,16 +146,17 @@ cp .env.example .env.local
 
 Key environment variables:
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `VITE_API_BASE_URL` | Backend API base URL | `http://localhost:3001` |
-| `VITE_WS_URL` | WebSocket URL | `ws://localhost:3001/ws` |
-| `VITE_DEV_PORT` | Development server port | `5173` |
-| `VITE_PREVIEW_PORT` | Preview server port | `4173` |
-| `VITE_ALLOWED_HOSTS` | Comma-separated allowed hosts | `localhost,127.0.0.1,explorer.fermilabs.xyz` |
+| Variable            | Description             | Default                  |
+| ------------------- | ----------------------- | ------------------------ |
+| `VITE_API_BASE_URL` | Backend API base URL    | `http://localhost:3001`  |
+| `VITE_WS_URL`       | WebSocket URL           | `ws://localhost:3001/ws` |
+| `VITE_DEV_PORT`     | Development server port | `5173`                   |
+| `VITE_PREVIEW_PORT` | Preview server port     | `4173`                   |
 
 #### API Configuration
+
 The frontend makes direct API calls to the configured backend:
+
 - API requests → `VITE_API_BASE_URL`
 - WebSocket connections → `VITE_WS_URL`
 
@@ -155,21 +165,24 @@ For different environments, simply update these URLs in your environment configu
 ## Development
 
 ### Code Style & Linting
+
 - **Biome** for code formatting and linting
 - **TypeScript** strict mode enabled
 - **ESLint** with TanStack configuration
 - **Prettier** for consistent formatting
 
 ### Testing
+
 ```bash
 # Run tests
 npm run test
 
-# Run tests in watch mode  
+# Run tests in watch mode
 npm test -- --watch
 ```
 
 ### Type Safety
+
 ```bash
 # Type check without emitting files
 npm run typecheck
@@ -178,21 +191,21 @@ npm run typecheck
 ## Deployment
 
 ### Production Configuration
+
 For production deployment, create a `.env.production` file or set environment variables:
 
 ```env
 # Production API endpoints
 VITE_API_BASE_URL=https://api.yourdomain.com
 VITE_WS_URL=wss://api.yourdomain.com/ws
-
-# Production server configuration  
-VITE_ALLOWED_HOSTS=yourdomain.com,www.yourdomain.com
 ```
 
 The build process will embed these values directly into the application bundle.
 
 ### Build Optimization
+
 The production build includes:
+
 - Tree shaking for smaller bundle sizes
 - Asset optimization and compression
 - TypeScript compilation and type checking
