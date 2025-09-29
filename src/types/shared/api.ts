@@ -33,11 +33,14 @@ export interface HealthResponse {
  * From gRPC GetStatus call
  */
 export interface StatusResponse {
-  current_tick: string
-  total_transactions: string
-  pending_transactions: string
-  uptime_seconds: string
-  transactions_per_second: number
+  chain_height: number
+  last_60_seconds: {
+    mean_tick_time_micros: number
+    tick_count: number
+  }
+  latest_tick: number
+  status: string
+  total_transactions: number
 }
 
 /**

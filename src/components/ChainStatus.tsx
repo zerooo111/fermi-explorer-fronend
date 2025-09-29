@@ -1,8 +1,6 @@
 import NumberFlow from "@number-flow/react";
 import { useQuery } from "@tanstack/react-query";
 import type { StatusResponse } from "../types/shared/api";
-import { toBN, toSafeNumber } from "../utils/shared/big-numbers";
-import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { getApiUrl } from "@/lib/api";
 
@@ -35,12 +33,6 @@ const MetricCard = ({
 };
 
 export function ChainStatus() {
-  const [tps, setTps] = useState(0);
-  const [tickTime, setTickTime] = useState(0);
-  const previousTickRef = useRef<{ tick: number; timestamp: number } | null>(
-    null
-  );
-
   const { data: metrics } = useQuery({
     queryKey: ["chain-status"],
     queryFn: async () => {
@@ -57,43 +49,18 @@ export function ChainStatus() {
     refetchOnReconnect: true,
   });
 
-  useEffect(() => {
-    if (metrics?.current_tick) {
-      const currentTick = toSafeNumber(toBN(metrics.current_tick));
-
-      if (previousTickRef.current) {
-        const tickDiff = currentTick - previousTickRef.current.tick;
-
-        if (tickDiff >= 0) {
-          // Randomize TPS between >9256 and <=10256
-          const randomTps = Math.floor(Math.random() * (10256 - 9256)) + 9257;
-          setTps(randomTps);
-
-          // Calculate tick time using 1/TPS formula
-          const tickRate = 1 / randomTps; // Time per tick in seconds
-          setTickTime(Math.round(tickRate * 1000 * 1000) / 1000); // Convert to ms and round to 3 decimal places
-        }
-      }
-
-      previousTickRef.current = {
-        tick: currentTick,
-        timestamp: Date.now(),
-      };
-    }
-  }, [metrics?.current_tick]);
-
   return (
     <div className="flex flex-col gap-4">
       <div className="grid-cols-2 grid divide-x divide-zinc-700 border border-zinc-700">
         <MetricCard
           title="CHAIN HEIGHT"
-          value={toSafeNumber(toBN(metrics?.current_tick ?? "0"))}
+          value={metrics?.chain_height ?? 0}
           trend={TREND_DIRECTION}
         />
 
         <MetricCard
           title="TOTAL TXNs"
-          value={toSafeNumber(toBN(metrics?.total_transactions ?? "0"))}
+          value={metrics?.total_transactions ?? 0}
           trend={TREND_DIRECTION}
         />
       </div>
@@ -101,15 +68,19 @@ export function ChainStatus() {
       <div className="grid-cols-3 grid divide-x divide-zinc-700 border border-zinc-700">
         <MetricCard
           title="TXNs PER SEC"
-          value={Math.round(metrics?.transactions_per_second ?? 0)}
+          value={Math.round((metrics?.total_transactions ?? 0) / 60)}
           trend={TREND_DIRECTION}
         />
 
-        <MetricCard title="TICKS PER SEC" value={tps} trend={TREND_DIRECTION} />
+        <MetricCard
+          title="TICKS PER SEC"
+          value={Math.round((metrics?.last_60_seconds?.tick_count ?? 0) / 60)}
+          trend={TREND_DIRECTION}
+        />
 
         <MetricCard
           title="TICK TIME (MS)"
-          value={tickTime}
+          value={(metrics?.last_60_seconds?.mean_tick_time_micros ?? 0) / 1000}
           trend={TREND_DIRECTION}
         />
       </div>
