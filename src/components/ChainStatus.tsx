@@ -49,6 +49,24 @@ export function ChainStatus() {
     refetchOnReconnect: true,
   });
 
+    const { data: chain_state } = useQuery({
+    queryKey: ["chain-status-v2"],
+    queryFn: async () => {
+      const res = (await fetch(getApiUrl("/api/v1/chain-state")).then((r) =>
+        r.json()
+      )) as { current_tick: number, total_transactions: number};
+      console.log({chain_state: res})
+      return res;
+    },
+    staleTime: 0,
+    gcTime: 0,
+    refetchInterval: REFETCH_INTERVAL,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: true,
+  });
+
+
   return (
     <div className="flex flex-col gap-4">
       <div className="grid-cols-2 grid divide-x divide-zinc-700 border border-zinc-700">
@@ -60,7 +78,7 @@ export function ChainStatus() {
 
         <MetricCard
           title="TOTAL TXNs"
-          value={metrics?.total_transactions ?? 0}
+          value={chain_state?.total_transactions ?? 0}
           trend={TREND_DIRECTION}
         />
       </div>
