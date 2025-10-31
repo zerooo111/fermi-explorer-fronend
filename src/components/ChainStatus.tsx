@@ -2,7 +2,7 @@ import NumberFlow from "@number-flow/react";
 import { useQuery } from "@tanstack/react-query";
 import type { StatusResponse } from "../types/shared/api";
 import { cn } from "@/lib/utils";
-import { getApiUrl } from "@/lib/api";
+import { API_ROUTES } from "@/api/routes";
 
 const REFETCH_INTERVAL = 500;
 const TREND_DIRECTION = 1;
@@ -33,30 +33,11 @@ const MetricCard = ({
 };
 
 export function ChainStatus() {
-  const { data: metrics } = useQuery({
+  const { data: metrics } = useQuery<StatusResponse>({
     queryKey: ["chain-status"],
     queryFn: async () => {
-      const res = (await fetch(getApiUrl("/api/v1/status")).then((r) =>
-        r.json()
-      )) as StatusResponse;
-      return res;
-    },
-    staleTime: 0,
-    gcTime: 0,
-    refetchInterval: REFETCH_INTERVAL,
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
-    refetchOnReconnect: true,
-  });
-
-    const { data: chain_state } = useQuery({
-    queryKey: ["chain-status-v2"],
-    queryFn: async () => {
-      const res = (await fetch(getApiUrl("/api/v1/chain-state")).then((r) =>
-        r.json()
-      )) as { current_tick: number, total_transactions: number};
-      console.log({chain_state: res})
-      return res;
+      const res = await fetch(API_ROUTES.STATUS).then((r) => r.json());
+      return res as StatusResponse;
     },
     staleTime: 0,
     gcTime: 0,
@@ -78,7 +59,7 @@ export function ChainStatus() {
 
         <MetricCard
           title="TOTAL TXNs"
-          value={chain_state?.total_transactions ?? 0}
+          value={metrics?.total_transactions ?? 0}
           trend={TREND_DIRECTION}
         />
       </div>
@@ -86,19 +67,19 @@ export function ChainStatus() {
       <div className="grid-cols-3 grid divide-x divide-zinc-700 border border-zinc-700">
         <MetricCard
           title="TXNs PER SEC"
-          value={Math.round((metrics?.total_transactions ?? 0) / 60)}
+          value={Math.round(metrics?.txn_per_second ?? 0)}
           trend={TREND_DIRECTION}
         />
 
         <MetricCard
           title="TICKS PER SEC"
-          value={Math.round((metrics?.last_60_seconds?.tick_count ?? 0) / 60)}
+          value={Math.round(metrics?.ticks_per_second ?? 0)}
           trend={TREND_DIRECTION}
         />
 
         <MetricCard
           title="TICK TIME (MS)"
-          value={(metrics?.last_60_seconds?.mean_tick_time_micros ?? 0) / 1000}
+          value={metrics?.average_tick_time ?? (metrics?.last_60_seconds?.mean_tick_time_micros ?? 0) / 1000}
           trend={TREND_DIRECTION}
         />
       </div>

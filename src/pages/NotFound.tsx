@@ -15,7 +15,7 @@ export default function NotFoundPage() {
 
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 flex items-center justify-center p-6">
-      <div className="text-center border border-zinc-700 bg-zinc-950 p-8 max-w-md w-full">
+      <div className="text-center border border-zinc-700 bg-zinc-950 p-8 max-w-md  w-full">
         <h1 className="text-6xl font-bold font-mono text-red-400 mb-6">404</h1>
         <h2 className="text-2xl font-bold font-mono tracking-tight text-zinc-100 uppercase mb-4">
           Page Not Found

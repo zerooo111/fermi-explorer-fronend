@@ -34,13 +34,18 @@ export interface HealthResponse {
  */
 export interface StatusResponse {
   chain_height: number
-  last_60_seconds: {
+  total_transactions: number
+  status: string
+  uptime_seconds: number
+  txn_per_second: number
+  ticks_per_second: number
+  average_tick_time: number
+  // Optional legacy fields for backward compatibility
+  last_60_seconds?: {
     mean_tick_time_micros: number
     tick_count: number
   }
-  latest_tick: number
-  status: string
-  total_transactions: number
+  latest_tick?: number
 }
 
 /**

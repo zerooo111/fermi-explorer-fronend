@@ -6,7 +6,7 @@ import type { RecentTicksResponse } from "@/api/types";
 import { queryKeys } from "@/api/queryKeys";
 import { format } from "date-fns";
 import NumberFlow from "@number-flow/react";
-import { getApiUrl } from "@/lib/api";
+import { API_ROUTES } from "@/api/routes";
 
 interface RecentTicksProps {
   limit?: number;
@@ -17,7 +17,7 @@ export function RecentTicks({ limit = 50 }: RecentTicksProps) {
   const { data, dataUpdatedAt, isLoading } = useQuery<RecentTicksResponse, Error>({
     queryKey: queryKeys.ticks.recent({ limit }),
     queryFn: async () => {
-      const response = await axios.get<RecentTicksResponse>(getApiUrl(`/api/v1/ticks/recent?limit=${limit}`))
+      const response = await axios.get<RecentTicksResponse>(API_ROUTES.RECENT_TICKS(limit))
       return response.data
     },
     refetchInterval: 1000,

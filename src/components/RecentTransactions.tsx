@@ -5,7 +5,7 @@ import { TransactionTableSkeleton } from "@/components/ui/skeleton";
 import { queryKeys } from "@/api/queryKeys";
 import { format } from "date-fns";
 import NumberFlow from "@number-flow/react";
-import { getApiUrl } from "@/lib/api";
+import { API_ROUTES } from "@/api/routes";
 
 interface Transaction {
   tick_number: number;
@@ -36,7 +36,7 @@ export function RecentTransactions({ limit = 50 }: RecentTransactionsProps) {
   const { data, dataUpdatedAt, isLoading } = useQuery<RecentTransactionsResponse, Error>({
     queryKey: [...queryKeys.transactions.all(), 'recent', { limit }],
     queryFn: async () => {
-      const response = await axios.get<RecentTransactionsResponse>(getApiUrl(`/api/v1/tx/recent?limit=${limit}`))
+      const response = await axios.get<RecentTransactionsResponse>(API_ROUTES.RECENT_TX(limit))
       return response.data
     },
     refetchInterval: 1000,

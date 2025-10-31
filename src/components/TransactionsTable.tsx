@@ -9,17 +9,45 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { TransactionData } from "../types/shared/api";
+type TransactionsTableRow = {
+  tx_hash: string;
+  sequence_number: number;
+  tick_number: number;
+  tx_id: string;
+  // Possible time fields from various endpoints
+  timestamp?: number; // microseconds
+  ingestion_timestamp?: number; // microseconds
+  client_timestamp?: number; // microseconds
+  created_at?: string; // ISO timestamp
+};
 
 interface TransactionsTableProps {
-  transactions: TransactionData[];
+  transactions: TransactionsTableRow[];
   className?: string;
 }
 
 export function TransactionsTable({ transactions }: TransactionsTableProps) {
   const TransactionRow = React.memo(
-    ({ transaction }: { transaction: TransactionData }) => {
-      const transactionDate = new Date(transaction.timestamp / 1000);
+    ({ transaction }: { transaction: TransactionsTableRow }) => {
+      // Prefer server creation time, then ingestion, then canonical timestamp, then client time
+      const millisFromMicros = (value?: number) =>
+        typeof value === "number" ? Math.floor(value / 1000) : undefined;
+
+      const createdAtDate = transaction.created_at
+        ? new Date(transaction.created_at)
+        : undefined;
+      const ingestionDateMs = millisFromMicros(transaction.ingestion_timestamp);
+      const timestampDateMs = millisFromMicros(transaction.timestamp);
+      const clientDateMs = millisFromMicros(transaction.client_timestamp);
+
+      const referenceMs =
+        (createdAtDate?.getTime?.() as number | undefined) ??
+        ingestionDateMs ??
+        timestampDateMs ??
+        clientDateMs;
+
+      const transactionDate =
+        referenceMs !== undefined ? new Date(referenceMs) : new Date();
       const millisecondsAgo = differenceInMilliseconds(
         new Date(),
         transactionDate

@@ -1,5 +1,6 @@
 import { useHealth } from "@/hooks";
 import { cn } from "@/lib/utils";
+import { Logo } from "./Logo";
 
 const StatusIndicator = ({
   isHealthy,
@@ -55,12 +56,13 @@ export default function Header() {
       <nav className="px-4 sm:px-6 container flex items-center justify-between mx-auto max-w-screen-xl">
         <a
           href="/"
-          className="text-lg sm:text-xl font-bold font-mono tracking-tight text-zinc-100"
-        >
-          <span className="text-zinc-100">FERMI</span>
-          <span className="text-zinc-500 font-light italic ml-1 sm:ml-2 text-sm sm:text-base">
-            Explorer
-          </span>
+          className="text-lg sm:text-xl italic flex items-center font-medium  tracking-tight text-zinc-100"
+        > 
+        <Logo className='h-6 pr-1'/>
+        Continuum 
+        <span className="text-emerald-500 font-light ml-1 ">
+          Explorer
+        </span>
         </a>
         <StatusIndicator
           isHealthy={isHealthy}
