@@ -1,5 +1,5 @@
 /**
- * Environment configuration for Fermi Explorer
+ * Environment configuration for Continuum Explorer
  * Centralizes all environment variable handling with type safety and defaults
  */
 

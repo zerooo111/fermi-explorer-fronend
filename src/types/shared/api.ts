@@ -1,5 +1,5 @@
 /**
- * Shared API types for Fermi Explorer
+ * Shared API types for Continuum Explorer
  * 
  * Core interfaces used across frontend and backend for API communication.
  * These types ensure consistency between client and server implementations.

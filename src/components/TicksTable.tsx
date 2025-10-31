@@ -80,8 +80,8 @@ export function TicksTable({ ticks }: TicksTableProps) {
   }
 
   const tableContent = (
-    <div className="mobile-scroll-table">
-      <Table className="w-full">
+    <div className="mobile-scroll-table w-full overflow-x-auto">
+      <Table className="w-full min-w-[280px]">
         <TableHeader>
           <TableRow>
             <TableHead className="whitespace-nowrap">Tick #</TableHead>

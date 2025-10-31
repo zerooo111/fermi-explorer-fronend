@@ -16,7 +16,7 @@ export interface RequestLimits {
 }
 
 /**
- * Shared validation utilities for Fermi Explorer
+ * Shared validation utilities for Continuum Explorer
  */
 
 /**

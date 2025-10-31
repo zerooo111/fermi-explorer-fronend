@@ -1,5 +1,5 @@
 /**
- * Shared constants for Fermi Explorer
+ * Shared constants for Continuum Explorer
  */
 
 /**

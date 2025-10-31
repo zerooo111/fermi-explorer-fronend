@@ -1,5 +1,5 @@
 /**
- * Shared utilities for Fermi Explorer monorepo
+ * Shared utilities for Continuum Explorer monorepo
  * 
  * This package contains common utility functions used across
  * the frontend and backend applications.

@@ -152,14 +152,13 @@ number-flow {
   }
 }
 
-/* Mobile table styles */
+/* Responsive table styles - enable horizontal scroll on all screen sizes */
+.mobile-scroll-table {
+  display: block;
+  -webkit-overflow-scrolling: touch;
+}
+
 @media (max-width: 640px) {
-  .mobile-scroll-table {
-    display: block;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  
   .mobile-scroll-table table {
     min-width: 100%;
   }

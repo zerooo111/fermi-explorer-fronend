@@ -4,7 +4,6 @@ import {
   createRouter,
   redirect,
 } from '@tanstack/react-router'
-import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import Layout from '@/components/Layout'
 import Homepage from '@/pages/Homepage'
 import TransactionPage from '@/pages/TransactionPage'
@@ -26,7 +25,6 @@ export const rootRoute = createRootRoute({
       }}
     >
       <Layout />
-      <TanStackRouterDevtools />
     </ErrorBoundary>
   ),
 })

@@ -1,7 +1,7 @@
 import { calculateAgeFromMicroseconds, microsecondsToMilliseconds } from './big-numbers'
 
 /**
- * Enhanced formatting utilities for Fermi Explorer
+ * Enhanced formatting utilities for Continuum Explorer
  */
 
 export function formatNumber(num: number | undefined): string {

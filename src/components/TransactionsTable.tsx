@@ -55,41 +55,42 @@ export function TransactionsTable({ transactions }: TransactionsTableProps) {
 
       return (
         <TableRow key={transaction.tx_hash} className="h-10">
-          <TableCell className="font-mono font-medium text-zinc-300 tabular-nums text-xs sm:text-sm text-left">
+          <TableCell className="font-mono font-medium text-zinc-300 tabular-nums text-xs sm:text-sm text-left min-w-[60px] md:min-w-[80px]">
             <span className="hover:text-zinc-100" title={transaction.tx_hash}>
               {transaction.sequence_number}
             </span>
           </TableCell>
-          <TableCell className="font-mono font-medium text-zinc-300 tabular-nums text-xs sm:text-sm text-left ">
+          <TableCell className="font-mono font-medium text-zinc-300 tabular-nums text-xs sm:text-sm text-left min-w-[100px] md:min-w-[140px]">
             <a
               href={`/tx/${transaction.tx_hash.slice(0, 8)}`}
               target="_blank"
-              className="hover:text-zinc-100 hover:underline"
+              className="hover:text-zinc-100 hover:underline truncate block"
               title={transaction.tx_hash}
             >
-              {transaction.tx_hash.slice(0, 8)}...
-              {transaction.tx_hash.slice(-8)}
+              <span className="md:hidden">{transaction.tx_hash.slice(0, 6)}...{transaction.tx_hash.slice(-6)}</span>
+              <span className="hidden md:inline">{transaction.tx_hash.slice(0, 8)}...{transaction.tx_hash.slice(-8)}</span>
             </a>
           </TableCell>
-          <TableCell className="text-zinc-400 text-xs sm:text-sm text-left font-mono">
+          <TableCell className="text-zinc-400 text-xs sm:text-sm text-left font-mono min-w-[70px] md:min-w-[90px]">
             <a
               href={`/tick/${transaction.tick_number}`}
               target="_blank"
-              className="sm:block hover:text-zinc-100 hover:underline"
+              className="hover:text-zinc-100 hover:underline"
             >
               {transaction.tick_number}
             </a>
           </TableCell>
           <TableCell className="text-zinc-400 text-xs sm:text-sm text-left font-mono">
-            <div className="truncate max-w-[120px] sm:max-w-[200px]">
+            <div className="truncate max-w-[80px] md:max-w-[120px] lg:max-w-[200px]">
               {transaction.tx_id}
             </div>
           </TableCell>
-          <TableCell className="text-zinc-600 font-mono text-xs sm:text-sm text-right min-w-[90px] sm:min-w-36 whitespace-nowrap">
-            <span className="sm:hidden">
+          <TableCell className="text-zinc-600 font-mono text-xs sm:text-sm text-right min-w-[70px] md:min-w-[90px] lg:min-w-[140px] whitespace-nowrap">
+            <span className="md:hidden">
               {Math.round(millisecondsAgo / 1000)}s ago
             </span>
-            <span className="hidden sm:inline">{millisecondsAgo} ms ago</span>
+            <span className="hidden md:inline lg:hidden">{millisecondsAgo}ms</span>
+            <span className="hidden lg:inline">{millisecondsAgo} ms ago</span>
           </TableCell>
         </TableRow>
       );
@@ -109,8 +110,8 @@ export function TransactionsTable({ transactions }: TransactionsTableProps) {
   }
 
   const tableContent = (
-    <div className="mobile-scroll-table">
-      <Table className="w-full">
+    <div className="mobile-scroll-table overflow-x-auto">
+      <Table className="w-full min-w-[600px]">
         <TableHeader>
           <TableRow>
             <TableHead className="whitespace-nowrap">Sequence #</TableHead>

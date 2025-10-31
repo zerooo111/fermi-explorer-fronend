@@ -1,5 +1,5 @@
 /**
- * Shared types for Fermi Explorer monorepo
+ * Shared types for Continuum Explorer monorepo
  * 
  * This package contains all shared TypeScript interfaces and types
  * used across the frontend and backend applications.
