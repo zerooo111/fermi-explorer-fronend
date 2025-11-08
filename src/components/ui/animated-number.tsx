@@ -90,7 +90,6 @@ export function AnimatedNumber({
 
     // Determine if we should round to integers during animation
     const maxFractionDigits = format?.maximumFractionDigits ?? 2;
-    const minFractionDigits = format?.minimumFractionDigits ?? 0;
     const shouldRoundToInteger = maxFractionDigits === 0 && 
                                  Number.isInteger(oldValue) && 
                                  Number.isInteger(newValue);
