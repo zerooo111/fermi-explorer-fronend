@@ -1,22 +1,21 @@
-import NumberFlow from "@number-flow/react";
 import { useQuery } from "@tanstack/react-query";
 import type { StatusResponse } from "../types/shared/api";
 import { cn } from "@/lib/utils";
 import { API_ROUTES } from "@/api/routes";
+import { AnimatedNumber } from "./ui/animated-number";
 
 const REFETCH_INTERVAL = 500;
-const TREND_DIRECTION = 1;
 
 const MetricCard = ({
   title,
   value,
-  trend,
   className,
+  showFractions = false,
 }: {
   title: string;
   value: number;
-  trend: number;
   className?: string;
+  showFractions?: boolean;
 }) => {
   return (
     <div
@@ -26,7 +25,16 @@ const MetricCard = ({
         {title}
       </div>
       <div className="text-xl sm:text-3xl font-bold text-zinc-100 font-mono">
-        <NumberFlow format={{ currency: "USD" }} value={value} trend={trend} />
+        <AnimatedNumber
+          value={value}
+          format={{
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 2,
+          }}
+          duration={REFETCH_INTERVAL}
+          trend={1}
+          showFractions={showFractions}
+        />
       </div>
     </div>
   );
@@ -54,13 +62,11 @@ export function ChainStatus() {
         <MetricCard
           title="CHAIN HEIGHT"
           value={metrics?.chain_height ?? 0}
-          trend={TREND_DIRECTION}
         />
 
         <MetricCard
           title="TOTAL TXNs"
           value={metrics?.total_transactions ?? 0}
-          trend={TREND_DIRECTION}
         />
       </div>
 
@@ -68,19 +74,17 @@ export function ChainStatus() {
         <MetricCard
           title="TXNs PER SEC"
           value={Math.round(metrics?.txn_per_second ?? 0)}
-          trend={TREND_DIRECTION}
         />
 
         <MetricCard
           title="TICKS PER SEC"
           value={Math.round(metrics?.ticks_per_second ?? 0)}
-          trend={TREND_DIRECTION}
         />
 
         <MetricCard
           title="TICK TIME (MS)"
           value={metrics?.average_tick_time ?? (metrics?.last_60_seconds?.mean_tick_time_micros ?? 0) / 1000}
-          trend={TREND_DIRECTION}
+          showFractions={true}
         />
       </div>
     </div>

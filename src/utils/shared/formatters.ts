@@ -58,7 +58,7 @@ export function convertMicroTimestampToDate(timestamp: string | number): Date {
   return new Date(milliseconds)
 }
 
-// Trend calculation utilities for NumberFlow
+// Trend calculation utilities
 export function calculateTrend(oldValue: number, newValue: number): number {
   return Math.sign(newValue - oldValue)
 }

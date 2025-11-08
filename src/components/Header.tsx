@@ -56,13 +56,14 @@ export default function Header() {
       <nav className="px-4 sm:px-6 container flex items-center justify-between mx-auto max-w-screen-xl">
         <a
           href="/"
-          className="text-lg sm:text-xl italic flex items-center font-medium  tracking-tight text-zinc-100"
-        > 
-        <Logo className='h-6 pr-1'/>
-        Continuum 
-        <span className="text-emerald-500 font-light ml-1 ">
-          Explorer
-        </span>
+          className="text-lg sm:text-xl flex items-center font-medium  tracking-tight text-zinc-100"
+        >
+          <Logo className="h-6 pr-1" />
+          Continuum
+          <span className="text-emerald-500 font-light ml-1 ">Explorer</span>
+          <span className="bg-yellow-400 ml-2 font-bold  text-zinc-950  text-sm tracking-wide px-1.5 py-0.5">
+            TESTNET
+          </span>
         </a>
         <StatusIndicator
           isHealthy={isHealthy}

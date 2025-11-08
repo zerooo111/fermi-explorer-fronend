@@ -28,9 +28,6 @@
   --status-yellow: #eab308;
   --status-red: #ef4444;
 
-  /* NumberFlow custom properties for consistent animations */
-  --number-flow-mask-height: 1em;
-  --number-flow-char-height: 1em;
 }
 
 html {
@@ -77,16 +74,9 @@ body {
   color: var(--zinc-100);
 }
 
-/* NumberFlow optimizations */
 .tabular-nums {
   font-variant-numeric: tabular-nums;
   font-family: 'Geist Mono', 'JetBrains Mono', monospace;
-}
-
-/* Improve NumberFlow performance and smoothness */
-number-flow {
-  contain: layout style;
-  will-change: transform;
 }
 
 /* Animations */
@@ -103,6 +93,68 @@ number-flow {
 
 .animate-fade-in {
   animation: fadeIn 0.3s ease-out;
+}
+
+/* AnimatedNumber component animations */
+@keyframes slideUp {
+  0% {
+    transform: translateY(4px);
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  0% {
+    transform: translateY(-4px);
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes numberChange {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-slide-down {
+  animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-number-change {
+  animation: numberChange calc(var(--animation-duration, 400ms) * 0.5) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .animate-slide-up,
+  .animate-slide-down,
+  .animate-number-change {
+    animation: none;
+  }
 }
 
 /* Table row hover effects */
