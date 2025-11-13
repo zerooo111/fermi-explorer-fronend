@@ -5,7 +5,7 @@ import { RouterProvider } from '@tanstack/react-router'
 import './styles.css'
 import reportWebVitals from './reportWebVitals.ts'
 import { router } from './router'
-import { QueryProvider } from './providers/QueryProvider'
+import { QueryProvider } from './shared/providers/QueryProvider'
 
 const rootElement = document.getElementById('app')
 if (rootElement && !rootElement.innerHTML) {

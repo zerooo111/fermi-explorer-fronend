@@ -7,7 +7,7 @@ export default function NotFoundPage() {
   useEffect(() => {
     // Redirect to homepage after a short delay
     const redirectTimer = setTimeout(() => {
-      navigate({ to: '/' })
+      navigate({ to: '/continuum' })
     }, 5000)
 
     return () => clearTimeout(redirectTimer)
