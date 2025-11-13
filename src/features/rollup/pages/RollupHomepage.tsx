@@ -118,7 +118,7 @@ export default function RollupHomepage() {
 										.join("");
 									return (
 										<TableRow key={block.height}>
-											<TableCell>
+											<TableCell className="py-2 sm:py-3">
 												<Link
 													to="/rollup/blocks/$height"
 													params={{ height: block.height.toString() }}
@@ -128,7 +128,7 @@ export default function RollupHomepage() {
 													<ArrowRight className="h-3 w-3 opacity-0 group-hover/link:opacity-100 group-hover/link:translate-x-1 transition-all" />
 												</Link>
 											</TableCell>
-											<TableCell>
+											<TableCell className="py-2 sm:py-3">
 												<div className="space-y-1">
 													<p className="text-xs sm:text-sm font-mono text-zinc-100">
 														{formatTimestamp(block.produced_at)}
@@ -138,22 +138,22 @@ export default function RollupHomepage() {
 													</p>
 												</div>
 											</TableCell>
-											<TableCell>
+											<TableCell className="py-2 sm:py-3">
 												<span className="font-mono text-sm font-semibold tabular-nums text-zinc-300">
 													{block.transaction_ids.length}
 												</span>
 											</TableCell>
-											<TableCell>
+											<TableCell className="py-2 sm:py-3">
 												<span className="font-mono text-sm font-semibold tabular-nums text-zinc-300">
 													{block.total_orders}
 												</span>
 											</TableCell>
-											<TableCell>
+											<TableCell className="py-2 sm:py-3">
 												<span className="font-mono text-sm font-semibold tabular-nums text-zinc-300">
 													{block.total_cancels}
 												</span>
 											</TableCell>
-											<TableCell className="text-right">
+											<TableCell className="text-right py-2 sm:py-3">
 												<span className="font-mono text-xs sm:text-sm text-zinc-400">
 													{truncateAddress(stateRootHex, 8, 8)}
 												</span>

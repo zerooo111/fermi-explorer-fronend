@@ -83,8 +83,8 @@ export function ChainStatus() {
         />
 
         <MetricCard
-          title="TICK TIME (MS)"
-          value={metrics?.average_tick_time ?? (metrics?.last_60_seconds?.mean_tick_time_micros ?? 0) / 1000}
+          title="TICK TIME (μS)"
+          value={metrics?.average_tick_time != null ? metrics.average_tick_time * 1000 : (metrics?.last_60_seconds?.mean_tick_time_micros ?? 0)}
           showFractions={true}
         />
       </div>

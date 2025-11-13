@@ -36,7 +36,7 @@ const StatusIndicator = ({
   return (
     <div
       className={cn(
-        "font-mono font-medium flex items-center gap-2 sm:gap-3 border border-zinc-700 py-1.5 sm:py-2 px-2 sm:px-4 bg-zinc-950 hover:bg-zinc-900 transition-colors duration-200 cursor-pointer text-xs sm:text-sm"
+        "font-mono font-medium flex items-center gap-2 sm:gap-3 border border-zinc-700  px-3 h-8 bg-zinc-950 hover:bg-zinc-900 transition-colors duration-200 cursor-pointer text-xs sm:text-sm"
       )}
     >
       <span className={cn("size-2 border", getStatusColor())} />
@@ -60,7 +60,7 @@ export default function Header() {
   const explorerColor = isRollupActive ? "text-blue-500" : "text-emerald-500";
 
   return (
-    <header className="border-b border-zinc-700 bg-zinc-950">
+    <header className="border-b border-zinc-700 bg-zinc-950 py-1">
       <nav className="px-4 sm:px-6 container flex items-center justify-between mx-auto max-w-screen-xl">
         <Link
           to="/continuum"
@@ -77,11 +77,11 @@ export default function Header() {
         </Link>
         <div className="flex items-center gap-4">
           {/* Explorer Tabs */}
-          <div className="flex items-center gap-1 border border-zinc-700 rounded-md p-1 bg-zinc-900">
+          <div className="h-8 flex items-center  border border-zinc-700 rounded-md bg-zinc-900">
             <Link
               to="/continuum"
               className={cn(
-                "px-3 py-1.5 text-xs sm:text-sm font-mono transition-colors rounded",
+                "px-3 h-[30px] flex items-center text-xs sm:text-sm font-mono transition-colors rounded",
                 isContinuumActive
                   ? "bg-zinc-800 text-emerald-400 font-semibold"
                   : "text-zinc-400 hover:text-zinc-200"
@@ -92,7 +92,7 @@ export default function Header() {
             <Link
               to="/rollup"
               className={cn(
-                "px-3 py-1.5 text-xs sm:text-sm font-mono transition-colors rounded",
+                "px-3 h-[30px] flex items-center text-xs sm:text-sm font-mono transition-colors rounded",
                 isRollupActive
                   ? "bg-zinc-800 text-blue-400 font-semibold"
                   : "text-zinc-400 hover:text-zinc-200"

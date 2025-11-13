@@ -191,7 +191,7 @@ export default function TransactionPage() {
 										<TableCell className="text-xs py-2 bg-neutral-900/50 sm:text-sm font-mono">
 											Base Mint
 										</TableCell>
-										<TableCell className="text-xs sm:text-sm font-mono break-all text-zinc-100">
+										<TableCell className="text-xs sm:text-sm font-mono break-all text-zinc-100 py-2 sm:py-3">
 											{transaction.base_mint}
 										</TableCell>
 									</TableRow>
@@ -199,7 +199,7 @@ export default function TransactionPage() {
 										<TableCell className="text-xs py-2 bg-neutral-900/50 sm:text-sm font-mono">
 											Quote Mint
 										</TableCell>
-										<TableCell className="text-xs sm:text-sm font-mono break-all text-zinc-100">
+										<TableCell className="text-xs sm:text-sm font-mono break-all text-zinc-100 py-2 sm:py-3">
 											{transaction.quote_mint}
 										</TableCell>
 									</TableRow>
@@ -258,7 +258,7 @@ export default function TransactionPage() {
 										<TableCell className="text-xs py-2 bg-neutral-900/50 sm:text-sm font-mono">
 											Market ID
 										</TableCell>
-										<TableCell className="text-xs sm:text-sm font-mono break-all text-zinc-100">
+										<TableCell className="text-xs sm:text-sm font-mono break-all text-zinc-100 py-2 sm:py-3">
 											{transaction.market_id}
 										</TableCell>
 									</TableRow>

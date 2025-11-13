@@ -157,27 +157,27 @@ export default function BlockDetailPage() {
 							<TableBody>
 								{data.block.batch_summaries.map((batch) => (
 									<TableRow key={batch.index}>
-										<TableCell>
+										<TableCell className="py-2 sm:py-3">
 											<span className="font-mono font-bold text-sm text-zinc-300">
 												#{batch.index}
 											</span>
 										</TableCell>
-										<TableCell>
+										<TableCell className="py-2 sm:py-3">
 											<span className="font-mono text-sm tabular-nums text-zinc-300">
 												{formatNumber(batch.tick_number)}
 											</span>
 										</TableCell>
-										<TableCell>
+										<TableCell className="py-2 sm:py-3">
 											<span className="font-mono text-sm font-semibold tabular-nums text-zinc-300">
 												{batch.order_count}
 											</span>
 										</TableCell>
-										<TableCell>
+										<TableCell className="py-2 sm:py-3">
 											<span className="font-mono text-sm font-semibold tabular-nums text-zinc-300">
 												{batch.cancel_count}
 											</span>
 										</TableCell>
-										<TableCell>
+										<TableCell className="py-2 sm:py-3">
 											<div className="flex items-center gap-2">
 												<span className="font-mono text-xs sm:text-sm text-zinc-400">
 													{batch.batch_hash.substring(0, 8)}...{batch.batch_hash.substring(batch.batch_hash.length - 8)}
@@ -219,7 +219,7 @@ export default function BlockDetailPage() {
 							<TableBody>
 								{data.transactions.map((tx) => (
 									<TableRow key={tx.id}>
-										<TableCell>
+										<TableCell className="py-2 sm:py-3">
 											<Link
 												to="/rollup/transactions/$id"
 												params={{ id: tx.id }}
@@ -229,15 +229,15 @@ export default function BlockDetailPage() {
 												<ArrowRight className="h-3 w-3 opacity-0 group-hover/link:opacity-100 group-hover/link:translate-x-1 transition-all" />
 											</Link>
 										</TableCell>
-										<TableCell>
+										<TableCell className="py-2 sm:py-3">
 											<span className="font-mono text-sm capitalize text-zinc-300">
 												{tx.kind}
 											</span>
 										</TableCell>
-										<TableCell>
+										<TableCell className="py-2 sm:py-3">
 											<span className="font-mono text-sm text-zinc-300">{tx.side}</span>
 										</TableCell>
-										<TableCell className="text-right">
+										<TableCell className="text-right py-2 sm:py-3">
 											<span className="font-mono text-xs sm:text-sm text-zinc-400">
 												{tx.owner.substring(0, 8)}...
 												{tx.owner.substring(tx.owner.length - 8)}
@@ -270,20 +270,20 @@ export default function BlockDetailPage() {
 							<TableBody>
 								{data.events.map((event) => (
 									<TableRow key={event.id}>
-										<TableCell>
+										<TableCell className="py-2 sm:py-3">
 											<span className="font-mono text-xs sm:text-sm text-zinc-300">{event.id}</span>
 										</TableCell>
-										<TableCell>
+										<TableCell className="py-2 sm:py-3">
 											<span className="font-mono text-xs sm:text-sm text-zinc-400">
 												{event.market_id.substring(0, 8)}...
 											</span>
 										</TableCell>
-										<TableCell>
+										<TableCell className="py-2 sm:py-3">
 											<span className="font-mono text-sm tabular-nums text-zinc-300">
 												{event.applied_orders}
 											</span>
 										</TableCell>
-										<TableCell className="text-right">
+										<TableCell className="text-right py-2 sm:py-3">
 											<span className="font-mono text-xs sm:text-sm text-zinc-400">
 												{event.batch_hash.substring(0, 12)}...
 											</span>
