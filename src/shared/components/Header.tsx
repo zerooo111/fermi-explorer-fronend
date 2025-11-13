@@ -1,3 +1,4 @@
+import { Link, useLocation } from "@tanstack/react-router";
 import { useHealth } from "@/shared/hooks/useHealth";
 import { cn } from "@/shared/lib/utils";
 import { Logo } from "./Logo";
@@ -48,28 +49,64 @@ const StatusIndicator = ({
 
 export default function Header() {
   const { data, isLoading: isConnecting, isError } = useHealth();
-
+  const location = useLocation();
   const isHealthy = data?.status === "healthy";
 
+  const isContinuumActive = location.pathname.startsWith("/continuum");
+  const isRollupActive = location.pathname.startsWith("/rollup");
+
+  // Determine explorer name and color based on active route
+  const explorerName = isRollupActive ? "Rollup" : "Continuum";
+  const explorerColor = isRollupActive ? "text-blue-500" : "text-emerald-500";
+
   return (
-    <header className="border-b border-zinc-700 h-14 sm:h-16 flex items-center bg-zinc-950">
+    <header className="border-b border-zinc-700 bg-zinc-950">
       <nav className="px-4 sm:px-6 container flex items-center justify-between mx-auto max-w-screen-xl">
-        <a
-          href="/continuum"
-          className="text-lg sm:text-xl flex items-center font-medium  tracking-tight text-zinc-100"
+        <Link
+          to="/continuum"
+          className="text-lg sm:text-xl flex items-center font-medium tracking-tight text-zinc-100"
         >
           <Logo className="h-6 pr-1" />
-          Continuum
-          <span className="text-emerald-500 font-light ml-1 ">Explorer</span>
-          <span className="bg-yellow-400 ml-2 font-bold  text-zinc-950  text-sm tracking-wide px-1.5 py-0.5">
+          Fermi
+          <span className={cn("font-light ml-1", explorerColor)}>
+            {explorerName} Explorer
+          </span>
+          <span className="bg-yellow-400 ml-2 font-bold text-zinc-950 text-sm tracking-wide px-1.5 py-0.5">
             TESTNET
           </span>
-        </a>
-        <StatusIndicator
-          isHealthy={isHealthy}
-          isConnecting={isConnecting}
-          isError={isError}
-        />
+        </Link>
+        <div className="flex items-center gap-4">
+          {/* Explorer Tabs */}
+          <div className="flex items-center gap-1 border border-zinc-700 rounded-md p-1 bg-zinc-900">
+            <Link
+              to="/continuum"
+              className={cn(
+                "px-3 py-1.5 text-xs sm:text-sm font-mono transition-colors rounded",
+                isContinuumActive
+                  ? "bg-zinc-800 text-emerald-400 font-semibold"
+                  : "text-zinc-400 hover:text-zinc-200"
+              )}
+            >
+              Continuum
+            </Link>
+            <Link
+              to="/rollup"
+              className={cn(
+                "px-3 py-1.5 text-xs sm:text-sm font-mono transition-colors rounded",
+                isRollupActive
+                  ? "bg-zinc-800 text-blue-400 font-semibold"
+                  : "text-zinc-400 hover:text-zinc-200"
+              )}
+            >
+              Rollup
+            </Link>
+          </div>
+          <StatusIndicator
+            isHealthy={isHealthy}
+            isConnecting={isConnecting}
+            isError={isError}
+          />
+        </div>
       </nav>
     </header>
   );

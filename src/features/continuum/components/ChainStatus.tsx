@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import type { StatusResponse } from "@/shared/types/shared/api";
 import { cn } from "@/shared/lib/utils";
-import { API_ROUTES } from "@/features/continuum/api/routes";
+import { continuumRoutes } from "@/shared/lib/routes";
 import { AnimatedNumber } from "@/shared/components/ui/animated-number";
 
 const REFETCH_INTERVAL = 500;
@@ -44,8 +45,8 @@ export function ChainStatus() {
   const { data: metrics } = useQuery<StatusResponse>({
     queryKey: ["chain-status"],
     queryFn: async () => {
-      const res = await fetch(API_ROUTES.STATUS).then((r) => r.json());
-      return res as StatusResponse;
+      const response = await axios.get<StatusResponse>(continuumRoutes.STATUS);
+      return response.data;
     },
     staleTime: 0,
     gcTime: 0,

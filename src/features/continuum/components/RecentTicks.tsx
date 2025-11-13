@@ -3,7 +3,7 @@ import axios from "axios";
 import { TicksTable } from "./TicksTable";
 import type { RecentTicksResponse } from "@/features/continuum/api/types";
 import { queryKeys } from "@/features/continuum/api/queryKeys";
-import { API_ROUTES } from "@/features/continuum/api/routes";
+import { continuumRoutes } from "@/shared/lib/routes";
 import { LastUpdated } from "@/shared/components/LastUpdated";
 import SectionHeading from "@/shared/components/SectionHeading";
 
@@ -20,7 +20,7 @@ export function RecentTicks({ limit = 50 }: RecentTicksProps) {
     queryKey: queryKeys.ticks.recent({ limit }),
     queryFn: async () => {
       const response = await axios.get<RecentTicksResponse>(
-        API_ROUTES.RECENT_TICKS(limit)
+        continuumRoutes.RECENT_TICKS(limit)
       );
       return response.data;
     },

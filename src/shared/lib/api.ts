@@ -1,8 +1,19 @@
-import { API_BASE_URL } from '@/shared/config/env';
+import { API_BASE_URL, WS_URL } from '@/shared/config/env';
+
+/**
+ * Creates a full API URL by combining a base URL with a route path
+ * @param route - The route path (e.g., '/status' or '/api/v1/continuum/status')
+ * @param baseUrl - Optional base URL (defaults to API_BASE_URL)
+ * @returns The complete API URL
+ */
+export function makeApiUrl(route: string, baseUrl: string = API_BASE_URL): string {
+  const cleanRoute = route.startsWith('/') ? route : `/${route}`;
+  const cleanBase = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
+  return `${cleanBase}${cleanRoute}`;
+}
 
 export function getApiUrl(path: string): string {
-  const cleanPath = path.startsWith('/') ? path : `/${path}`;
-  return `${API_BASE_URL}${cleanPath}`;
+  return makeApiUrl(path);
 }
 
 export function getWsUrl(path: string): string {

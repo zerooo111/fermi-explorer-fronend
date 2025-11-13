@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Tick } from "@/shared/types/shared/api";
-import { API_ROUTES } from "@/features/continuum/api/routes";
+import { continuumRoutes } from "@/shared/lib/routes";
 import { cn } from "@/shared/lib/utils";
 
 interface StreamTicksProps {
@@ -17,7 +17,7 @@ export function StreamTicks({ startTick, limit = 50, className, onTick }: Stream
   const eventSourceRef = useRef<EventSource | null>(null);
   const reconnectTimerRef = useRef<number | null>(null);
 
-  const streamUrl = useMemo(() => API_ROUTES.STREAM_TICKS(
+  const streamUrl = useMemo(() => continuumRoutes.STREAM_TICKS(
     startTick !== undefined ? { start_tick: startTick } : undefined
   ), [startTick]);
 

@@ -3,7 +3,7 @@ import axios from "axios";
 import { TransactionsTable } from "./TransactionsTable";
 import { TransactionTableSkeleton } from "@/shared/components/ui/skeleton";
 import { queryKeys } from "@/features/continuum/api/queryKeys";
-import { API_ROUTES } from "@/features/continuum/api/routes";
+import { continuumRoutes } from "@/shared/lib/routes";
 import { LastUpdated } from "@/shared/components/LastUpdated";
 import SectionHeading from "@/shared/components/SectionHeading";
 
@@ -40,7 +40,7 @@ export function RecentTransactions({ limit = 50 }: RecentTransactionsProps) {
     queryKey: [...queryKeys.transactions.all(), "recent", { limit }],
     queryFn: async () => {
       const response = await axios.get<RecentTransactionsResponse>(
-        API_ROUTES.RECENT_TX(limit)
+        continuumRoutes.RECENT_TX(limit)
       );
       return response.data;
     },

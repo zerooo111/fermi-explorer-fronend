@@ -9,9 +9,13 @@ import ContinuumHomepage from "@/features/continuum/pages/ContinuumHomepage";
 import ContinuumTransactionPage from "@/features/continuum/pages/TransactionPage";
 import ContinuumTickPage from "@/features/continuum/pages/TickPage";
 import RollupHomepage from "@/features/rollup/pages/RollupHomepage";
+import RollupBlocksPage from "@/features/rollup/pages/BlocksPage";
+import RollupBlockDetailPage from "@/features/rollup/pages/BlockDetailPage";
+import RollupTransactionPage from "@/features/rollup/pages/TransactionPage";
+import RollupAddressPage from "@/features/rollup/pages/AddressPage";
 import { ErrorBoundary } from "@/shared/components/ErrorBoundary";
 
-// Create the root route with layout and error boundary
+/* Create the root route with layout and error boundary */
 export const rootRoute = createRootRoute({
   component: () => (
     <ErrorBoundary
@@ -67,6 +71,30 @@ const rollupIndexRoute = createRoute({
   component: RollupHomepage,
 });
 
+const rollupBlocksRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/rollup/blocks",
+  component: RollupBlocksPage,
+});
+
+const rollupBlockDetailRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/rollup/blocks/$height",
+  component: RollupBlockDetailPage,
+});
+
+const rollupTransactionRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/rollup/transactions/$id",
+  component: RollupTransactionPage,
+});
+
+const rollupAddressRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/rollup/address/$pubkey",
+  component: RollupAddressPage,
+});
+
 // 404 Not Found route - redirect to continuum
 const notFoundRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -85,6 +113,10 @@ const routeTree = rootRoute.addChildren([
   continuumTransactionRoute,
   continuumTickRoute,
   rollupIndexRoute,
+  rollupBlocksRoute,
+  rollupBlockDetailRoute,
+  rollupTransactionRoute,
+  rollupAddressRoute,
   notFoundRoute,
 ]);
 
