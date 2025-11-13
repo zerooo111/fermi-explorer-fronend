@@ -75,7 +75,7 @@ export default function Header() {
             TESTNET
           </span>
         </Link>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-1 ">
           {/* Explorer Tabs */}
           <div className="h-8 flex items-center  border border-zinc-700 rounded-md bg-zinc-900">
             <Link
