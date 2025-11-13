@@ -56,14 +56,10 @@ export function ChainStatus() {
     refetchOnReconnect: true,
   });
 
-
   return (
     <div className="flex flex-col gap-4">
       <div className="grid-cols-2 grid divide-x divide-zinc-700 border border-zinc-700">
-        <MetricCard
-          title="CHAIN HEIGHT"
-          value={metrics?.chain_height ?? 0}
-        />
+        <MetricCard title="CHAIN HEIGHT" value={metrics?.chain_height ?? 0} />
 
         <MetricCard
           title="TOTAL TXNs"
@@ -84,7 +80,11 @@ export function ChainStatus() {
 
         <MetricCard
           title="TICK TIME (μS)"
-          value={metrics?.average_tick_time != null ? metrics.average_tick_time * 1000 : (metrics?.last_60_seconds?.mean_tick_time_micros ?? 0)}
+          value={
+            metrics?.average_tick_time != null
+              ? metrics.average_tick_time
+              : metrics?.last_60_seconds?.mean_tick_time_micros ?? 0
+          }
           showFractions={true}
         />
       </div>
