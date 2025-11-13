@@ -2,8 +2,7 @@ import { Link, useParams } from "@tanstack/react-router";
 import { ArrowLeft, Copy } from "lucide-react";
 import { useTransaction } from "@/features/rollup/hooks/useApi";
 import { PageSkeleton, TableSkeleton } from "@/shared/components/ui/skeleton";
-import { ErrorMessage } from "@/features/rollup/components/ErrorMessage";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shared/components/ui/table";
+import { Table, TableBody, TableCell, TableRow } from "@/shared/components/ui/table";
 import { buttonVariants } from "@/shared/components/ui/button";
 import { formatPrice, formatQuantity } from "@/features/rollup/lib/formatters";
 

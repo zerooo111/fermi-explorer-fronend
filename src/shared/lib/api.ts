@@ -1,4 +1,4 @@
-import { API_BASE_URL, WS_URL } from '@/shared/config/env';
+import { API_BASE_URL } from '@/shared/config/env';
 
 /**
  * Creates a full API URL by combining a base URL with a route path

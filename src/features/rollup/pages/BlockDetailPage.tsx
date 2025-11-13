@@ -2,7 +2,6 @@ import { Link, useParams } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight, Copy } from "lucide-react";
 import { useBlock } from "@/features/rollup/hooks/useApi";
 import { PageSkeleton, TableSkeleton } from "@/shared/components/ui/skeleton";
-import { ErrorMessage } from "@/features/rollup/components/ErrorMessage";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shared/components/ui/table";
 import { buttonVariants } from "@/shared/components/ui/button";
 import {

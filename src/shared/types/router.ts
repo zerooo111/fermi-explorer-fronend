@@ -1,4 +1,4 @@
-import type { router } from "../router";
+import type { router } from "../../router";
 
 // Infer the type of the router
 export type Router = typeof router;
