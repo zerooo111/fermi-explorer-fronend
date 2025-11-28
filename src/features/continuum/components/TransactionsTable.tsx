@@ -1,5 +1,4 @@
 import React from "react";
-import { differenceInMilliseconds } from "date-fns";
 
 import {
   Table,
@@ -9,6 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/shared/components/ui/table";
+
 type TransactionsTableRow = {
   tx_hash: string;
   sequence_number: number;
@@ -24,6 +24,11 @@ type TransactionsTableRow = {
 interface TransactionsTableProps {
   transactions: TransactionsTableRow[];
   className?: string;
+}
+
+function formatTimestamp(date: Date): string {
+  const pad = (n: number) => n.toString().padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
 }
 
 export function TransactionsTable({ transactions }: TransactionsTableProps) {
@@ -48,10 +53,7 @@ export function TransactionsTable({ transactions }: TransactionsTableProps) {
 
       const transactionDate =
         referenceMs !== undefined ? new Date(referenceMs) : new Date();
-      const millisecondsAgo = differenceInMilliseconds(
-        new Date(),
-        transactionDate
-      );
+      const formattedTime = formatTimestamp(transactionDate);
 
       return (
         <TableRow key={transaction.tx_hash} className="h-10">
@@ -85,12 +87,8 @@ export function TransactionsTable({ transactions }: TransactionsTableProps) {
               {transaction.tx_id}
             </div>
           </TableCell>
-          <TableCell className="text-zinc-600 font-mono text-xs sm:text-sm text-right min-w-[70px] md:min-w-[90px] lg:min-w-[140px] whitespace-nowrap">
-            <span className="md:hidden">
-              {Math.round(millisecondsAgo / 1000)}s ago
-            </span>
-            <span className="hidden md:inline lg:hidden">{millisecondsAgo}ms</span>
-            <span className="hidden lg:inline">{millisecondsAgo} ms ago</span>
+          <TableCell className="text-zinc-600 font-mono text-xs sm:text-sm text-right min-w-[70px] md:min-w-[90px] lg:min-w-[160px] whitespace-nowrap">
+            {formattedTime}
           </TableCell>
         </TableRow>
       );

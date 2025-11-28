@@ -162,13 +162,72 @@ export interface DatabaseTickResponse {
 export type TickResponse = ContinuumTickResponse | DatabaseTickResponse
 
 /**
- * VDF Proof structure
+ * VDF Proof structure (legacy format)
  */
 export interface VdfProof {
   input: string
   output: string
   proof: string
   iterations: number
+}
+
+// ============================================================================
+// New Continuum API Types (from Fermi API Gateway)
+// ============================================================================
+
+/**
+ * VDF Proof structure from new Continuum API
+ * GET /api/v1/continuum/tick/{tickNumber}
+ */
+export interface ContinuumVDFProof {
+  input: string
+  output: string
+  proof: string
+  iterations: number
+}
+
+/**
+ * Tick response from new Continuum API
+ * GET /api/v1/continuum/tick/{tickNumber}
+ */
+export interface ContinuumTick {
+  tick_number: number
+  timestamp: number
+  time: string
+  vdf_proof?: ContinuumVDFProof
+  transaction_count: number
+  transaction_batch_hash: string
+  previous_output?: string
+  ingested_at: string
+  transactions?: ContinuumTransaction[]
+}
+
+/**
+ * Transaction from new Continuum API
+ * GET /api/v1/continuum/txn/{txnId}
+ * GET /api/v1/continuum/txn/recent
+ */
+export interface ContinuumTransaction {
+  tx_hash: string
+  tx_id: string
+  payload: string
+  signature: string
+  public_key: string
+  nonce: number
+  client_timestamp: number
+  sequence_number: number
+  ingestion_timestamp: number
+  tick_number: number
+  created_at: string
+}
+
+/**
+ * Recent transactions response from new Continuum API
+ * GET /api/v1/continuum/txn/recent?limit={limit}
+ */
+export interface ContinuumRecentTransactionsResponse {
+  count: number
+  transactions: ContinuumTransaction[]
 }
 
 /**

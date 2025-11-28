@@ -1,53 +1,15 @@
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { TransactionsTable } from "./TransactionsTable";
 import { TransactionTableSkeleton } from "@/shared/components/ui/skeleton";
-import { queryKeys } from "@/features/continuum/api/queryKeys";
-import { continuumRoutes } from "@/shared/lib/routes";
 import { LastUpdated } from "@/shared/components/LastUpdated";
 import SectionHeading from "@/shared/components/SectionHeading";
-
-interface Transaction {
-  tick_number: number;
-  sequence_number: number;
-  tx_hash: string;
-  tx_id: string;
-  nonce: number;
-  payload: string;
-  timestamp: number;
-  signature: string;
-  ingestion_timestamp: number;
-  processed_at: string;
-  payload_size: number;
-  payload_type: string;
-  version: number;
-}
-
-interface RecentTransactionsResponse {
-  count: number;
-  transactions: Transaction[];
-}
+import { useContinuumRecentTransactions } from "@/features/continuum/hooks/useTransaction";
 
 interface RecentTransactionsProps {
   limit?: number;
 }
 
 export function RecentTransactions({ limit = 50 }: RecentTransactionsProps) {
-  const { data, dataUpdatedAt, isLoading } = useQuery<
-    RecentTransactionsResponse,
-    Error
-  >({
-    queryKey: [...queryKeys.transactions.all(), "recent", { limit }],
-    queryFn: async () => {
-      const response = await axios.get<RecentTransactionsResponse>(
-        continuumRoutes.RECENT_TX(limit)
-      );
-      return response.data;
-    },
-    refetchInterval: 1000,
-    staleTime: 0,
-    gcTime: 0,
-  });
+  const { data, dataUpdatedAt, isLoading } = useContinuumRecentTransactions(limit);
 
   if (isLoading) {
     return (

@@ -16,7 +16,7 @@ export const continuumRoutes = {
     const qs = search.toString();
     return makeApiUrl(`/api/v1/continuum/ticks${qs ? `?${qs}` : ''}`);
   },
-  RECENT_TICKS: (limit: number) => makeApiUrl(`/api/v1/continuum/ticks/recent?limit=${limit}`),
+  RECENT_TICKS: (limit: number) => makeApiUrl(`/api/v1/continuum/tick/recent?limit=${limit}`),
   TX: (hash: string) => makeApiUrl(`/api/v1/continuum/tx/${hash}`),
   RECENT_TX: (limit: number) => makeApiUrl(`/api/v1/continuum/tx/recent?limit=${limit}`),
   STREAM_TICKS: (params?: { start_tick?: number }) => {
@@ -25,6 +25,9 @@ export const continuumRoutes = {
     const qs = search.toString();
     return makeApiUrl(`/api/v1/continuum/stream-ticks${qs ? `?${qs}` : ''}`);
   },
+  // New Continuum API endpoints
+  TXN: (txnId: string) => makeApiUrl(`/api/v1/continuum/txn/${txnId}`),
+  RECENT_TXN: (limit: number = 50) => makeApiUrl(`/api/v1/continuum/txn/recent?limit=${limit}`),
 } as const;
 
 /**
