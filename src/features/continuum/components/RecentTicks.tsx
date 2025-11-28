@@ -6,6 +6,7 @@ import { queryKeys } from "@/features/continuum/api/queryKeys";
 import { continuumRoutes } from "@/shared/lib/routes";
 import { LastUpdated } from "@/shared/components/LastUpdated";
 import SectionHeading from "@/shared/components/SectionHeading";
+import { TicksTableSkeleton } from "@/shared/components/ui/skeleton";
 
 interface RecentTicksProps {
   limit?: number;
@@ -29,19 +30,20 @@ export function RecentTicks({ limit = 50 }: RecentTicksProps) {
     gcTime: 0,
   });
 
+  if (isLoading) {
+    return (
+      <div className="space-y-4">
+        <SectionHeading>Recent Ticks</SectionHeading>
+        <TicksTableSkeleton rows={limit > 10 ? 10 : limit} />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4">
       <SectionHeading>Recent Ticks</SectionHeading>
-      {isLoading ? (
-        <div className="flex items-center justify-between ">
-          <span className="text-xs sm:text-sm text-zinc-400">Loading...</span>
-        </div>
-      ) : (
-        <>
-          <TicksTable ticks={data?.ticks ?? []} />
-          <LastUpdated timestamp={dataUpdatedAt} />
-        </>
-      )}
+      <TicksTable ticks={data?.ticks ?? []} />
+      <LastUpdated timestamp={dataUpdatedAt} />
     </div>
   );
 }

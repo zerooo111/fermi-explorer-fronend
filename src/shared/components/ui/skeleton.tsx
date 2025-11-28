@@ -65,45 +65,45 @@ interface TransactionTableSkeletonProps {
 
 export function TransactionTableSkeleton({ rows = 6 }: TransactionTableSkeletonProps) {
   return (
-    <div className="mobile-scroll-table">
-      <div className="w-full">
-        {/* Header skeleton */}
-        <div className="flex border-b border-neutral-700 mb-2">
-          <div className="flex-1 p-2">
-            <Skeleton className="h-4 w-20" />
-          </div>
-          <div className="flex-1 p-2">
+    <div className="mobile-scroll-table overflow-x-auto">
+      <div className="w-full min-w-[600px]">
+        {/* Header skeleton - matches TransactionsTable: Sequence #, Txn Hash, Tick #, Txn Id, Timestamp */}
+        <div className="flex border-b border-neutral-700">
+          <div className="min-w-[60px] md:min-w-[80px] p-2">
             <Skeleton className="h-4 w-16" />
+          </div>
+          <div className="min-w-[100px] md:min-w-[140px] p-2">
+            <Skeleton className="h-4 w-16" />
+          </div>
+          <div className="min-w-[70px] md:min-w-[90px] p-2">
+            <Skeleton className="h-4 w-12" />
           </div>
           <div className="flex-1 p-2">
             <Skeleton className="h-4 w-12" />
           </div>
-          <div className="flex-1 p-2">
-            <Skeleton className="h-4 w-14" />
-          </div>
-          <div className="flex-1 p-2">
-            <Skeleton className="h-4 w-18" />
+          <div className="min-w-[70px] md:min-w-[90px] lg:min-w-[160px] p-2">
+            <Skeleton className="h-4 w-20 ml-auto" />
           </div>
         </div>
-        
+
         {/* Rows skeleton */}
         <div className="space-y-0">
           {[...Array(rows)].map((_, i) => (
             <div key={i} className="flex h-10 border-b border-neutral-800/50">
-              <div className="flex-1 p-2 flex items-center">
-                <Skeleton className="h-3 w-12" />
+              <div className="min-w-[60px] md:min-w-[80px] p-2 flex items-center">
+                <Skeleton className="h-3 w-10" />
               </div>
-              <div className="flex-1 p-2 flex items-center">
-                <Skeleton className="h-3 w-20" />
+              <div className="min-w-[100px] md:min-w-[140px] p-2 flex items-center">
+                <Skeleton className="h-3 w-24 md:w-32" />
               </div>
-              <div className="flex-1 p-2 flex items-center">
+              <div className="min-w-[70px] md:min-w-[90px] p-2 flex items-center">
                 <Skeleton className="h-3 w-16" />
               </div>
               <div className="flex-1 p-2 flex items-center">
-                <Skeleton className="h-3 w-24" />
+                <Skeleton className="h-3 w-20 md:w-28 lg:w-40" />
               </div>
-              <div className="flex-1 p-2 flex items-center justify-end">
-                <Skeleton className="h-3 w-16" />
+              <div className="min-w-[70px] md:min-w-[90px] lg:min-w-[160px] p-2 flex items-center justify-end">
+                <Skeleton className="h-3 w-16 lg:w-32" />
               </div>
             </div>
           ))}
@@ -119,33 +119,33 @@ interface TicksTableSkeletonProps {
 
 export function TicksTableSkeleton({ rows = 6 }: TicksTableSkeletonProps) {
   return (
-    <div className="mobile-scroll-table">
-      <div className="w-full">
-        {/* Header skeleton */}
-        <div className="flex border-b border-neutral-700 mb-2">
-          <div className="flex-1 p-2">
+    <div className="mobile-scroll-table w-full overflow-x-auto">
+      <div className="w-full min-w-[280px]">
+        {/* Header skeleton - matches TicksTable: Tick #, Tx Count, Timestamp */}
+        <div className="flex border-b border-neutral-700">
+          <div className="min-w-[80px] sm:min-w-32 p-2">
             <Skeleton className="h-4 w-12" />
           </div>
           <div className="flex-1 p-2">
             <Skeleton className="h-4 w-16" />
           </div>
-          <div className="flex-1 p-2">
-            <Skeleton className="h-4 w-18" />
+          <div className="min-w-[90px] sm:min-w-36 p-2">
+            <Skeleton className="h-4 w-16 ml-auto" />
           </div>
         </div>
-        
+
         {/* Rows skeleton */}
         <div className="space-y-0">
           {[...Array(rows)].map((_, i) => (
             <div key={i} className="flex h-10 border-b border-neutral-800/50">
-              <div className="flex-1 p-2 flex items-center">
-                <Skeleton className="h-3 w-16" />
+              <div className="min-w-[80px] sm:min-w-32 p-2 flex items-center">
+                <Skeleton className="h-3 w-20" />
               </div>
               <div className="flex-1 p-2 flex items-center">
                 <Skeleton className="h-3 w-12" />
               </div>
-              <div className="flex-1 p-2 flex items-center justify-end">
-                <Skeleton className="h-3 w-16" />
+              <div className="min-w-[90px] sm:min-w-36 p-2 flex items-center justify-end">
+                <Skeleton className="h-3 w-16 sm:w-20" />
               </div>
             </div>
           ))}

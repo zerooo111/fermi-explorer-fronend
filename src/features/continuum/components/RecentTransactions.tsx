@@ -15,10 +15,7 @@ export function RecentTransactions({ limit = 50 }: RecentTransactionsProps) {
     return (
       <div className="space-y-4">
         <SectionHeading>Recent Transactions</SectionHeading>
-        <TransactionTableSkeleton rows={limit > 20 ? 20 : limit} />
-        <div className="flex items-center justify-between px-4 sm:px-0">
-          <span className="text-xs sm:text-sm text-zinc-400">Loading...</span>
-        </div>
+        <TransactionTableSkeleton rows={limit > 10 ? 10 : limit} />
       </div>
     );
   }
