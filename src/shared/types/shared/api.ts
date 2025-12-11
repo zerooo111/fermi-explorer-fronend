@@ -114,7 +114,7 @@ export interface TickData {
   transaction_count: number
   transaction_batch_hash: string // Hex-encoded hash
   vdf_iterations: number
-  previous_output: string // Hex-encoded VDF output
+  previous_output?: string // Hex-encoded VDF output
 }
 
 /**
@@ -127,7 +127,7 @@ export interface DetailedTickData {
   vdf_output: string
   vdf_iterations: number
   vdf_proof: string
-  previous_output: string
+  previous_output?: string
   transaction_batch_hash: string
   transaction_count: number
   processed_at: string
@@ -249,7 +249,7 @@ export interface Tick {
   timestamp: number // Microseconds since Unix epoch
   transaction_count: number
   transaction_batch_hash: string
-  previous_output: string
+  previous_output?: string
   vdf_proof: VdfProof
   transactions: TickTransaction[]
   metrics?: {
@@ -265,6 +265,7 @@ export interface TickSummary {
   tick_number: number
   timestamp: number // Microseconds since Unix epoch
   transaction_count: number
+  transaction_batch_hash?: string // Optional for backward compatibility
 }
 
 /**
@@ -287,8 +288,8 @@ export interface RecentTicksParams {
 /**
  * WebSocket message types
  */
-export type WebSocketMessage = 
-  | { type: 'tick'; tick_number: number; timestamp: number; transaction_count: number; transaction_batch_hash: string; previous_output: string; vdf_proof: VdfProof; transactions: TickTransaction[] }
+export type WebSocketMessage =
+  | { type: 'tick'; tick_number: number; timestamp: number; transaction_count: number; transaction_batch_hash: string; previous_output?: string; vdf_proof: VdfProof; transactions: TickTransaction[] }
   | { type: 'error'; error: string }
   | { type: 'ping' }
   | { type: 'pong' }
