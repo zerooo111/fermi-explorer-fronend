@@ -33,7 +33,7 @@ export default function BlocksPage() {
 				<p className="text-sm sm:text-base text-zinc-400 text-center">
 					{(error as Error).message || "Failed to load blocks"}
 				</p>
-				<Link to="/rollup" className="text-sm font-mono text-zinc-400 hover:text-zinc-100">
+				<Link to="/execution" className="text-sm font-mono text-zinc-400 hover:text-zinc-100">
 					Return to home
 				</Link>
 			</div>
@@ -46,7 +46,7 @@ export default function BlocksPage() {
 		<div className="container max-w-screen-xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
 			<div className="mb-6 sm:mb-8">
 				<Link
-					to="/rollup"
+					to="/execution"
 					className="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-zinc-100 transition-colors mb-4 group"
 				>
 					<ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
@@ -81,7 +81,7 @@ export default function BlocksPage() {
 										<TableRow key={block.height}>
 											<TableCell className="py-2 sm:py-3">
 												<Link
-													to="/rollup/blocks/$height"
+													to="/execution/blocks/$height"
 													params={{ height: block.height.toString() }}
 													className="font-mono font-bold text-sm sm:text-base text-zinc-300 hover:text-zinc-100 hover:underline inline-flex items-center gap-2 group/link"
 												>

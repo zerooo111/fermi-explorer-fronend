@@ -7,7 +7,7 @@ import { buttonVariants } from "@/shared/components/ui/button";
 import { formatPrice, formatQuantity } from "@/features/rollup/lib/formatters";
 
 export default function TransactionPage() {
-	const { id } = useParams({ from: "/rollup/transactions/$id" });
+	const { id } = useParams({ from: "/execution/transactions/$id" });
 	const { data: transaction, isLoading, error } = useTransaction(id);
 
 	const copyToClipboard = (text: string) => {
@@ -29,7 +29,7 @@ export default function TransactionPage() {
 				<p className="text-sm sm:text-base text-zinc-400 text-center">
 					{(error as Error).message || "Failed to load transaction data"}
 				</p>
-				<Link to="/rollup" className={buttonVariants({ variant: "default" })}>
+				<Link to="/execution" className={buttonVariants({ variant: "default" })}>
 					Return to home
 				</Link>
 			</div>
@@ -40,7 +40,7 @@ export default function TransactionPage() {
 		return (
 			<div className="container max-w-screen-xl flex items-center justify-center mx-auto px-4 sm:px-6 py-6 sm:py-8 flex-col gap-3 sm:gap-4">
 				<span className="text-base sm:text-2xl">Transaction not found</span>
-				<Link to="/rollup" className={buttonVariants({ variant: "default" })}>
+				<Link to="/execution" className={buttonVariants({ variant: "default" })}>
 					Return to home
 				</Link>
 			</div>
@@ -52,7 +52,7 @@ export default function TransactionPage() {
 			{/* Header */}
 			<div className="mb-6 sm:mb-8">
 				<Link
-					to="/rollup/blocks/$height"
+					to="/execution/blocks/$height"
 					params={{ height: transaction.block_height.toString() }}
 					className="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-zinc-100 transition-colors mb-4 group"
 				>
@@ -72,7 +72,7 @@ export default function TransactionPage() {
 						BLOCK HEIGHT
 					</div>
 					<Link
-						to="/rollup/blocks/$height"
+						to="/execution/blocks/$height"
 						params={{ height: transaction.block_height.toString() }}
 						className="text-xl sm:text-3xl font-bold font-mono tabular-nums text-zinc-300 hover:text-zinc-100 hover:underline"
 					>

@@ -40,7 +40,7 @@ export function TicksTable({ ticks }: TicksTableProps) {
         <TableRow key={tick.tick_number} className="h-10">
           <TableCell className="font-mono font-medium text-zinc-300 tabular-nums text-xs sm:text-sm text-left min-w-[80px] sm:min-w-32">
             <Link
-              to="/continuum/tick/$tickId"
+              to="/sequencing/tick/$tickId"
               params={{ tickId: tick.tick_number.toString() }}
               className="hover:underline underline-offset-2 hover:text-zinc-100"
             >

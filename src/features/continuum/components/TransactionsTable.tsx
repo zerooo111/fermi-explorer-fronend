@@ -64,7 +64,7 @@ export function TransactionsTable({ transactions }: TransactionsTableProps) {
           </TableCell>
           <TableCell className="font-mono font-medium text-zinc-300 tabular-nums text-xs sm:text-sm text-left min-w-[100px] md:min-w-[140px]">
             <a
-              href={`/continuum/tx/${transaction.tx_hash.slice(0, 8)}`}
+              href={`/sequencing/tx/${transaction.tx_hash.slice(0, 8)}`}
               target="_blank"
               className="hover:text-zinc-100 hover:underline truncate block"
               title={transaction.tx_hash}
@@ -75,7 +75,7 @@ export function TransactionsTable({ transactions }: TransactionsTableProps) {
           </TableCell>
           <TableCell className="text-zinc-400 text-xs sm:text-sm text-left font-mono min-w-[70px] md:min-w-[90px]">
             <a
-              href={`/continuum/tick/${transaction.tick_number}`}
+              href={`/sequencing/tick/${transaction.tick_number}`}
               target="_blank"
               className="hover:text-zinc-100 hover:underline"
             >

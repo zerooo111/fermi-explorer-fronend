@@ -11,7 +11,7 @@ import {
 } from "@/features/rollup/lib/formatters";
 
 export default function BlockDetailPage() {
-	const { height } = useParams({ from: "/rollup/blocks/$height" });
+	const { height } = useParams({ from: "/execution/blocks/$height" });
 	const blockHeight = Number.parseInt(height, 10);
 	const { data, isLoading, error } = useBlock(blockHeight);
 
@@ -34,7 +34,7 @@ export default function BlockDetailPage() {
 				<p className="text-sm sm:text-base text-zinc-400 text-center">
 					{(error as Error).message || "Failed to load block data"}
 				</p>
-				<Link to="/rollup/blocks" className={buttonVariants({ variant: "default" })}>
+				<Link to="/execution/blocks" className={buttonVariants({ variant: "default" })}>
 					Return to blocks
 				</Link>
 			</div>
@@ -45,7 +45,7 @@ export default function BlockDetailPage() {
 		return (
 			<div className="container max-w-screen-xl flex items-center justify-center mx-auto px-4 sm:px-6 py-6 sm:py-8 flex-col gap-3 sm:gap-4">
 				<span className="text-base sm:text-2xl">Block not found</span>
-				<Link to="/rollup/blocks" className={buttonVariants({ variant: "default" })}>
+				<Link to="/execution/blocks" className={buttonVariants({ variant: "default" })}>
 					Return to blocks
 				</Link>
 			</div>
@@ -61,7 +61,7 @@ export default function BlockDetailPage() {
 			{/* Header */}
 			<div className="mb-6 sm:mb-8">
 				<Link
-					to="/rollup/blocks"
+					to="/execution/blocks"
 					className="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-zinc-100 transition-colors mb-4 group"
 				>
 					<ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
@@ -220,7 +220,7 @@ export default function BlockDetailPage() {
 									<TableRow key={tx.id}>
 										<TableCell className="py-2 sm:py-3">
 											<Link
-												to="/rollup/transactions/$id"
+												to="/execution/transactions/$id"
 												params={{ id: tx.id }}
 												className="font-mono text-xs sm:text-sm text-zinc-300 hover:text-zinc-100 hover:underline inline-flex items-center gap-2 group/link"
 											>

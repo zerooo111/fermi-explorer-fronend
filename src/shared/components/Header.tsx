@@ -52,53 +52,49 @@ export default function Header() {
   const location = useLocation();
   const isHealthy = data?.status === "healthy";
 
-  const isContinuumActive = location.pathname.startsWith("/continuum");
-  const isRollupActive = location.pathname.startsWith("/rollup");
+  const isSequencingActive = location.pathname.startsWith("/sequencing");
+  const isExecutionActive = location.pathname.startsWith("/execution");
 
-  // Determine explorer name and color based on active route
-  const explorerName = isRollupActive ? "Rollup" : "Continuum";
-  const explorerColor = isRollupActive ? "text-blue-500" : "text-emerald-500";
+  const explorerColor = isExecutionActive ? "text-blue-500" : "text-emerald-500";
 
   return (
-    <header className="border-b border-zinc-700 bg-zinc-950 py-1">
+    <header className="border-b border-zinc-700 bg-zinc-950 py-2">
       <nav className="px-4 sm:px-6 container flex items-center justify-between mx-auto max-w-screen-xl">
         <Link
-          to="/continuum"
+          to="/sequencing"
           className="text-lg sm:text-xl flex items-center font-medium tracking-tight text-zinc-100"
         >
           <Logo className="h-6 pr-1" />
           Fermi
-          <span className={cn("font-light ml-1", explorerColor)}>
-            {explorerName} Explorer
-          </span>
+          <span className={cn("font-light ml-1", explorerColor)}>Explorer</span>
           <span className="bg-yellow-400 ml-2 font-bold text-zinc-950 text-sm tracking-wide px-1.5 py-0.5">
             TESTNET
           </span>
         </Link>
-        <div className="flex items-center gap-1 ">
+        <div className="flex items-center gap-2">
           {/* Explorer Tabs */}
           <div className="h-8 flex items-center  border border-zinc-700 rounded-md bg-zinc-900">
             <Link
-              to="/continuum"
+              to="/sequencing"
               className={cn(
                 "px-3 h-[30px] flex items-center text-xs sm:text-sm font-mono transition-colors rounded",
-                isContinuumActive
+                isSequencingActive
                   ? "bg-zinc-800 text-emerald-400 font-semibold"
                   : "text-zinc-400 hover:text-zinc-200"
               )}
             >
-              Continuum
+              Sequencing
             </Link>
             <Link
-              to="/rollup"
+              to="/execution"
               className={cn(
                 "px-3 h-[30px] flex items-center text-xs sm:text-sm font-mono transition-colors rounded",
-                isRollupActive
+                isExecutionActive
                   ? "bg-zinc-800 text-blue-400 font-semibold"
                   : "text-zinc-400 hover:text-zinc-200"
               )}
             >
-              Rollup
+              Execution
             </Link>
           </div>
           <StatusIndicator

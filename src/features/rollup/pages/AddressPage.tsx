@@ -7,7 +7,7 @@ import {
 } from "@/shared/components/ui/table";
 
 export default function AddressPage() {
-  const { pubkey } = useParams({ from: "/rollup/address/$pubkey" });
+  const { pubkey } = useParams({ from: "/execution/address/$pubkey" });
 
   return (
     <div className="container max-w-screen-xl mx-auto px-4 sm:px-6 py-6 sm:py-8">

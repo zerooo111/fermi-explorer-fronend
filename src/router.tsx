@@ -34,74 +34,74 @@ export const rootRoute = createRootRoute({
   ),
 });
 
-// Index route - redirect to continuum
+// Index route - redirect to sequencing
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/",
   beforeLoad: () => {
     throw redirect({
-      to: "/continuum",
+      to: "/sequencing",
     });
   },
 });
 
-// Continuum routes
-const continuumIndexRoute = createRoute({
+// Sequencing routes (formerly Continuum)
+const sequencingIndexRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: "/continuum",
+  path: "/sequencing",
   component: ContinuumHomepage,
 });
 
-const continuumTransactionRoute = createRoute({
+const sequencingTransactionRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: "/continuum/tx/$transactionId",
+  path: "/sequencing/tx/$transactionId",
   component: ContinuumTransactionPage,
 });
 
-const continuumTickRoute = createRoute({
+const sequencingTickRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: "/continuum/tick/$tickId",
+  path: "/sequencing/tick/$tickId",
   component: ContinuumTickPage,
 });
 
-// Rollup routes
-const rollupIndexRoute = createRoute({
+// Execution routes (formerly Rollup)
+const executionIndexRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: "/rollup",
+  path: "/execution",
   component: RollupHomepage,
 });
 
-const rollupBlocksRoute = createRoute({
+const executionBlocksRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: "/rollup/blocks",
+  path: "/execution/blocks",
   component: RollupBlocksPage,
 });
 
-const rollupBlockDetailRoute = createRoute({
+const executionBlockDetailRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: "/rollup/blocks/$height",
+  path: "/execution/blocks/$height",
   component: RollupBlockDetailPage,
 });
 
-const rollupTransactionRoute = createRoute({
+const executionTransactionRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: "/rollup/transactions/$id",
+  path: "/execution/transactions/$id",
   component: RollupTransactionPage,
 });
 
-const rollupAddressRoute = createRoute({
+const executionAddressRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: "/rollup/address/$pubkey",
+  path: "/execution/address/$pubkey",
   component: RollupAddressPage,
 });
 
-// 404 Not Found route - redirect to continuum
+// 404 Not Found route - redirect to sequencing
 const notFoundRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "*",
   beforeLoad: () => {
     throw redirect({
-      to: "/continuum",
+      to: "/sequencing",
     });
   },
 });
@@ -109,14 +109,14 @@ const notFoundRoute = createRoute({
 // Create the route tree
 const routeTree = rootRoute.addChildren([
   indexRoute,
-  continuumIndexRoute,
-  continuumTransactionRoute,
-  continuumTickRoute,
-  rollupIndexRoute,
-  rollupBlocksRoute,
-  rollupBlockDetailRoute,
-  rollupTransactionRoute,
-  rollupAddressRoute,
+  sequencingIndexRoute,
+  sequencingTransactionRoute,
+  sequencingTickRoute,
+  executionIndexRoute,
+  executionBlocksRoute,
+  executionBlockDetailRoute,
+  executionTransactionRoute,
+  executionAddressRoute,
   notFoundRoute,
 ]);
 

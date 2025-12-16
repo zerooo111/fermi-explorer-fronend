@@ -17,7 +17,7 @@ function formatISOTimestamp(isoString: string): string {
 }
 
 export default function TickPage() {
-  const { tickId } = useParams({ from: "/continuum/tick/$tickId" });
+  const { tickId } = useParams({ from: "/sequencing/tick/$tickId" });
 
   // Convert tickId to number
   const tickIdNumber = parseInt(tickId, 10);
@@ -42,7 +42,7 @@ export default function TickPage() {
         <p className="text-sm sm:text-base text-neutral-400 text-center">
           {error?.message || 'Failed to load tick data'}
         </p>
-        <a href="/continuum" className={buttonVariants({ variant: "default" })}>
+        <a href="/sequencing" className={buttonVariants({ variant: "default" })}>
           Return to home
         </a>
       </div>
@@ -54,7 +54,7 @@ export default function TickPage() {
     return (
       <div className="container max-w-screen-xl flex items-center justify-center mx-auto px-4 sm:px-6 py-6 sm:py-8 flex-col gap-3 sm:gap-4">
         <span className="text-base sm:text-2xl">Tick not found</span>
-        <a href="/continuum" className={buttonVariants({ variant: "default" })}>
+        <a href="/sequencing" className={buttonVariants({ variant: "default" })}>
           Return to home
         </a>
       </div>
@@ -118,7 +118,7 @@ export default function TickPage() {
               </TableCell>
               <TableCell className="text-xs sm:text-sm font-mono break-all">
                 <a
-                  href={`/continuum/tx/${tickData.transaction_batch_hash}`}
+                  href={`/sequencing/tx/${tickData.transaction_batch_hash}`}
                   className="hover:text-zinc-100 hover:underline"
                 >
                   {tickData.transaction_batch_hash}
@@ -210,7 +210,7 @@ export default function TickPage() {
                   <TableRow key={tx.tx_hash}>
                     <TableCell className="text-xs sm:text-sm font-mono px-4 py-2">
                       <Link
-                        to="/continuum/tx/$transactionId"
+                        to="/sequencing/tx/$transactionId"
                         params={{ transactionId: tx.tx_hash }}
                         className="hover:text-zinc-100 hover:underline"
                       >
@@ -219,7 +219,7 @@ export default function TickPage() {
                     </TableCell>
                     <TableCell className="text-xs sm:text-sm font-mono px-4 py-2">
                       <Link
-                        to="/continuum/tx/$transactionId"
+                        to="/sequencing/tx/$transactionId"
                         params={{ transactionId: tx.tx_hash }}
                         className="hover:text-zinc-100 hover:underline"
                       >
@@ -241,7 +241,7 @@ export default function TickPage() {
       )}
 
       <div className="mt-8">
-        <a href="/continuum" className={buttonVariants({ variant: "default" })}>
+        <a href="/sequencing" className={buttonVariants({ variant: "default" })}>
           Return to home
         </a>
       </div>

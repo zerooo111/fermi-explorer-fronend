@@ -57,7 +57,7 @@ function base64ToHex(base64: string): string {
 }
 
 export default function TransactionPage() {
-  const { transactionId } = useParams({ from: "/continuum/tx/$transactionId" });
+  const { transactionId } = useParams({ from: "/sequencing/tx/$transactionId" });
 
   const {
     data: txData,
@@ -93,7 +93,7 @@ export default function TransactionPage() {
         <p className="text-sm sm:text-base text-neutral-400 text-center">
           {error?.message || "Failed to load transaction data"}
         </p>
-        <a href="/continuum" className={buttonVariants({ variant: "default" })}>
+        <a href="/sequencing" className={buttonVariants({ variant: "default" })}>
           Return to home
         </a>
       </div>
@@ -104,7 +104,7 @@ export default function TransactionPage() {
     return (
       <div className="container max-w-screen-xl flex items-center justify-center mx-auto px-4 sm:px-6 py-6 sm:py-8 flex-col gap-3 sm:gap-4">
         <span className="text-base sm:text-2xl">Transaction not found</span>
-        <a href="/continuum" className={buttonVariants({ variant: "default" })}>
+        <a href="/sequencing" className={buttonVariants({ variant: "default" })}>
           Return to home
         </a>
       </div>
@@ -153,7 +153,7 @@ export default function TransactionPage() {
                 </TableCell>
                 <TableCell className="text-xs sm:text-sm font-mono">
                   <a
-                    href={`/continuum/tick/${txData.tick_number}`}
+                    href={`/sequencing/tick/${txData.tick_number}`}
                     target="_blank"
                     className="hover:text-zinc-100 hover:underline"
                   >
@@ -250,7 +250,7 @@ export default function TransactionPage() {
       </div>
 
       <div className="mt-8">
-        <a href="/continuum" className={buttonVariants({ variant: "default" })}>
+        <a href="/sequencing" className={buttonVariants({ variant: "default" })}>
           Return to home
         </a>
       </div>
