@@ -55,7 +55,9 @@ export default function Header() {
   const isSequencingActive = location.pathname.startsWith("/sequencing");
   const isExecutionActive = location.pathname.startsWith("/execution");
 
-  const explorerColor = isExecutionActive ? "text-blue-500" : "text-emerald-500";
+  const explorerColor = isExecutionActive
+    ? "text-blue-500"
+    : "text-emerald-500";
 
   return (
     <header className="border-b border-zinc-700 bg-zinc-950 py-2">
@@ -65,7 +67,7 @@ export default function Header() {
           className="text-lg sm:text-xl flex items-center font-medium tracking-tight text-zinc-100"
         >
           <Logo className="h-6 pr-1" />
-          Fermi
+          Continuum
           <span className={cn("font-light ml-1", explorerColor)}>Explorer</span>
           <span className="bg-yellow-400 ml-2 font-bold text-zinc-950 text-sm tracking-wide px-1.5 py-0.5">
             TESTNET
