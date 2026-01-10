@@ -67,7 +67,7 @@ export default function RollupHomepage() {
                 value={latestBlock?.block.height ?? status?.block_height ?? 0}
                 format={{
                   minimumFractionDigits: 0,
-                  maximumFractionDigits: 2,
+                  maximumFractionDigits: 0,
                 }}
                 duration={500}
                 trend={1}
