@@ -154,7 +154,6 @@ export default function TransactionPage() {
                 <TableCell className="text-xs sm:text-sm font-mono">
                   <a
                     href={`/sequencing/tick/${txData.tick_number}`}
-                    target="_blank"
                     className="hover:text-zinc-100 hover:underline"
                   >
                     {txData.tick_number}
@@ -171,26 +170,10 @@ export default function TransactionPage() {
               </TableRow>
               <TableRow>
                 <TableCell className="text-xs py-2 bg-neutral-900/50 sm:text-sm font-mono whitespace-nowrap">
-                  Client Timestamp
-                </TableCell>
-                <TableCell className="text-xs sm:text-sm font-mono">
-                  {formatMicroseconds(txData.client_timestamp)}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="text-xs py-2 bg-neutral-900/50 sm:text-sm font-mono whitespace-nowrap">
                   Ingestion Timestamp
                 </TableCell>
                 <TableCell className="text-xs sm:text-sm font-mono">
                   {formatMicroseconds(txData.ingestion_timestamp)}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="text-xs py-2 bg-neutral-900/50 sm:text-sm font-mono whitespace-nowrap">
-                  Created At
-                </TableCell>
-                <TableCell className="text-xs sm:text-sm font-mono">
-                  {formatISOTimestamp(txData.created_at)}
                 </TableCell>
               </TableRow>
               <TableRow>

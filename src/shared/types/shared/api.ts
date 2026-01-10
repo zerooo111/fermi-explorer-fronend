@@ -20,6 +20,15 @@ export interface ApiErrorResponse {
 }
 
 /**
+ * Wrapped response format for detail endpoints
+ * New API format wraps responses in success/data structure
+ */
+export interface WrappedResponse<T> {
+  success: boolean
+  data: T
+}
+
+/**
  * Health check endpoint response
  * GET /api/v1/health
  */
@@ -211,9 +220,12 @@ export interface ContinuumTransaction {
   tx_hash: string
   tx_id: string
   payload: string
+  payload_text?: string // Decoded payload as text
+  payload_size: number
   signature: string
   public_key: string
   nonce: number
+  timestamp: number // Unix microseconds
   client_timestamp: number
   sequence_number: number
   ingestion_timestamp: number
@@ -228,6 +240,7 @@ export interface ContinuumTransaction {
 export interface ContinuumRecentTransactionsResponse {
   count: number
   transactions: ContinuumTransaction[]
+  latest_tick_number: number
 }
 
 /**
@@ -270,11 +283,12 @@ export interface TickSummary {
 
 /**
  * Recent ticks endpoint response
- * GET /api/v1/ticks/recent
+ * GET /api/v1/continuum/tick/recent
  */
 export interface RecentTicksResponse {
   ticks: TickSummary[]
-  total: number // Number of ticks returned (not total in system)
+  count: number // Number of ticks returned
+  latest_tick_number: number // Latest tick number in the system
 }
 
 /**
@@ -308,4 +322,45 @@ export interface ApiConfiguration {
   retries: number
   defaultStaleTime: number
   defaultCacheTime: number
+}
+
+// ============================================================================
+// Continuum Explorer API Responses (New Endpoints)
+// ============================================================================
+
+/**
+ * Health endpoint response
+ * GET /api/v1/continuum/health
+ */
+export interface ContinuumHealthResponse {
+  status: string
+  db_healthy: boolean
+  latest_tick: number
+}
+
+/**
+ * Info endpoint response
+ * GET /api/v1/continuum/info
+ */
+export interface ContinuumInfoResponse {
+  service: string
+  version: string
+  endpoints: Record<string, string>
+}
+
+/**
+ * Stats endpoint response
+ * GET /api/v1/continuum/stats
+ */
+export interface ContinuumStatsResponse {
+  ticks_indexed: number
+  transactions_indexed: number
+  empty_ticks_skipped: number
+  latest_tick_number: number
+  memory_ticks_count: number
+  memory_txs_count: number
+  tick_hit_rate: number
+  tx_hit_rate: number
+  ticks_with_tx_ratio: number
+  db_size_mb: number
 }

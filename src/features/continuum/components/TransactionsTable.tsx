@@ -64,13 +64,19 @@ export function TransactionsTable({ transactions }: TransactionsTableProps) {
           </TableCell>
           <TableCell className="font-mono font-medium text-zinc-300 tabular-nums text-xs sm:text-sm text-left min-w-[100px] md:min-w-[140px]">
             <a
-              href={`/sequencing/tx/${transaction.tx_hash.slice(0, 8)}`}
+              href={`/sequencing/tx/${transaction.tx_hash}`}
               target="_blank"
               className="hover:text-zinc-100 hover:underline truncate block"
               title={transaction.tx_hash}
             >
-              <span className="md:hidden">{transaction.tx_hash.slice(0, 6)}...{transaction.tx_hash.slice(-6)}</span>
-              <span className="hidden md:inline">{transaction.tx_hash.slice(0, 8)}...{transaction.tx_hash.slice(-8)}</span>
+              <span className="md:hidden">
+                {transaction.tx_hash.slice(0, 6)}...
+                {transaction.tx_hash.slice(-6)}
+              </span>
+              <span className="hidden md:inline">
+                {transaction.tx_hash.slice(0, 8)}...
+                {transaction.tx_hash.slice(-8)}
+              </span>
             </a>
           </TableCell>
           <TableCell className="text-zinc-400 text-xs sm:text-sm text-left font-mono min-w-[70px] md:min-w-[90px]">
@@ -94,7 +100,7 @@ export function TransactionsTable({ transactions }: TransactionsTableProps) {
       );
     },
     (prevProps, nextProps) =>
-      prevProps.transaction.tx_hash === nextProps.transaction.tx_hash
+      prevProps.transaction.tx_hash === nextProps.transaction.tx_hash,
   );
 
   if (transactions.length === 0) {

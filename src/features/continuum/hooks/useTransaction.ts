@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
-import type { TransactionResponse, ContinuumTransaction, ContinuumRecentTransactionsResponse } from '@/shared/types/shared/api'
+import type { TransactionResponse, ContinuumTransaction, ContinuumRecentTransactionsResponse, WrappedResponse } from '@/shared/types/shared/api'
 import { continuumRoutes } from '@/shared/lib/routes'
 
 export function useTransaction(hash: string) {
@@ -17,14 +17,16 @@ export function useTransaction(hash: string) {
 /**
  * Fetch a transaction by ID or hash using the new Continuum API
  * GET /api/v1/continuum/txn/{txnId}
+ * Response is wrapped in { success, data } structure
  * @param txnId - Transaction ID (tx_id) or hash (tx_hash)
  */
 export function useContinuumTransaction(txnId: string) {
   return useQuery({
     queryKey: ['continuum-txn', txnId],
     queryFn: async () => {
-      const response = await axios.get<ContinuumTransaction>(continuumRoutes.TXN(txnId))
-      return response.data
+      const response = await axios.get<WrappedResponse<ContinuumTransaction>>(continuumRoutes.TXN(txnId))
+      // Unwrap the response - new API wraps data in { success, data }
+      return response.data.data
     },
     enabled: !!txnId,
   })

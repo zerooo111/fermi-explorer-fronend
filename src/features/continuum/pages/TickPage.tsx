@@ -91,16 +91,6 @@ export default function TickPage() {
               </TableCell>
             </TableRow>
 
-            {/* Time (human-readable) */}
-            <TableRow>
-              <TableCell className="text-xs whitespace-nowrap py-2 bg-neutral-900/50 sm:text-sm font-mono">
-                Time
-              </TableCell>
-              <TableCell className="text-xs sm:text-sm font-mono">
-                {formatISOTimestamp(tickData.time)}
-              </TableCell>
-            </TableRow>
-
             {/* Transaction Count */}
             <TableRow>
               <TableCell className="text-xs whitespace-nowrap py-2 bg-neutral-900/50 sm:text-sm font-mono">
@@ -117,12 +107,7 @@ export default function TickPage() {
                 Transaction Batch Hash
               </TableCell>
               <TableCell className="text-xs sm:text-sm font-mono break-all">
-                <a
-                  href={`/sequencing/tx/${tickData.transaction_batch_hash}`}
-                  className="hover:text-zinc-100 hover:underline"
-                >
-                  {tickData.transaction_batch_hash}
-                </a>
+                {tickData.transaction_batch_hash}
               </TableCell>
             </TableRow>
 
@@ -176,15 +161,6 @@ export default function TickPage() {
               </TableRow>
             )}
 
-            {/* Ingested At */}
-            <TableRow>
-              <TableCell className="text-xs whitespace-nowrap py-2 bg-neutral-900/50 sm:text-sm font-mono">
-                Ingested At
-              </TableCell>
-              <TableCell className="text-xs sm:text-sm font-mono">
-                {formatISOTimestamp(tickData.ingested_at)}
-              </TableCell>
-            </TableRow>
           </TableBody>
         </Table>
       </div>

@@ -7,8 +7,10 @@ import { makeApiUrl } from './api';
  * Continuum API Routes
  */
 export const continuumRoutes = {
-  HEALTH: makeApiUrl('/health'),
+  HEALTH: makeApiUrl('/api/v1/continuum/health'),
   STATUS: makeApiUrl('/api/v1/continuum/status'),
+  INFO: makeApiUrl('/api/v1/continuum/info'),
+  STATS: makeApiUrl('/api/v1/continuum/stats'),
   TICK: (tickNumber: number) => makeApiUrl(`/api/v1/continuum/tick/${tickNumber}`),
   TICKS: (params?: { limit?: number }) => {
     const search = new URLSearchParams();
