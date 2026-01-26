@@ -69,8 +69,8 @@ export default function Header() {
           <Logo className="h-6 pr-1" />
           Continuum
           <span className={cn("font-light ml-1", explorerColor)}>Explorer</span>
-          <span className="bg-yellow-400 ml-2 font-bold text-zinc-950 text-sm tracking-wide px-1.5 py-0.5">
-            TESTNET
+          <span className="bg-teal-400 ml-2 font-bold text-zinc-950 text-sm tracking-wide px-1.5 py-0.5">
+            STAGING
           </span>
         </Link>
         <div className="flex items-center gap-2">
