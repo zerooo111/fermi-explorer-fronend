@@ -9,11 +9,11 @@ interface LastUpdatedProps {
 
 export function LastUpdated({ timestamp, className }: LastUpdatedProps) {
   const date = timestamp instanceof Date ? timestamp : new Date(timestamp);
-  
+
   return (
     <div className={cn("flex items-center justify-between", className)}>
-      <span className="text-xs sm:text-sm text-zinc-400">Last updated</span>
-      <span className="text-xs sm:text-sm text-zinc-400 font-mono font-medium">
+      <span className="text-xs sm:text-sm text-muted-foreground">Last updated</span>
+      <span className="text-xs sm:text-sm text-muted-foreground font-mono font-medium">
         <span className="hidden sm:inline">{format(date, "MM/dd/yyyy")} </span>
         <AnimatedNumber
           value={Number(format(date, "HH"))}

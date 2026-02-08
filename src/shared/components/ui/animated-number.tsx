@@ -1,194 +1,84 @@
-import { useEffect, useRef, useState } from "react";
-import { cn } from "@/shared/lib/utils";
+import { useEffect, useRef } from "react"
+import { useSpring } from "motion/react"
+import { springs } from "@/shared/lib/motion"
+import { cn } from "@/shared/lib/utils"
 
-export interface AnimatedNumberProps {
-  value: number;
-  format?: Intl.NumberFormatOptions;
-  prefix?: string;
-  suffix?: string;
-  className?: string;
-  duration?: number;
-  trend?: number; // -1 (down), 0 (neutral), 1 (up)
-  respectMotionPreference?: boolean;
-  showFractions?: boolean; // If false, hides decimals during animation
+type FormatType = "currency" | "percent" | "compact" | "raw"
+
+interface AnimatedNumberProps extends React.HTMLAttributes<HTMLSpanElement> {
+  value: number
+  format?: FormatType
+  locale?: string
+  currency?: string
+  decimals?: number
 }
 
-/**
- * AnimatedNumber - A custom animated number component with smooth transitions
- * 
- * Features:
- * - Smooth number transitions with CSS transforms
- * - Trend indicators (subtle color shifts)
- * - Respects prefers-reduced-motion
- * - Performant with minimal re-renders
- * - Supports custom formatting via Intl.NumberFormat
- */
-export function AnimatedNumber({
+function formatValue(value: number, format: FormatType, locale: string, currency: string, decimals?: number): string {
+  switch (format) {
+    case "currency":
+      return new Intl.NumberFormat(locale, {
+        style: "currency",
+        currency,
+        minimumFractionDigits: decimals ?? 2,
+        maximumFractionDigits: decimals ?? 2,
+      }).format(value)
+    case "percent":
+      return new Intl.NumberFormat(locale, {
+        style: "percent",
+        minimumFractionDigits: decimals ?? 2,
+        maximumFractionDigits: decimals ?? 2,
+      }).format(value / 100)
+    case "compact":
+      return new Intl.NumberFormat(locale, {
+        notation: "compact",
+        minimumFractionDigits: decimals ?? 1,
+        maximumFractionDigits: decimals ?? 1,
+      }).format(value)
+    case "raw":
+    default:
+      return new Intl.NumberFormat(locale, {
+        minimumFractionDigits: decimals ?? 0,
+        maximumFractionDigits: decimals ?? 0,
+      }).format(value)
+  }
+}
+
+function AnimatedNumber({
   value,
-  format,
-  prefix = "",
-  suffix = "",
+  format = "raw",
+  locale = "en-US",
+  currency = "USD",
+  decimals,
   className,
-  duration = 600,
-  trend = 0,
-  respectMotionPreference = true,
-  showFractions = true,
+  ...props
 }: AnimatedNumberProps) {
-  const [displayValue, setDisplayValue] = useState(value);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [direction, setDirection] = useState<"up" | "down" | "neutral">("neutral");
-  const previousValueRef = useRef(value);
-  const animationFrameRef = useRef<number | null>(null);
-  const prefersReducedMotionRef = useRef<boolean>(false);
-
-  // Check for reduced motion preference
-  useEffect(() => {
-    if (typeof window === "undefined" || !respectMotionPreference) {
-      prefersReducedMotionRef.current = false;
-      return;
-    }
-
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    prefersReducedMotionRef.current = mediaQuery.matches;
-
-    const handleChange = (e: MediaQueryListEvent) => {
-      prefersReducedMotionRef.current = e.matches;
-    };
-
-    mediaQuery.addEventListener("change", handleChange);
-    return () => mediaQuery.removeEventListener("change", handleChange);
-  }, [respectMotionPreference]);
+  const ref = useRef<HTMLSpanElement>(null)
+  const springValue = useSpring(0, springs.snappy)
 
   useEffect(() => {
-    // Cleanup any ongoing animation
-    if (animationFrameRef.current !== null) {
-      cancelAnimationFrame(animationFrameRef.current);
-      animationFrameRef.current = null;
-    }
+    springValue.set(value)
+  }, [value, springValue])
 
-    if (value === previousValueRef.current) return;
-
-    const oldValue = previousValueRef.current;
-    const newValue = value;
-    
-    // Determine direction
-    if (newValue > oldValue) {
-      setDirection("up");
-    } else if (newValue < oldValue) {
-      setDirection("down");
-    } else {
-      setDirection("neutral");
-    }
-
-    // Skip animation if reduced motion is preferred
-    if (prefersReducedMotionRef.current) {
-      setDisplayValue(newValue);
-      previousValueRef.current = newValue;
-      setIsAnimating(false);
-      return;
-    }
-
-    // Determine if we should round to integers during animation
-    const maxFractionDigits = format?.maximumFractionDigits ?? 2;
-    const shouldRoundToInteger = maxFractionDigits === 0 && 
-                                 Number.isInteger(oldValue) && 
-                                 Number.isInteger(newValue);
-
-    // Animate the transition
-    setIsAnimating(true);
-    
-    // Use requestAnimationFrame for smooth animation
-    const startTime = performance.now();
-    
-    const animate = (currentTime: number) => {
-      const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      
-      // Easing function (ease-out cubic)
-      const eased = 1 - Math.pow(1 - progress, 3);
-      
-      let currentValue = oldValue + (newValue - oldValue) * eased;
-      
-      // Round to integer if showFractions is false or if format doesn't allow decimals
-      if (!showFractions) {
-        currentValue = Math.round(currentValue);
-      } else if (shouldRoundToInteger) {
-        currentValue = Math.round(currentValue);
-      } else if (maxFractionDigits === 0) {
-        // If maxFractionDigits is 0, always round to integer
-        currentValue = Math.round(currentValue);
-      } else {
-        // Round to the specified number of decimal places
-        const decimals = maxFractionDigits;
-        currentValue = Math.round(currentValue * Math.pow(10, decimals)) / Math.pow(10, decimals);
+  useEffect(() => {
+    const unsubscribe = springValue.on("change", (latest) => {
+      if (ref.current) {
+        ref.current.textContent = formatValue(latest, format, locale, currency, decimals)
       }
-      
-      setDisplayValue(currentValue);
-      
-      if (progress < 1) {
-        animationFrameRef.current = requestAnimationFrame(animate);
-      } else {
-        setDisplayValue(newValue);
-        setIsAnimating(false);
-        previousValueRef.current = newValue;
-        animationFrameRef.current = null;
-      }
-    };
-    
-    animationFrameRef.current = requestAnimationFrame(animate);
-
-    // Cleanup function
-    return () => {
-      if (animationFrameRef.current !== null) {
-        cancelAnimationFrame(animationFrameRef.current);
-        animationFrameRef.current = null;
-      }
-    };
-  }, [value, duration, format]);
-
-  // Format the number
-  // If showFractions is false and we're animating, hide decimals during animation
-  const formatOptions: Intl.NumberFormatOptions = isAnimating && !showFractions
-    ? {
-        ...format,
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-      }
-    : {
-        ...format,
-        minimumFractionDigits: format?.minimumFractionDigits ?? 0,
-        maximumFractionDigits: format?.maximumFractionDigits ?? 2,
-      };
-
-  const formattedNumber = displayValue.toLocaleString("en-US", formatOptions);
-
-  // Determine trend-based styling
-  const trendClass = 
-    trend > 0 ? "text-status-green" :
-    trend < 0 ? "text-status-red" :
-    "";
-
-  const shouldAnimate = !prefersReducedMotionRef.current && isAnimating;
+    })
+    return unsubscribe
+  }, [springValue, format, locale, currency, decimals])
 
   return (
     <span
-      className={cn(
-        "inline-block tabular-nums transition-colors duration-200",
-        shouldAnimate && "animate-number-change",
-        direction === "up" && shouldAnimate && "animate-slide-up",
-        direction === "down" && shouldAnimate && "animate-slide-down",
-        trendClass,
-        className
-      )}
-      style={{
-        // Use CSS custom properties for animation control
-        ["--animation-duration" as string]: `${duration}ms`,
-      }}
+      ref={ref}
+      className={cn("tabular-nums", className)}
+      {...props}
     >
-      {prefix}
-      {formattedNumber}
-      {suffix}
+      {formatValue(value, format, locale, currency, decimals)}
     </span>
-  );
+  )
 }
+
+export { AnimatedNumber }
+export type { AnimatedNumberProps, FormatType }
 

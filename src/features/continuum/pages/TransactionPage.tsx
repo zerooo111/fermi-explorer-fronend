@@ -1,7 +1,6 @@
 import { useParams } from "@tanstack/react-router";
 import { buttonVariants } from "@/shared/components/ui/button";
-import { Table, TableBody, TableCell, TableRow } from "@/shared/components/ui/table";
-import { PageSkeleton, TableSkeleton } from "@/shared/components/ui/skeleton";
+import { Table, TableBody, TableCell, TableRow, Card, CardContent, Alert, AlertDescription, Badge, PageSkeleton, TableSkeleton } from "@/shared/components/ui";
 import { useContinuumTransaction } from "@/features/continuum/hooks/useTransaction";
 
 function formatMicroseconds(microseconds: number): string {

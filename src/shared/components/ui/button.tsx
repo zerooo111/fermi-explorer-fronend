@@ -1,58 +1,55 @@
-import * as React from 'react'
-import { Slot } from '@radix-ui/react-slot'
+import { motion } from 'motion/react'
 import { cva, type VariantProps } from 'class-variance-authority'
+import { Loader2 } from 'lucide-react'
 
 import { cn } from '@/shared/lib/utils'
 
+const MotionButton = motion.create('button')
+
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium font-mono tracking-wide transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 border uppercase",
+  "inline-flex items-center justify-center gap-2 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
-        default:
-          'bg-zinc-100 text-zinc-900 border-zinc-700 hover:bg-zinc-200 hover:border-zinc-600 focus-visible:ring-zinc-400',
-        destructive:
-          'bg-red-600 text-white border-red-700 hover:bg-red-700 hover:border-red-800 focus-visible:ring-red-400',
-        outline:
-          'border-zinc-700 bg-zinc-950 text-zinc-100 hover:bg-zinc-900 hover:border-zinc-600 focus-visible:ring-zinc-400',
-        secondary:
-          'bg-zinc-800 text-zinc-100 border-zinc-700 hover:bg-zinc-700 hover:border-zinc-600 focus-visible:ring-zinc-400',
-        ghost:
-          'border-transparent text-zinc-100 hover:bg-zinc-900 hover:border-zinc-700 focus-visible:ring-zinc-400',
-        link: 'border-transparent text-zinc-100 underline-offset-4 hover:underline focus-visible:ring-zinc-400',
+        default: 'bg-foreground text-background hover:opacity-90',
+        accent: 'bg-accent text-accent-foreground hover:opacity-90',
+        success: 'bg-success text-success-foreground hover:opacity-90',
+        destructive: 'bg-destructive text-destructive-foreground hover:opacity-90',
+        outline: 'border border-border bg-transparent text-foreground hover:bg-card',
+        ghost: 'bg-transparent text-muted-foreground hover:text-foreground',
+        link: 'bg-transparent text-accent underline-offset-4 hover:underline',
       },
       size: {
-        default: 'h-9 px-4 py-2 has-[>svg]:px-3',
-        sm: 'h-8 gap-1.5 px-3 has-[>svg]:px-2.5',
-        lg: 'h-10 px-6 has-[>svg]:px-4',
-        icon: 'size-9',
+        sm: 'px-3 py-1 text-xs',
+        default: 'px-4 py-2 text-sm',
+        lg: 'px-8 py-3 text-base',
+        icon: 'h-9 w-9 p-0',
       },
     },
-    defaultVariants: {
-      variant: 'default',
-      size: 'default',
-    },
-  },
+    defaultVariants: { variant: 'default', size: 'default' },
+  }
 )
 
-function Button({
-  className,
-  variant,
-  size,
-  asChild = false,
-  ...props
-}: React.ComponentProps<'button'> &
-  VariantProps<typeof buttonVariants> & {
-    asChild?: boolean
-  }) {
-  const Comp = asChild ? Slot : 'button'
+interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {
+  loading?: boolean
+}
 
+function Button({ className, variant, size, loading, disabled, children, ...props }: ButtonProps) {
+  const isDisabled = disabled || loading
   return (
-    <Comp
-      data-slot="button"
+    <MotionButton
       className={cn(buttonVariants({ variant, size, className }))}
+      disabled={isDisabled}
+      aria-busy={loading || undefined}
+      whileTap={isDisabled ? undefined : { scale: 0.97 }}
+      transition={{ type: 'spring', stiffness: 500, damping: 30 }}
       {...props}
-    />
+    >
+      {loading && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+      {children}
+    </MotionButton>
   )
 }
 

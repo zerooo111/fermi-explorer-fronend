@@ -63,7 +63,7 @@ export function Pagination({
 						return (
 							<span
 								key={`ellipsis-${index === 1 ? "start" : "end"}`}
-								className="px-3 py-2 text-zinc-400 font-mono"
+								className="px-3 py-2 text-muted-foreground font-mono"
 							>
 								...
 							</span>

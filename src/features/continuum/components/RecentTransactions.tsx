@@ -1,5 +1,5 @@
 import { TransactionsTable } from "./TransactionsTable";
-import { TransactionTableSkeleton } from "@/shared/components/ui/skeleton";
+import { TransactionTableSkeleton, Reveal } from "@/shared/components/ui";
 import { LastUpdated } from "@/shared/components/LastUpdated";
 import SectionHeading from "@/shared/components/SectionHeading";
 import { useContinuumRecentTransactions } from "@/features/continuum/hooks/useTransaction";
@@ -21,10 +21,12 @@ export function RecentTransactions({ limit = 50 }: RecentTransactionsProps) {
   }
 
   return (
-    <div className="space-y-4">
-      <SectionHeading>Recent Transactions</SectionHeading>
-      <TransactionsTable transactions={data?.transactions ?? []} />
-      <LastUpdated timestamp={dataUpdatedAt} className="px-4 sm:px-0" />
-    </div>
+    <Reveal direction="up">
+      <div className="space-y-4">
+        <SectionHeading>Recent Transactions</SectionHeading>
+        <TransactionsTable transactions={data?.transactions ?? []} />
+        <LastUpdated timestamp={dataUpdatedAt} className="px-4 sm:px-0" />
+      </div>
+    </Reveal>
   );
 }

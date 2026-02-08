@@ -103,8 +103,8 @@ const DefaultErrorFallback: React.FC<DefaultErrorFallbackProps> = ({
   const isDevelopment = import.meta.env.DEV
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-zinc-950 px-4">
-      <div className="max-w-md w-full border border-zinc-700 bg-zinc-950 p-8">
+    <div className="min-h-screen flex items-center justify-center bg-background px-4">
+      <div className="max-w-md w-full border border-border bg-card p-8">
         <div className="flex items-center mb-6">
           <div className="flex-shrink-0">
             <svg
@@ -122,33 +122,33 @@ const DefaultErrorFallback: React.FC<DefaultErrorFallbackProps> = ({
             </svg>
           </div>
           <div className="ml-4">
-            <h3 className="text-lg font-bold font-mono tracking-tight text-zinc-100 uppercase">
+            <h3 className="text-lg font-bold font-mono tracking-tight text-foreground uppercase">
               System Error
             </h3>
           </div>
         </div>
 
         <div className="mb-6">
-          <p className="text-sm text-zinc-400 font-mono">
+          <p className="text-sm text-muted-foreground font-mono">
             We encountered an unexpected error. This has been logged and we'll
             investigate.
           </p>
         </div>
 
         {isDevelopment && (
-          <div className="mb-6 p-4 border border-red-700 bg-red-950">
-            <h4 className="text-sm font-medium font-mono text-red-400 mb-3 uppercase tracking-wide">
+          <div className="mb-6 p-4 border border-destructive/30 bg-destructive/10">
+            <h4 className="text-sm font-medium font-mono text-destructive mb-3 uppercase tracking-wide">
               Error Details (Development):
             </h4>
-            <p className="text-xs text-red-300 font-mono break-all mb-2">
+            <p className="text-xs text-destructive font-mono break-all mb-2">
               {error.name}: {error.message}
             </p>
             {error.stack && (
               <details className="mt-3">
-                <summary className="text-xs text-red-400 cursor-pointer font-mono uppercase tracking-wide">
+                <summary className="text-xs text-destructive cursor-pointer font-mono uppercase tracking-wide">
                   Stack Trace
                 </summary>
-                <pre className="text-xs text-red-300 mt-2 whitespace-pre-wrap font-mono">
+                <pre className="text-xs text-destructive mt-2 whitespace-pre-wrap font-mono">
                   {error.stack}
                 </pre>
               </details>
@@ -159,13 +159,13 @@ const DefaultErrorFallback: React.FC<DefaultErrorFallbackProps> = ({
         <div className="flex space-x-3">
           <button
             onClick={retry}
-            className="flex-1 bg-zinc-100 text-zinc-900 border border-zinc-700 px-4 py-2 text-sm font-medium font-mono tracking-wide uppercase hover:bg-zinc-200 hover:border-zinc-600 focus:outline-none focus:ring-2 focus:ring-zinc-400 transition-colors"
+            className="flex-1 bg-foreground text-background border border-border px-4 py-2 text-sm font-medium font-mono tracking-wide uppercase hover:bg-accent hover:border-border focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
           >
             Try Again
           </button>
           <button
             onClick={() => window.location.reload()}
-            className="flex-1 bg-zinc-800 text-zinc-100 border border-zinc-700 px-4 py-2 text-sm font-medium font-mono tracking-wide uppercase hover:bg-zinc-700 hover:border-zinc-600 focus:outline-none focus:ring-2 focus:ring-zinc-400 transition-colors"
+            className="flex-1 bg-secondary text-foreground border border-border px-4 py-2 text-sm font-medium font-mono tracking-wide uppercase hover:bg-secondary/80 hover:border-border focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
           >
             Reload Page
           </button>

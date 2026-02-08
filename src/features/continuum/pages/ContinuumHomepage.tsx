@@ -4,7 +4,7 @@ import { ChainStatus } from "@/features/continuum/components/ChainStatus";
 
 export default function Homepage() {
   return (
-    <div className="space-y-6 sm:space-y-8 container mx-auto max-w-screen-xl px-0 sm:px-6">
+    <div className="space-y-6 sm:space-y-8 container mx-auto max-w-screen-xl px-0 sm:px-6 bg-background">
       <ChainStatus />
       <div>
         {/* <RecentTicks limit={10} /> */}

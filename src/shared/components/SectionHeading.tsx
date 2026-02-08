@@ -6,7 +6,7 @@ interface HeadingProps {
 
 function Heading({ children }: HeadingProps) {
   return (
-    <h3 className="text-base sm:text-lg font-bold font-mono tracking-tight text-zinc-100 uppercase">
+    <h3 className="text-base sm:text-lg font-bold font-mono tracking-tight text-foreground uppercase">
       {children}
     </h3>
   );

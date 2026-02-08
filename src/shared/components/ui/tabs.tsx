@@ -1,73 +1,52 @@
-import * as React from 'react'
-import * as TabsPrimitive from '@radix-ui/react-tabs'
-
 import { cn } from '@/shared/lib/utils'
 
-function Tabs({
-  className,
-  ...props
-}: React.ComponentProps<typeof TabsPrimitive.Root>) {
-  return (
-    <TabsPrimitive.Root
-      data-slot="tabs"
-      className={cn('flex flex-col', className)}
-      {...props}
-    />
-  )
+function Tabs(props: React.HTMLAttributes<HTMLDivElement>) {
+  return <div {...props} />
 }
 
-function TabsList({
-  className,
-  ...props
-}: React.ComponentProps<typeof TabsPrimitive.List>) {
+function TabsList({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <TabsPrimitive.List
-      data-slot="tabs-list"
+    <div
       className={cn(
-        'inline-flex h-10 items-center justify-center border border-zinc-700 bg-zinc-950 text-zinc-400',
-        className,
+        'flex items-center gap-0 border-b border-border',
+        className
       )}
       {...props}
     />
   )
 }
 
-function TabsTrigger({
-  className,
-  ...props
-}: React.ComponentProps<typeof TabsPrimitive.Trigger>) {
+function TabsTrigger({ className, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
-    <TabsPrimitive.Trigger
-      data-slot="tabs-trigger"
+    <button
       className={cn(
-        'inline-flex h-10 flex-1 items-center justify-center text-sm font-medium font-mono tracking-wide uppercase transition-all',
-        'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-900',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400',
-        'disabled:pointer-events-none disabled:opacity-50',
-        'data-[state=active]:bg-zinc-800 data-[state=active]:text-zinc-100',
-        'border-r border-zinc-700 last:border-r-0',
-        className,
+        'relative px-4 py-2 font-mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground transition-colors hover:text-foreground data-[selected]:text-foreground bg-transparent border-none cursor-pointer',
+        className
       )}
       {...props}
     />
   )
 }
 
-function TabsContent({
-  className,
-  ...props
-}: React.ComponentProps<typeof TabsPrimitive.Content>) {
+function TabsContent({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <TabsPrimitive.Content
-      data-slot="tabs-content"
+    <div
+      className={cn("mt-6", className)}
+      {...props}
+    />
+  )
+}
+
+function TabsIndicator({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
       className={cn(
-        'border border-zinc-700 bg-zinc-950 text-zinc-100',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400',
-        className,
+        "absolute bottom-0 h-0.5 bg-accent transition-all",
+        className
       )}
       {...props}
     />
   )
 }
 
-export { Tabs, TabsList, TabsTrigger, TabsContent }
+export { Tabs, TabsList, TabsTrigger, TabsContent, TabsIndicator }

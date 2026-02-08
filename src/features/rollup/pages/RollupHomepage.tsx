@@ -1,16 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
-import { AnimatedNumber } from "@/shared/components/ui/animated-number";
+import { AnimatedNumber, Card, CardContent, Reveal, Stagger, StaggerItem, PageSkeleton, TableSkeleton, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shared/components/ui";
 import { ErrorMessage } from "@/features/rollup/components/ErrorMessage";
-import { PageSkeleton, TableSkeleton } from "@/shared/components/ui/skeleton";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/shared/components/ui/table";
 import {
   useBlocks,
   useLatestBlock,
@@ -39,60 +30,58 @@ export default function RollupHomepage() {
   const isLive = !statusLoading && !latestBlockLoading;
 
   return (
-    <div className="space-y-6 sm:space-y-8 container mx-auto max-w-screen-xl px-0 sm:px-6">
+    <div className="space-y-6 sm:space-y-8 container mx-auto max-w-screen-xl px-0 sm:px-6 bg-background">
       {/* Stats Grid */}
-      <div className="flex flex-col gap-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 border border-zinc-700 divide-x divide-zinc-700">
-          <div className="bg-zinc-900 p-3 sm:p-4 pb-0 flex-1 min-w-0">
-            <div className="flex items-center justify-between mb-2">
-              <div className="text-xs sm:text-sm font-medium text-zinc-400 font-mono tracking-wider truncate">
-                LATEST BLOCK
-              </div>
-              <div className="flex items-center gap-2">
-                <div
-                  className={cn(
-                    "h-2 w-2 border",
-                    isLive
-                      ? "bg-green-500 border-green-400"
-                      : "bg-zinc-500 border-zinc-400"
-                  )}
-                />
-                <span className="text-xs font-mono text-zinc-400 uppercase tracking-wider">
-                  {isLive ? "Live" : "..."}
-                </span>
-              </div>
-            </div>
-            <div className="text-xl sm:text-3xl font-bold text-zinc-100 font-mono">
-              <AnimatedNumber
-                value={latestBlock?.block.height ?? status?.block_height ?? 0}
-                format={{
-                  minimumFractionDigits: 0,
-                  maximumFractionDigits: 0,
-                }}
-                duration={500}
-                trend={1}
-              />
-            </div>
-          </div>
+      <Stagger>
+        <div className="flex flex-col gap-4">
+          <StaggerItem>
+            <Card variant="default" className="p-0 gap-0">
+              <div className="grid grid-cols-1 md:grid-cols-2 divide-x divide-border">
+                <CardContent className="p-3 sm:p-4 pb-0 flex-1 min-w-0">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="text-xs sm:text-sm font-medium text-muted-foreground font-mono tracking-wider truncate">
+                      LATEST BLOCK
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div
+                        className={cn(
+                          "h-2 w-2 border",
+                          isLive
+                            ? "bg-success border-success"
+                            : "bg-muted border-muted"
+                        )}
+                      />
+                      <span className="text-xs font-mono text-muted-foreground uppercase tracking-wider">
+                        {isLive ? "Live" : "..."}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="text-xl sm:text-3xl font-bold text-foreground font-mono">
+                    <AnimatedNumber
+                      value={latestBlock?.block.height ?? status?.block_height ?? 0}
+                      format="raw"
+                      decimals={0}
+                    />
+                  </div>
+                </CardContent>
 
-          <div className="bg-zinc-900 p-3 sm:p-4 pb-0 flex-1 min-w-0">
-            <div className="text-xs sm:text-sm font-medium text-zinc-400 font-mono tracking-wider truncate mb-2">
-              APPLIED BATCHES
-            </div>
-            <div className="text-xl sm:text-3xl font-bold text-zinc-100 font-mono">
-              <AnimatedNumber
-                value={status?.applied_batches ?? 0}
-                format={{
-                  minimumFractionDigits: 0,
-                  maximumFractionDigits: 2,
-                }}
-                duration={500}
-                trend={1}
-              />
-            </div>
-          </div>
+                <CardContent className="p-3 sm:p-4 pb-0 flex-1 min-w-0">
+                  <div className="text-xs sm:text-sm font-medium text-muted-foreground font-mono tracking-wider truncate mb-2">
+                    APPLIED BATCHES
+                  </div>
+                  <div className="text-xl sm:text-3xl font-bold text-foreground font-mono">
+                    <AnimatedNumber
+                      value={status?.applied_batches ?? 0}
+                      format="raw"
+                      decimals={2}
+                    />
+                  </div>
+                </CardContent>
+              </div>
+            </Card>
+          </StaggerItem>
         </div>
-      </div>
+      </Stagger>
 
       {/* Latest Blocks Table */}
       <div className="space-y-4">

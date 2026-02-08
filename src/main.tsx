@@ -6,15 +6,22 @@ import './styles.css'
 import reportWebVitals from './reportWebVitals.ts'
 import { router } from './router'
 import { QueryProvider } from './shared/providers/QueryProvider'
+import { ThemeProvider } from './shared/hooks/use-theme'
+import { ToastProvider, ToastViewport } from './shared/components/ui/toast'
 
 const rootElement = document.getElementById('app')
 if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
   root.render(
     <StrictMode>
-      <QueryProvider>
-        <RouterProvider router={router} />
-      </QueryProvider>
+      <ThemeProvider>
+        <ToastProvider>
+          <QueryProvider>
+            <RouterProvider router={router} />
+          </QueryProvider>
+          <ToastViewport />
+        </ToastProvider>
+      </ThemeProvider>
     </StrictMode>,
   )
 }

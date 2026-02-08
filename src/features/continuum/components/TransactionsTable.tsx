@@ -57,16 +57,16 @@ export function TransactionsTable({ transactions }: TransactionsTableProps) {
 
       return (
         <TableRow key={transaction.tx_hash} className="h-10">
-          <TableCell className="font-mono font-medium text-zinc-300 tabular-nums text-xs sm:text-sm text-left min-w-[60px] md:min-w-[80px]">
-            <span className="hover:text-zinc-100" title={transaction.tx_hash}>
+          <TableCell className="font-mono font-medium text-foreground tabular-nums text-xs sm:text-sm text-left min-w-[60px] md:min-w-[80px]">
+            <span className="hover:text-foreground" title={transaction.tx_hash}>
               {transaction.sequence_number}
             </span>
           </TableCell>
-          <TableCell className="font-mono font-medium text-zinc-300 tabular-nums text-xs sm:text-sm text-left min-w-[100px] md:min-w-[140px]">
+          <TableCell className="font-mono font-medium text-foreground tabular-nums text-xs sm:text-sm text-left min-w-[100px] md:min-w-[140px]">
             <a
               href={`/sequencing/tx/${transaction.tx_hash}`}
               target="_blank"
-              className="hover:text-zinc-100 hover:underline truncate block"
+              className="hover:text-foreground hover:underline truncate block"
               title={transaction.tx_hash}
             >
               <span className="md:hidden">
@@ -79,21 +79,21 @@ export function TransactionsTable({ transactions }: TransactionsTableProps) {
               </span>
             </a>
           </TableCell>
-          <TableCell className="text-zinc-400 text-xs sm:text-sm text-left font-mono min-w-[70px] md:min-w-[90px]">
+          <TableCell className="text-muted-foreground text-xs sm:text-sm text-left font-mono min-w-[70px] md:min-w-[90px]">
             <a
               href={`/sequencing/tick/${transaction.tick_number}`}
               target="_blank"
-              className="hover:text-zinc-100 hover:underline"
+              className="hover:text-foreground hover:underline"
             >
               {transaction.tick_number}
             </a>
           </TableCell>
-          <TableCell className="text-zinc-400 text-xs sm:text-sm text-left font-mono">
+          <TableCell className="text-muted-foreground text-xs sm:text-sm text-left font-mono">
             <div className="truncate max-w-[80px] md:max-w-[120px] lg:max-w-[200px]">
               {transaction.tx_id}
             </div>
           </TableCell>
-          <TableCell className="text-zinc-600 font-mono text-xs sm:text-sm text-right min-w-[70px] md:min-w-[90px] lg:min-w-[160px] whitespace-nowrap">
+          <TableCell className="text-muted-foreground font-mono text-xs sm:text-sm text-right min-w-[70px] md:min-w-[90px] lg:min-w-[160px] whitespace-nowrap">
             {formattedTime}
           </TableCell>
         </TableRow>
