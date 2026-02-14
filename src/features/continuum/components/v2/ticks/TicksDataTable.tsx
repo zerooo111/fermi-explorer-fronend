@@ -1,6 +1,7 @@
 import { memo, useMemo } from 'react'
 import { Link } from '@tanstack/react-router'
 import { useRecentTicks } from '@/features/continuum/api/hooks'
+import type { RecentTicksResponse } from '@/shared/types/shared/api'
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
   TicksTableSkeleton,
@@ -13,7 +14,8 @@ interface TicksDataTableProps {
 }
 
 export const TicksDataTable = memo(function TicksDataTable({ limit = 20 }: TicksDataTableProps) {
-  const { data, isLoading } = useRecentTicks(limit)
+  const { data: rawData, isLoading } = useRecentTicks(limit)
+  const data = rawData as RecentTicksResponse | undefined
 
   const ticks = useMemo(() => data?.ticks ?? [], [data])
 

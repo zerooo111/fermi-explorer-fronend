@@ -1,5 +1,6 @@
 import { useParams, Link } from '@tanstack/react-router'
 import { useContinuumTransaction } from '@/features/continuum/api/hooks'
+import type { ContinuumTransaction } from '@/shared/types/shared/api'
 import { TransactionDetail } from '@/features/continuum/components/v2/transactions'
 import {
   Alert, AlertDescription, PageSkeleton, TableSkeleton, Button,
@@ -8,7 +9,8 @@ import { EmptyState } from '@/features/continuum/components/v2/shared'
 
 export default function TransactionDetailPage() {
   const { transactionId } = useParams({ from: '/sequencing/tx/$transactionId' })
-  const { data: tx, isLoading, isError, error } = useContinuumTransaction(transactionId)
+  const { data: rawTx, isLoading, isError, error } = useContinuumTransaction(transactionId)
+  const tx = rawTx as ContinuumTransaction | undefined
 
   if (isLoading) {
     return (

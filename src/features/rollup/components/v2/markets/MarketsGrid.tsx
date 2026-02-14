@@ -2,8 +2,8 @@ import { memo, useMemo, useState, useCallback } from 'react'
 import { Link } from '@tanstack/react-router'
 import { ArrowRight } from 'lucide-react'
 import { useMarkets } from '@/features/rollup/api/hooks'
-import type { Market } from '@/features/rollup/types/api'
-import { Card, CardContent, Badge, Skeleton, Tabs, TabsList, TabsTrigger, Stagger, StaggerItem } from '@/shared/components/ui'
+import type { Market, MarketsResponse } from '@/features/rollup/types/api'
+import { Card, Badge, Skeleton, Tabs, TabsList, TabsTrigger, Stagger, StaggerItem } from '@/shared/components/ui'
 import { EmptyState } from '@/features/continuum/components/v2/shared'
 
 type FilterTab = 'All' | 'Spot' | 'Perp'
@@ -56,7 +56,8 @@ interface MarketsGridProps {
 }
 
 export function MarketsGrid({ className }: MarketsGridProps) {
-  const { data, isLoading } = useMarkets()
+  const { data: rawData, isLoading } = useMarkets()
+  const data = rawData as MarketsResponse | undefined
   const [filter, setFilter] = useState<FilterTab>('All')
   const handleFilter = useCallback((tab: FilterTab) => setFilter(tab), [])
 

@@ -1,5 +1,6 @@
 import { useParams, Link } from '@tanstack/react-router'
 import { useContinuumTick } from '@/features/continuum/api/hooks'
+import type { Tick } from '@/shared/types/shared/api'
 import {
   Table, TableBody, TableCell, TableRow, TableHeader, TableHead,
   Card, CardContent, Alert, AlertDescription, PageSkeleton, TableSkeleton,
@@ -10,7 +11,8 @@ import { Breadcrumbs, HashDisplay, TimestampDisplay, StatusBadge, EmptyState } f
 export default function TickDetailPage() {
   const { tickId } = useParams({ from: '/sequencing/tick/$tickId' })
   const tickNumber = parseInt(tickId, 10)
-  const { data: tick, isLoading, isError, error } = useContinuumTick(tickNumber)
+  const { data: rawTick, isLoading, isError, error } = useContinuumTick(tickNumber)
+  const tick = rawTick as (Tick & { transactions?: Array<{ tx_hash: string; tx_id: string; sequence_number: number; nonce: number }> }) | undefined
 
   if (isLoading) {
     return (

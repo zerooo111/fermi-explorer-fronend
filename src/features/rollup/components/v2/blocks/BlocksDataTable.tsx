@@ -1,7 +1,7 @@
 import { memo, useMemo } from 'react'
 import { Link } from '@tanstack/react-router'
 import { useBlocks } from '@/features/rollup/api/hooks'
-import type { Block } from '@/features/rollup/types/api'
+import type { Block, BlocksListResponse } from '@/features/rollup/types/api'
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
   Card, Badge, Skeleton,
@@ -57,7 +57,8 @@ export const BlocksDataTable = memo(function BlocksDataTable({
   limit = 20,
   offset = 0,
 }: BlocksDataTableProps) {
-  const { data, isLoading } = useBlocks(limit, offset)
+  const { data: rawData, isLoading } = useBlocks(limit, offset)
+  const data = rawData as BlocksListResponse | undefined
 
   const blocks = useMemo(() => data?.blocks ?? [], [data])
 

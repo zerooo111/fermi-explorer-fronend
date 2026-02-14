@@ -3,6 +3,7 @@ import { Link } from '@tanstack/react-router'
 import { ChainMetrics } from '@/features/continuum/components/v2/metrics'
 import { TicksDataTable } from '@/features/continuum/components/v2/ticks'
 import { useContinuumRecentTransactions } from '@/features/continuum/api/hooks'
+import type { ContinuumRecentTransactionsResponse } from '@/shared/types/shared/api'
 import {
   Card, Badge, TransactionTableSkeleton,
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
@@ -11,7 +12,8 @@ import {
 import { HashDisplay, TimestampDisplay, EmptyState } from '@/features/continuum/components/v2/shared'
 
 export default function ContinuumHomepage() {
-  const { data: txData, isLoading: txLoading } = useContinuumRecentTransactions(10)
+  const { data: rawTxData, isLoading: txLoading } = useContinuumRecentTransactions(10)
+  const txData = rawTxData as ContinuumRecentTransactionsResponse | undefined
   const transactions = useMemo(() => txData?.transactions ?? [], [txData])
 
   return (
@@ -25,9 +27,9 @@ export default function ContinuumHomepage() {
           <h2 className="font-mono text-sm uppercase tracking-[0.15em] text-foreground font-medium">
             Recent Ticks
           </h2>
-          <Link to="/sequencing/ticks">
+          <a href="/sequencing/ticks">
             <Button variant="ghost" className="text-xs font-mono">View All</Button>
-          </Link>
+          </a>
         </div>
         <TicksDataTable limit={10} />
       </section>
