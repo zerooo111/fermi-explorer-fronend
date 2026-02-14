@@ -24,7 +24,7 @@ export default function ContinuumHomepage() {
       {/* Recent Ticks */}
       <section>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-mono text-sm uppercase tracking-[0.15em] text-foreground font-medium">
+          <h2 className="font-pixel text-sm uppercase tracking-[0.15em] text-foreground font-medium">
             Recent Ticks
           </h2>
           <a href="/sequencing/ticks">
@@ -37,7 +37,7 @@ export default function ContinuumHomepage() {
       {/* Recent Transactions */}
       <section>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-mono text-sm uppercase tracking-[0.15em] text-foreground font-medium">
+          <h2 className="font-pixel text-sm uppercase tracking-[0.15em] text-foreground font-medium">
             Recent Transactions
           </h2>
         </div>

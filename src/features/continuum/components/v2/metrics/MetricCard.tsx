@@ -24,13 +24,13 @@ export const MetricCard = memo(function MetricCard({
 }: MetricCardProps) {
   return (
     <div className={cn('flex flex-col gap-1 p-3 sm:p-4', className)}>
-      <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground truncate">
+      <span className="font-pixel text-[10px] uppercase tracking-[0.15em] text-muted-foreground truncate">
         {label}
       </span>
       {isLoading ? (
         <Skeleton className="h-7 sm:h-9 w-24" />
       ) : (
-        <span className="text-xl sm:text-3xl font-bold text-foreground font-mono tabular-nums">
+        <span className="text-xl sm:text-3xl font-bold text-foreground font-pixel tabular-nums">
           <AnimatedNumber value={value ?? 0} format={format} decimals={decimals} />
           {suffix && <span className="text-sm text-muted-foreground ml-1">{suffix}</span>}
         </span>

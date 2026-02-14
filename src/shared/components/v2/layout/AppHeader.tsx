@@ -100,8 +100,8 @@ export default function AppHeader() {
           className="text-lg sm:text-xl flex items-center font-medium tracking-tight text-foreground flex-shrink-0"
         >
           <Logo className="h-6 pr-1 text-foreground" />
-          <span className="hidden sm:inline">Continuum</span>
-          <span className={cn('font-light ml-1', explorerColor)}>Explorer</span>
+          <span className="hidden sm:inline font-pixel">Continuum</span>
+          <span className={cn('font-light ml-1 font-pixel', explorerColor)}>Explorer</span>
           <span className="bg-teal-400 ml-2 font-bold text-zinc-950 text-xs sm:text-sm tracking-wide px-1.5 py-0.5 rounded">
             STAGING
           </span>
