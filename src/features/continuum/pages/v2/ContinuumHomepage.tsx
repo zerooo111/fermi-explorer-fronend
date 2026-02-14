@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 import { Link } from '@tanstack/react-router'
 import { ChainMetrics } from '@/features/continuum/components/v2/metrics'
-import { TicksDataTable } from '@/features/continuum/components/v2/ticks'
 import { useContinuumRecentTransactions } from '@/features/continuum/api/hooks'
 import type { ContinuumRecentTransactionsResponse } from '@/shared/types/shared/api'
 import {
@@ -20,19 +19,6 @@ export default function ContinuumHomepage() {
     <div className="container mx-auto max-w-screen-xl px-4 sm:px-6 py-6 space-y-8">
       {/* Chain Metrics */}
       <ChainMetrics />
-
-      {/* Recent Ticks */}
-      <section>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="font-pixel text-sm uppercase tracking-[0.15em] text-foreground font-medium">
-            Recent Ticks
-          </h2>
-          <a href="/sequencing/ticks">
-            <Button variant="ghost" className="text-xs font-mono">View All</Button>
-          </a>
-        </div>
-        <TicksDataTable limit={10} />
-      </section>
 
       {/* Recent Transactions */}
       <section>
