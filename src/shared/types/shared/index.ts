@@ -16,7 +16,6 @@ export type {
   BaseResponse,
   HealthResponse,
   StatusResponse,
-  TransactionData,
   TransactionResponse,
   TickData,
   Tick,
@@ -25,6 +24,7 @@ export type {
   RecentTicksResponse,
   WebSocketMessage,
   WebSocketState,
+  ContinuumTransaction,
 } from './api'
 
 export type {
