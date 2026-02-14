@@ -53,14 +53,14 @@ export const StateRootViewer = memo(function StateRootViewer({
               <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground block mb-2">
                 Byte Diff
               </span>
-              <div className="font-mono text-xs flex flex-wrap gap-0.5">
+              <div className="font-mono text-xs flex flex-wrap gap-1">
                 {current.map((byte, i) => {
                   const prevByte = previous?.[i]
                   const changed = prevByte !== undefined && prevByte !== byte
                   return (
                     <span
                       key={i}
-                      className={changed ? 'text-success bg-success/10 px-0.5' : 'text-muted-foreground'}
+                      className={changed ? 'text-success bg-success/10 px-1' : 'text-muted-foreground'}
                     >
                       {byte.toString(16).padStart(2, '0')}
                     </span>

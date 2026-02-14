@@ -1,29 +1,23 @@
+import { Progress as BaseProgress } from "@base-ui/react/progress"
 import { cn } from "@/shared/lib/utils"
 
-interface ProgressProps extends React.HTMLAttributes<HTMLDivElement> {
-  value?: number
-  max?: number
+interface ProgressProps extends React.ComponentProps<typeof BaseProgress.Root> {
   showValue?: boolean
 }
 
-function Progress({ className, value = 0, max = 100, showValue, ...props }: ProgressProps) {
-  const percentage = Math.min((value / max) * 100, 100)
-
+function Progress({ className, showValue, ...props }: ProgressProps) {
   return (
-    <div className={cn("flex flex-col gap-2", className)} {...props}>
+    <BaseProgress.Root className={cn("flex flex-col gap-2", className)} {...props}>
       {showValue && (
         <div className="flex items-center justify-between">
-          <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground">Progress</span>
-          <span className="font-mono text-[10px] text-foreground">{Math.round(percentage)}%</span>
+          <BaseProgress.Label className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground" />
+          <BaseProgress.Value className="font-mono text-[10px] text-foreground" />
         </div>
       )}
-      <div className="relative h-1.5 w-full overflow-hidden bg-secondary rounded-full">
-        <div
-          className="h-full bg-accent transition-all"
-          style={{ width: `${percentage}%` }}
-        />
-      </div>
-    </div>
+      <BaseProgress.Track className="relative h-2 w-full overflow-hidden bg-secondary rounded-full">
+        <BaseProgress.Indicator className="h-full bg-accent transition-all" />
+      </BaseProgress.Track>
+    </BaseProgress.Root>
   )
 }
 

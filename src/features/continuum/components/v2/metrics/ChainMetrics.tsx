@@ -1,17 +1,15 @@
-import { memo, useState, useCallback } from 'react'
+import { memo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
-import { ChevronDown, ChevronUp } from 'lucide-react'
+import { Cube, Receipt, Lightning, Timer, Pulse } from '@phosphor-icons/react'
 import type { StatusResponse } from '@/shared/types/api/health'
 import { continuumRoutes } from '@/shared/lib/routes'
-import { Stagger, StaggerItem, Button } from '@/shared/components/ui'
+import { Stagger, StaggerItem } from '@/shared/components/ui'
 import { MetricCard } from './MetricCard'
 
 const REFETCH_INTERVAL = 500
 
 export const ChainMetrics = memo(function ChainMetrics() {
-  const [showMore, setShowMore] = useState(false)
-  const toggleMore = useCallback(() => setShowMore(v => !v), [])
 
   const { data: metrics, isLoading } = useQuery<StatusResponse>({
     queryKey: ['chain-status'],
@@ -33,11 +31,13 @@ export const ChainMetrics = memo(function ChainMetrics() {
         <div className="grid grid-cols-2 divide-x divide-border border border-border">
           <MetricCard
             label="Chain Height"
+            icon={Cube}
             value={metrics?.chain_height}
             isLoading={isLoading}
           />
           <MetricCard
             label="Total Txns"
+            icon={Receipt}
             value={metrics?.total_transactions}
             isLoading={isLoading}
           />
@@ -48,16 +48,19 @@ export const ChainMetrics = memo(function ChainMetrics() {
         <div className="grid grid-cols-3 divide-x divide-border border border-border">
           <MetricCard
             label="Txns/Sec"
+            icon={Lightning}
             value={metrics?.txn_per_second ? Math.round(metrics.txn_per_second) : undefined}
             isLoading={isLoading}
           />
           <MetricCard
             label="Ticks/Sec"
+            icon={Pulse}
             value={metrics?.ticks_per_second ? Math.round(metrics.ticks_per_second) : undefined}
             isLoading={isLoading}
           />
           <MetricCard
             label="Tick Time"
+            icon={Timer}
             value={
               metrics?.average_tick_time != null
                 ? metrics.average_tick_time
@@ -70,37 +73,6 @@ export const ChainMetrics = memo(function ChainMetrics() {
         </div>
       </StaggerItem>
 
-      {showMore && (
-        <StaggerItem>
-          <div className="grid grid-cols-2 divide-x divide-border border border-border">
-            <MetricCard
-              label="Uptime"
-              value={metrics?.uptime_seconds ? Math.floor(metrics.uptime_seconds / 3600) : undefined}
-              suffix="hrs"
-              isLoading={isLoading}
-            />
-            <MetricCard
-              label="Status"
-              value={0}
-              isLoading={isLoading}
-            />
-          </div>
-        </StaggerItem>
-      )}
-
-      <div className="flex justify-center">
-        <Button
-          variant="ghost"
-          onClick={toggleMore}
-          className="text-xs font-mono gap-1"
-        >
-          {showMore ? (
-            <>Less <ChevronUp className="w-3 h-3" /></>
-          ) : (
-            <>More <ChevronDown className="w-3 h-3" /></>
-          )}
-        </Button>
-      </div>
     </Stagger>
   )
 })

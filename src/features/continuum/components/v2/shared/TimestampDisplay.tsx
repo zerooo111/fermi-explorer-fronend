@@ -1,4 +1,5 @@
 import { memo, useMemo } from 'react'
+import { Clock } from '@phosphor-icons/react'
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/shared/components/ui'
 import { cn } from '@/shared/lib/utils'
 
@@ -34,7 +35,8 @@ export const TimestampDisplay = memo(function TimestampDisplay({
   return (
     <Tooltip>
       <TooltipTrigger>
-        <time className={cn('font-mono text-xs text-muted-foreground', className)}>
+        <time className={cn('inline-flex items-center gap-1 font-mono text-xs text-muted-foreground', className)}>
+          <Clock weight="bold" className="w-3 h-3" />
           {relative}
         </time>
       </TooltipTrigger>

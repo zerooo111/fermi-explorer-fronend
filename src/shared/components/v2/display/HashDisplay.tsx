@@ -33,7 +33,7 @@ export const HashDisplay = memo(function HashDisplay({
   }, [hash])
 
   const content = (
-    <span className={cn('inline-flex items-center gap-1.5 group', className)}>
+    <span className={cn('inline-flex items-center gap-2 group', className)}>
       <Tooltip>
         <TooltipTrigger>
           <code className="font-mono text-xs tabular-nums">{truncated}</code>

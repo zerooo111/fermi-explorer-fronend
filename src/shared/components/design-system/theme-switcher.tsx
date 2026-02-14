@@ -8,9 +8,9 @@ export function ThemeSwitcher() {
 
   return (
     <Popover>
-      <PopoverTrigger className="flex items-center gap-2 border border-border bg-card px-2.5 py-1.5 font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground transition-colors hover:text-foreground">
+      <PopoverTrigger className="flex items-center gap-2 border border-border bg-card px-3 py-2 font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground transition-colors hover:text-foreground">
         <span
-          className="h-2.5 w-2.5 rounded-full"
+          className="h-3 w-3 rounded-full"
           style={{ backgroundColor: `hsl(${current.accent})` }}
         />
         {current.label}
@@ -21,7 +21,7 @@ export function ThemeSwitcher() {
           <button
             key={t.id}
             onClick={() => setTheme(t.id)}
-            className={`flex w-full items-center gap-2.5 px-2.5 py-2 font-mono text-[11px] tracking-wide transition-colors ${
+            className={`flex w-full items-center gap-3 px-3 py-2 font-mono text-[11px] tracking-wide transition-colors ${
               t.id === theme
                 ? "bg-secondary text-foreground"
                 : "text-muted-foreground hover:bg-secondary hover:text-foreground"

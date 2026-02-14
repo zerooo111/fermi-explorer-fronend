@@ -80,7 +80,7 @@ export default function TransactionPage() {
             <TableBody>
               {rows.map(row => (
                 <TableRow key={row.label}>
-                  <TableCell className="text-xs py-2.5 bg-secondary sm:text-sm font-mono whitespace-nowrap w-44">
+                  <TableCell className="text-xs py-3 bg-secondary sm:text-sm font-mono whitespace-nowrap w-44">
                     {row.label}
                   </TableCell>
                   <TableCell className="text-xs sm:text-sm">{row.value}</TableCell>

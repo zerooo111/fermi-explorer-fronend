@@ -1,81 +1,53 @@
-import React, { useState } from "react"
-import { cn } from "@/lib/utils"
+import { Popover as BasePopover } from "@base-ui/react/popover"
+import { cn } from "@/shared/lib/utils"
 
-interface PopoverContextValue {
-  open: boolean
-  setOpen: (open: boolean) => void
+function Popover(props: React.ComponentProps<typeof BasePopover.Root>) {
+  return <BasePopover.Root {...props} />
 }
 
-const PopoverContext = React.createContext<PopoverContextValue | null>(null)
+function PopoverTrigger(props: React.ComponentProps<typeof BasePopover.Trigger>) {
+  return <BasePopover.Trigger {...props} />
+}
 
-function Popover({ children }: { children: React.ReactNode }) {
-  const [open, setOpen] = useState(false)
+function PopoverContent({ className, children, ...props }: React.ComponentProps<typeof BasePopover.Popup>) {
   return (
-    <PopoverContext.Provider value={{ open, setOpen }}>
-      <div className="relative inline-block">
-        {children}
-      </div>
-    </PopoverContext.Provider>
+    <BasePopover.Portal>
+      <BasePopover.Positioner>
+        <BasePopover.Popup
+          className={cn(
+            "z-[100] w-72 border border-border bg-card p-4 shadow-lg opacity-0 translate-y-1 transition-[opacity,transform] duration-150 data-[open]:opacity-100 data-[open]:translate-y-0 data-[starting-style]:opacity-0 data-[starting-style]:translate-y-1 data-[ending-style]:opacity-0 data-[ending-style]:translate-y-1",
+            className
+          )}
+          {...props}
+        >
+          {children}
+          <BasePopover.Arrow className="fill-card stroke-border" />
+        </BasePopover.Popup>
+      </BasePopover.Positioner>
+    </BasePopover.Portal>
   )
 }
 
-function PopoverTrigger({ ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
-  const context = React.useContext(PopoverContext)
-  if (!context) throw new Error("PopoverTrigger must be used within Popover")
-  
+function PopoverTitle({ className, ...props }: React.ComponentProps<typeof BasePopover.Title>) {
   return (
-    <button
-      onClick={() => context.setOpen(!context.open)}
-      {...props}
-    />
-  )
-}
-
-function PopoverContent({ className, children, ...props }: { className?: string } & React.HTMLAttributes<HTMLDivElement>) {
-  const context = React.useContext(PopoverContext)
-  if (!context) throw new Error("PopoverContent must be used within Popover")
-  
-  if (!context.open) return null
-  
-  return (
-    <div
-      className={cn(
-        "absolute z-50 w-72 border border-border bg-card p-4 shadow-lg top-full right-0 mt-2",
-        className
-      )}
-      {...props}
-    >
-      {children}
-    </div>
-  )
-}
-
-function PopoverTitle({ className, ...props }: { className?: string } & React.HTMLAttributes<HTMLDivElement>) {
-  return (
-    <div
+    <BasePopover.Title
       className={cn("text-sm font-medium text-foreground", className)}
       {...props}
     />
   )
 }
 
-function PopoverDescription({ className, ...props }: { className?: string } & React.HTMLAttributes<HTMLDivElement>) {
+function PopoverDescription({ className, ...props }: React.ComponentProps<typeof BasePopover.Description>) {
   return (
-    <div
+    <BasePopover.Description
       className={cn("mt-1 text-xs text-muted-foreground", className)}
       {...props}
     />
   )
 }
 
-function PopoverClose(props: React.ButtonHTMLAttributes<HTMLButtonElement>) {
-  const context = React.useContext(PopoverContext)
-  return (
-    <button
-      onClick={() => context?.setOpen(false)}
-      {...props}
-    />
-  )
+function PopoverClose(props: React.ComponentProps<typeof BasePopover.Close>) {
+  return <BasePopover.Close {...props} />
 }
 
 export { Popover, PopoverTrigger, PopoverContent, PopoverTitle, PopoverDescription, PopoverClose }

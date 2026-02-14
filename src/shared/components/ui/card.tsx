@@ -1,7 +1,5 @@
-import { motion } from "motion/react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/shared/lib/utils"
-import { springs } from "@/shared/lib/motion"
 
 const cardVariants = cva("flex flex-col gap-3 p-6", {
   variants: {
@@ -9,7 +7,7 @@ const cardVariants = cva("flex flex-col gap-3 p-6", {
       default: "border border-border bg-card",
       ghost: "bg-transparent",
       interactive:
-        "border border-border bg-card transition-colors hover:bg-secondary cursor-pointer",
+        "border border-border bg-card/50 transition-colors hover:border-muted-foreground/40 cursor-pointer",
     },
   },
   defaultVariants: { variant: "default" },
@@ -20,21 +18,11 @@ interface CardProps
     VariantProps<typeof cardVariants> {}
 
 function Card({ className, variant, ...props }: CardProps) {
-  if (variant === "interactive") {
-    return (
-      <motion.div
-        className={cn(cardVariants({ variant, className }))}
-        whileHover={{ y: -2 }}
-        transition={springs.gentle}
-        {...props}
-      />
-    )
-  }
   return <div className={cn(cardVariants({ variant, className }))} {...props} />
 }
 
 function CardHeader({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("flex flex-col gap-1.5", className)} {...props} />
+  return <div className={cn("flex flex-col gap-2", className)} {...props} />
 }
 
 function CardTitle({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {

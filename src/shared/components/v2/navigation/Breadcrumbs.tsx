@@ -13,9 +13,9 @@ interface BreadcrumbsProps {
 
 export const Breadcrumbs = memo(function Breadcrumbs({ items }: BreadcrumbsProps) {
   return (
-    <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs font-mono text-muted-foreground mb-4">
+    <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs font-mono text-muted-foreground mb-4">
       {items.map((item, i) => (
-        <span key={i} className="flex items-center gap-1.5">
+        <span key={i} className="flex items-center gap-2">
           {i > 0 && <ChevronRight className="w-3 h-3" />}
           {item.href ? (
             <Link to={item.href} className="hover:text-foreground transition-colors">

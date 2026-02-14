@@ -88,7 +88,7 @@ export const TickStream = memo(function TickStream({
             {ticks.map(tick => (
               <div
                 key={tick.tick_number}
-                className="flex items-center justify-between px-4 py-2.5 text-xs font-mono hover:bg-card transition-colors"
+                className="flex items-center justify-between px-4 py-3 text-xs font-mono hover:bg-card transition-colors"
               >
                 <div className="flex items-center gap-4">
                   <span className="text-foreground font-medium tabular-nums">
@@ -111,7 +111,7 @@ export const TickStream = memo(function TickStream({
           <Button
             variant="default"
             onClick={jumpToLatest}
-            className="text-xs font-mono gap-1.5"
+            className="text-xs font-mono gap-2"
           >
             <ArrowDown className="w-3 h-3" />
             Jump to latest

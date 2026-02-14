@@ -60,7 +60,7 @@ export const BatchSummaryView = memo(function BatchSummaryView({ batches }: Batc
   return (
     <Card variant="default">
       <CardContent className="p-0">
-        <div className="px-4 py-2.5 border-b border-border">
+        <div className="px-4 py-3 border-b border-border">
           <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
             Batches ({batches.length})
           </span>

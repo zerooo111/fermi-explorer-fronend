@@ -1,5 +1,5 @@
 import { memo, useCallback, useState } from 'react'
-import { Copy, Check } from 'lucide-react'
+import { Copy, Check } from '@phosphor-icons/react'
 import { cn } from '@/shared/lib/utils'
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/shared/components/ui'
 
@@ -33,7 +33,7 @@ export const HashDisplay = memo(function HashDisplay({
   }, [hash])
 
   const content = (
-    <span className={cn('inline-flex items-center gap-1.5 group', className)}>
+    <span className={cn('inline-flex items-center gap-2 group', className)}>
       <Tooltip>
         <TooltipTrigger>
           <code className="font-mono text-xs tabular-nums">{truncated}</code>

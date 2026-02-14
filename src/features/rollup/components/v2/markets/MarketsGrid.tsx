@@ -20,7 +20,7 @@ const MarketCard = memo(function MarketCard({ market }: { market: Market }) {
             {market.kind === 'Perp' ? 'Perpetual' : 'Spot'}
           </Badge>
         </div>
-        <div className="space-y-1.5">
+        <div className="space-y-2">
           <div className="flex items-center justify-between text-xs">
             <span className="text-muted-foreground">Base Mint</span>
             <code className="font-mono text-foreground">{market.base_mint.slice(0, 6)}...{market.base_mint.slice(-4)}</code>
@@ -91,7 +91,7 @@ export function MarketsGrid({ className }: MarketsGridProps) {
             >
               {tab === 'Perp' ? 'Perpetual' : tab}
               {tab !== 'All' && (
-                <span className="ml-1.5 text-[10px] text-muted-foreground">
+                <span className="ml-2 text-[10px] text-muted-foreground">
                   ({allMarkets.filter(m => m.kind === tab).length})
                 </span>
               )}
