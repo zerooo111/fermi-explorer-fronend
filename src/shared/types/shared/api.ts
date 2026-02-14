@@ -8,6 +8,9 @@
  * New code should import directly from '@/shared/types/api/'.
  */
 
+// Import entity types needed for this module
+import type { OrderIntent, PayloadDecoded, ContinuumTransaction, Tick, TickSummary, TickTransaction, VdfProof, ContinuumVDFProof } from '@/entities'
+
 // Re-export base types
 export type {
   BaseResponse,
@@ -22,8 +25,8 @@ export type {
   ContinuumStatsResponse,
 } from '../api'
 
-// Re-export entity types needed here
-export type { OrderIntent, PayloadDecoded, ContinuumTransaction, Tick, TickSummary, TickTransaction } from '@/entities'
+// Re-export entity types
+export type { OrderIntent, PayloadDecoded, ContinuumTransaction, Tick, TickSummary, TickTransaction, VdfProof, ContinuumVDFProof }
 
 /**
  * Transaction lookup endpoint response (new format)
@@ -98,11 +101,7 @@ export interface DatabaseTickResponse {
  */
 export type TickResponse = ContinuumTickResponse | DatabaseTickResponse
 
-// ============================================================================
-// Continuum Tick Types (re-export from entities)
-// ============================================================================
-
-export type { VdfProof, ContinuumVDFProof } from '@/entities'
+// Continuum Tick Types are already exported above
 
 /**
  * Recent transactions response from new Continuum API
