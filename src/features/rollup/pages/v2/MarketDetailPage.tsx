@@ -1,5 +1,6 @@
 import { useParams, Link } from '@tanstack/react-router'
 import { useMarkets } from '@/features/rollup/api/hooks'
+import type { MarketsResponse } from '@/features/rollup/types/api'
 import { Breadcrumbs, HashDisplay, EmptyState } from '@/features/continuum/components/v2/shared'
 import {
   Card, CardContent, Badge, Button, PageSkeleton,
@@ -8,7 +9,8 @@ import {
 
 export default function MarketDetailPage() {
   const { marketId } = useParams({ from: '/execution/markets/$marketId' })
-  const { data, isLoading } = useMarkets()
+  const { data: rawData, isLoading } = useMarkets()
+  const data = rawData as MarketsResponse | undefined
 
   const market = data?.markets?.find(m => m.id === marketId)
 

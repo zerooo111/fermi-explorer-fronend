@@ -5,17 +5,17 @@ import {
   redirect,
 } from "@tanstack/react-router";
 import Layout from "@/shared/components/Layout";
-import ContinuumHomepage from "@/features/continuum/pages/ContinuumHomepage";
-import ContinuumTransactionPage from "@/features/continuum/pages/TransactionPage";
-import ContinuumTickPage from "@/features/continuum/pages/TickPage";
-import ContinuumLiveStreamPage from "@/features/continuum/pages/LiveStreamPage";
-import RollupHomepage from "@/features/rollup/pages/RollupHomepage";
-import RollupBlocksPage from "@/features/rollup/pages/BlocksPage";
-import RollupBlockDetailPage from "@/features/rollup/pages/BlockDetailPage";
-import RollupTransactionPage from "@/features/rollup/pages/TransactionPage";
+import ContinuumHomepage from "@/features/continuum/pages/v2/ContinuumHomepage";
+import ContinuumTransactionPage from "@/features/continuum/pages/v2/TransactionDetailPage";
+import ContinuumTickPage from "@/features/continuum/pages/v2/TickDetailPage";
+import ContinuumLiveStreamPage from "@/features/continuum/pages/v2/LiveStreamPage";
+import RollupHomepage from "@/features/rollup/pages/v2/RollupHomepage";
+import RollupBlocksPage from "@/features/rollup/pages/v2/BlocksListPage";
+import RollupBlockDetailPage from "@/features/rollup/pages/v2/BlockDetailPage";
+import RollupTransactionPage from "@/features/rollup/pages/v2/TransactionPage";
 import RollupAddressPage from "@/features/rollup/pages/AddressPage";
-import RollupMarketsPage from "@/features/rollup/pages/MarketsPage";
-import RollupMarketDetailPage from "@/features/rollup/pages/MarketDetailPage";
+import RollupMarketsPage from "@/features/rollup/pages/v2/MarketsPage";
+import RollupMarketDetailPage from "@/features/rollup/pages/v2/MarketDetailPage";
 import { ErrorBoundary } from "@/shared/components/ErrorBoundary";
 
 /* Create the root route with layout and error boundary */
