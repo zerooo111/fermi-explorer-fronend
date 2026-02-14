@@ -8,11 +8,14 @@ import Layout from "@/shared/components/Layout";
 import ContinuumHomepage from "@/features/continuum/pages/ContinuumHomepage";
 import ContinuumTransactionPage from "@/features/continuum/pages/TransactionPage";
 import ContinuumTickPage from "@/features/continuum/pages/TickPage";
+import ContinuumLiveStreamPage from "@/features/continuum/pages/LiveStreamPage";
 import RollupHomepage from "@/features/rollup/pages/RollupHomepage";
 import RollupBlocksPage from "@/features/rollup/pages/BlocksPage";
 import RollupBlockDetailPage from "@/features/rollup/pages/BlockDetailPage";
 import RollupTransactionPage from "@/features/rollup/pages/TransactionPage";
 import RollupAddressPage from "@/features/rollup/pages/AddressPage";
+import RollupMarketsPage from "@/features/rollup/pages/MarketsPage";
+import RollupMarketDetailPage from "@/features/rollup/pages/MarketDetailPage";
 import { ErrorBoundary } from "@/shared/components/ErrorBoundary";
 
 /* Create the root route with layout and error boundary */
@@ -52,6 +55,12 @@ const sequencingIndexRoute = createRoute({
   component: ContinuumHomepage,
 });
 
+const sequencingLiveStreamRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/sequencing/live",
+  component: ContinuumLiveStreamPage,
+});
+
 const sequencingTransactionRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/sequencing/tx/$transactionId",
@@ -89,6 +98,18 @@ const executionTransactionRoute = createRoute({
   component: RollupTransactionPage,
 });
 
+const executionMarketsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/execution/markets",
+  component: RollupMarketsPage,
+});
+
+const executionMarketDetailRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/execution/markets/$marketId",
+  component: RollupMarketDetailPage,
+});
+
 const executionAddressRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/execution/address/$pubkey",
@@ -110,11 +131,14 @@ const notFoundRoute = createRoute({
 const routeTree = rootRoute.addChildren([
   indexRoute,
   sequencingIndexRoute,
+  sequencingLiveStreamRoute,
   sequencingTransactionRoute,
   sequencingTickRoute,
   executionIndexRoute,
   executionBlocksRoute,
   executionBlockDetailRoute,
+  executionMarketsRoute,
+  executionMarketDetailRoute,
   executionTransactionRoute,
   executionAddressRoute,
   notFoundRoute,
