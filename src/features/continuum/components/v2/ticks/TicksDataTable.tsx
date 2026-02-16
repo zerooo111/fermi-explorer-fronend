@@ -7,6 +7,7 @@ import {
   TicksTableSkeleton,
 } from '@/shared/components/ui'
 import { TimestampDisplay, EmptyState } from '../shared'
+import { Cube } from '@phosphor-icons/react'
 import { TickCard } from './TickCard'
 
 interface TicksDataTableProps {
@@ -53,8 +54,9 @@ export const TicksDataTable = memo(function TicksDataTable({ limit = 20 }: Ticks
                   <Link
                     to="/sequencing/tick/$tickId"
                     params={{ tickId: String(tick.tick_number) }}
-                    className="font-mono text-xs hover:underline hover:text-foreground"
+                    className="inline-flex items-center gap-1.5 font-mono text-xs hover:underline hover:text-foreground"
                   >
+                    <Cube weight="duotone" className="w-3.5 h-3.5 text-accent" />
                     #{tick.tick_number.toLocaleString()}
                   </Link>
                 </TableCell>

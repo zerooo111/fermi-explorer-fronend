@@ -51,7 +51,7 @@ function StatusIndicator({
 
 export default function AppFooter() {
   const { data, isLoading: isConnecting, isError } = useHealth();
-  const isHealthy = data?.status === "healthy";
+  const isHealthy = !!data?.status;
   const currentYear = new Date().getFullYear();
 
   return (

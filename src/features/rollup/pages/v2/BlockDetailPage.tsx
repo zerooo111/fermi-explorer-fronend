@@ -1,4 +1,5 @@
 import { Link, useParams } from '@tanstack/react-router'
+import { Receipt, X, Stack, Cube } from '@phosphor-icons/react'
 import { useBlock } from '@/features/rollup/api/hooks'
 import type { BlockWithDetails } from '@/features/rollup/types/api'
 import { StateRootViewer, BatchSummaryView } from '@/features/rollup/components/v2/blocks'
@@ -59,7 +60,7 @@ export default function BlockDetailPage() {
         { label: `Block #${block.height}` },
       ]} />
 
-      <h1 className="text-lg sm:text-xl font-bold text-foreground">
+      <h1 className="font-pixel text-lg sm:text-xl font-bold text-foreground">
         Block #{block.height.toLocaleString()}
       </h1>
 
@@ -67,10 +68,10 @@ export default function BlockDetailPage() {
       <Stagger>
         <StaggerItem>
           <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-border border border-border">
-            <MetricCard label="Transactions" value={block.transaction_ids.length} />
-            <MetricCard label="Orders" value={block.total_orders} />
-            <MetricCard label="Cancels" value={block.total_cancels} />
-            <MetricCard label="Batches" value={block.batch_summaries.length} />
+            <MetricCard label="Transactions" icon={Receipt} value={block.transaction_ids.length} />
+            <MetricCard label="Orders" icon={Cube} value={block.total_orders} />
+            <MetricCard label="Cancels" icon={X} value={block.total_cancels} />
+            <MetricCard label="Batches" icon={Stack} value={block.batch_summaries.length} />
           </div>
         </StaggerItem>
       </Stagger>

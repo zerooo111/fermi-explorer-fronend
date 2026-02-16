@@ -7,7 +7,7 @@ import { useContinuumRecentTransactions } from '@/features/continuum/api/hooks'
 import type { ContinuumRecentTransactionsResponse } from '@/shared/types/shared/api'
 import type { StatusResponse } from '@/shared/types/api/health'
 import { ArrowsClockwise, Hash, Cube } from '@phosphor-icons/react'
-import { Card, Badge, TransactionTableSkeleton, Switch } from '@/shared/components/ui'
+import { Card, Badge, Skeleton, Switch } from '@/shared/components/ui'
 import { HashDisplay, TimestampDisplay, EmptyState } from '@/features/continuum/components/v2/shared'
 
 type Transaction = ContinuumRecentTransactionsResponse['transactions'][number]
@@ -164,7 +164,23 @@ export default function ContinuumHomepage() {
           </label>
         </div>
         {txLoading ? (
-          <TransactionTableSkeleton rows={6} />
+          <div className="flex flex-col gap-2">
+            {[...Array(6)].map((_, i) => (
+              <Card key={i} variant="default" className="p-4 gap-2">
+                <div className="flex items-center justify-between">
+                  <span className="inline-flex items-center gap-2">
+                    <Skeleton className="h-3 w-3" />
+                    <Skeleton className="h-3 w-32 sm:w-48" />
+                  </span>
+                  <Skeleton className="h-3 w-20" />
+                </div>
+                <div className="flex items-center justify-between">
+                  <Skeleton className="h-3 w-24" />
+                  <Skeleton className="h-4 w-16" />
+                </div>
+              </Card>
+            ))}
+          </div>
         ) : transactions.length === 0 ? (
           <EmptyState message="No transactions found" />
         ) : (
@@ -189,15 +205,10 @@ export default function ContinuumHomepage() {
                           <TimestampDisplay timestamp={tx.timestamp} />
                         </div>
                         <div className="flex items-center justify-between">
-                          <Link
-                            to="/sequencing/tick/$tickId"
-                            params={{ tickId: String(tx.tick_number) }}
-                            className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:underline"
-                            onClick={e => e.stopPropagation()}
-                          >
+                          <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
                             <Cube weight="bold" className="w-3 h-3" />
                             Tick #{tx.tick_number.toLocaleString()}
-                          </Link>
+                          </span>
                           <Badge variant="muted">Seq #{tx.sequence_number}</Badge>
                         </div>
                       </Card>
@@ -228,14 +239,10 @@ export default function ContinuumHomepage() {
                             <TimestampDisplay timestamp={tx.timestamp} />
                           </div>
                           <div className="flex items-center justify-between">
-                            <Link
-                              to="/sequencing/tick/$tickId"
-                              params={{ tickId: String(tx.tick_number) }}
-                              className="text-xs text-muted-foreground hover:underline"
-                              onClick={e => e.stopPropagation()}
-                            >
+                            <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+                              <Cube weight="bold" className="w-3 h-3" />
                               Tick #{tx.tick_number.toLocaleString()}
-                            </Link>
+                            </span>
                             <Badge variant="muted">Seq #{tx.sequence_number}</Badge>
                           </div>
                         </Card>

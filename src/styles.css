@@ -283,6 +283,11 @@
   border-radius: 0 !important;
 }
 
+/* Prevent scrollbar layout shift */
+html {
+  scrollbar-gutter: stable;
+}
+
 /* Custom scrollbar styling */
 ::-webkit-scrollbar {
   width: 8px;

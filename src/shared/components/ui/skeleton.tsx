@@ -17,21 +17,16 @@ interface TableSkeletonProps {
 
 export function TableSkeleton({ rows = 6 }: TableSkeletonProps) {
   return (
-    <div className="mobile-scroll-table">
-      <div className="w-full">
-        <div className="space-y-0">
-          {[...Array(rows)].map((_, i) => (
-            <div key={i} className="flex">
-              <div className="h-10 bg-neutral-900/50 flex-1 border-b border-neutral-800 p-2">
-                <Skeleton className="h-4 w-3/4" />
-              </div>
-              <div className="h-10 bg-neutral-800/30 flex-1 border-b border-neutral-800 p-2">
-                <Skeleton className="h-4 w-full" />
-              </div>
-            </div>
-          ))}
+    <div className="border border-border">
+      {[...Array(rows)].map((_, i) => (
+        <div key={i} className={cn(
+          "flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 px-3 py-2",
+          i > 0 && "border-t border-border"
+        )}>
+          <Skeleton className="h-3 w-24 sm:w-32 shrink-0" />
+          <Skeleton className="h-3 w-full max-w-xs" />
         </div>
-      </div>
+      ))}
     </div>
   );
 }
@@ -42,19 +37,27 @@ interface PageSkeletonProps {
   children?: React.ReactNode;
 }
 
-export function PageSkeleton({ 
-  title = true, 
+export function PageSkeleton({
+  title = true,
   titleWidth = "w-1/2",
-  children 
+  children
 }: PageSkeletonProps) {
   return (
-    <div className="container max-w-screen-xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-      <div className="animate-pulse space-y-6">
-        {title && (
-          <Skeleton className={cn("h-6 sm:h-8 rounded mb-4 sm:mb-6", titleWidth)} />
-        )}
-        {children}
+    <div className="container max-w-screen-xl mx-auto px-4 sm:px-6 py-6 space-y-5">
+      {/* Breadcrumb skeleton */}
+      <div className="flex items-center gap-1.5">
+        <Skeleton className="h-3 w-16" />
+        <Skeleton className="h-3 w-2" />
+        <Skeleton className="h-3 w-24" />
       </div>
+      {/* Title skeleton */}
+      {title && (
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-5 w-5 shrink-0" />
+          <Skeleton className={cn("h-5", titleWidth)} />
+        </div>
+      )}
+      {children}
     </div>
   );
 }
@@ -65,50 +68,19 @@ interface TransactionTableSkeletonProps {
 
 export function TransactionTableSkeleton({ rows = 6 }: TransactionTableSkeletonProps) {
   return (
-    <div className="mobile-scroll-table overflow-x-auto">
-      <div className="w-full min-w-[600px]">
-        {/* Header skeleton - matches TransactionsTable: Sequence #, Txn Hash, Tick #, Txn Id, Timestamp */}
-        <div className="flex border-b border-neutral-700">
-          <div className="min-w-[60px] md:min-w-[80px] p-2">
-            <Skeleton className="h-4 w-16" />
-          </div>
-          <div className="min-w-[100px] md:min-w-[140px] p-2">
-            <Skeleton className="h-4 w-16" />
-          </div>
-          <div className="min-w-[70px] md:min-w-[90px] p-2">
-            <Skeleton className="h-4 w-12" />
-          </div>
-          <div className="flex-1 p-2">
-            <Skeleton className="h-4 w-12" />
-          </div>
-          <div className="min-w-[70px] md:min-w-[90px] lg:min-w-[160px] p-2">
-            <Skeleton className="h-4 w-20 ml-auto" />
-          </div>
+    <div className="border border-border">
+      {[...Array(rows)].map((_, i) => (
+        <div key={i} className={cn(
+          "flex items-center gap-3 px-3 py-2.5",
+          i > 0 && "border-t border-border"
+        )}>
+          <Skeleton className="h-3 w-3 shrink-0" />
+          <Skeleton className="h-3 w-24 sm:w-40" />
+          <div className="flex-1" />
+          <Skeleton className="h-3 w-16" />
+          <Skeleton className="h-3 w-20 hidden sm:block" />
         </div>
-
-        {/* Rows skeleton */}
-        <div className="space-y-0">
-          {[...Array(rows)].map((_, i) => (
-            <div key={i} className="flex h-10 border-b border-neutral-800/50">
-              <div className="min-w-[60px] md:min-w-[80px] p-2 flex items-center">
-                <Skeleton className="h-3 w-10" />
-              </div>
-              <div className="min-w-[100px] md:min-w-[140px] p-2 flex items-center">
-                <Skeleton className="h-3 w-24 md:w-32" />
-              </div>
-              <div className="min-w-[70px] md:min-w-[90px] p-2 flex items-center">
-                <Skeleton className="h-3 w-16" />
-              </div>
-              <div className="flex-1 p-2 flex items-center">
-                <Skeleton className="h-3 w-20 md:w-28 lg:w-40" />
-              </div>
-              <div className="min-w-[70px] md:min-w-[90px] lg:min-w-[160px] p-2 flex items-center justify-end">
-                <Skeleton className="h-3 w-16 lg:w-32" />
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      ))}
     </div>
   );
 }
@@ -119,38 +91,19 @@ interface TicksTableSkeletonProps {
 
 export function TicksTableSkeleton({ rows = 6 }: TicksTableSkeletonProps) {
   return (
-    <div className="mobile-scroll-table w-full overflow-x-auto">
-      <div className="w-full min-w-[280px]">
-        {/* Header skeleton - matches TicksTable: Tick #, Tx Count, Timestamp */}
-        <div className="flex border-b border-neutral-700">
-          <div className="min-w-[80px] sm:min-w-32 p-2">
-            <Skeleton className="h-4 w-12" />
-          </div>
-          <div className="flex-1 p-2">
-            <Skeleton className="h-4 w-16" />
-          </div>
-          <div className="min-w-[90px] sm:min-w-36 p-2">
-            <Skeleton className="h-4 w-16 ml-auto" />
-          </div>
+    <div className="border border-border">
+      {[...Array(rows)].map((_, i) => (
+        <div key={i} className={cn(
+          "flex items-center gap-3 px-3 py-2.5",
+          i > 0 && "border-t border-border"
+        )}>
+          <Skeleton className="h-3 w-3 shrink-0" />
+          <Skeleton className="h-3 w-20" />
+          <div className="flex-1" />
+          <Skeleton className="h-4 w-8" />
+          <Skeleton className="h-3 w-24 hidden sm:block" />
         </div>
-
-        {/* Rows skeleton */}
-        <div className="space-y-0">
-          {[...Array(rows)].map((_, i) => (
-            <div key={i} className="flex h-10 border-b border-neutral-800/50">
-              <div className="min-w-[80px] sm:min-w-32 p-2 flex items-center">
-                <Skeleton className="h-3 w-20" />
-              </div>
-              <div className="flex-1 p-2 flex items-center">
-                <Skeleton className="h-3 w-12" />
-              </div>
-              <div className="min-w-[90px] sm:min-w-36 p-2 flex items-center justify-end">
-                <Skeleton className="h-3 w-16 sm:w-20" />
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      ))}
     </div>
   );
 }
@@ -161,16 +114,43 @@ interface CardSkeletonProps {
 
 export function CardSkeleton({ rows = 3 }: CardSkeletonProps) {
   return (
-    <div className="space-y-4 animate-pulse">
-      <Skeleton className="h-6 w-48 mb-4" />
-      <div className="space-y-2">
+    <div className="space-y-3 animate-pulse">
+      <div className="flex items-center gap-2">
+        <Skeleton className="h-5 w-5" />
+        <Skeleton className="h-5 w-48" />
+      </div>
+      <div className="border border-border">
         {[...Array(rows)].map((_, i) => (
-          <div key={i} className="flex items-center justify-between">
-            <Skeleton className="h-4 w-24" />
-            <Skeleton className="h-4 w-16" />
+          <div key={i} className={cn(
+            "flex items-center justify-between px-3 py-2",
+            i > 0 && "border-t border-border"
+          )}>
+            <Skeleton className="h-3 w-24" />
+            <Skeleton className="h-3 w-16" />
           </div>
         ))}
       </div>
+    </div>
+  );
+}
+
+/**
+ * Detail page skeleton — matches the new key-value row layout
+ * used by TransactionDetail and TickDetailPage.
+ */
+export function DetailSkeleton({ rows = 8 }: { rows?: number }) {
+  const widths = ['w-full max-w-xs', 'w-32', 'w-20', 'w-full max-w-sm', 'w-16', 'w-24', 'w-full max-w-md', 'w-28']
+  return (
+    <div className="border border-border">
+      {[...Array(rows)].map((_, i) => (
+        <div key={i} className={cn(
+          "flex flex-col sm:flex-row sm:items-baseline gap-0.5 sm:gap-3 px-3 py-2",
+          i > 0 && "border-t border-border"
+        )}>
+          <Skeleton className="h-2.5 w-20 sm:w-32 shrink-0" />
+          <Skeleton className={cn("h-3", widths[i % widths.length])} />
+        </div>
+      ))}
     </div>
   );
 }

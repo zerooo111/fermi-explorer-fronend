@@ -16,7 +16,7 @@ export default function BlocksListPage() {
         { label: 'Blocks' },
       ]} />
 
-      <h1 className="text-lg sm:text-xl font-bold text-foreground">All Blocks</h1>
+      <h1 className="font-pixel text-lg sm:text-xl font-bold text-foreground">All Blocks</h1>
 
       <BlocksDataTable limit={limit} offset={offset} />
 

@@ -3,9 +3,10 @@ import { useContinuumTransaction } from '@/features/continuum/api/hooks'
 import type { ContinuumTransaction } from '@/shared/types/shared/api'
 import { TransactionDetail } from '@/features/continuum/components/v2/transactions'
 import {
-  Alert, AlertDescription, PageSkeleton, TableSkeleton, Button,
+  Alert, AlertDescription, PageSkeleton, DetailSkeleton,
 } from '@/shared/components/ui'
 import { EmptyState } from '@/features/continuum/components/v2/shared'
+import { ArrowLeft } from '@phosphor-icons/react'
 
 export default function TransactionDetailPage() {
   const { transactionId } = useParams({ from: '/sequencing/tx/$transactionId' })
@@ -15,7 +16,7 @@ export default function TransactionDetailPage() {
   if (isLoading) {
     return (
       <PageSkeleton titleWidth="w-3/4">
-        <TableSkeleton rows={10} />
+        <DetailSkeleton rows={8} />
       </PageSkeleton>
     )
   }
@@ -28,8 +29,8 @@ export default function TransactionDetailPage() {
             Error loading transaction: {error?.message || 'Unknown error'}
           </AlertDescription>
         </Alert>
-        <Link to="/sequencing" className="mt-4 inline-block">
-          <Button variant="default">Return to home</Button>
+        <Link to="/sequencing" className="mt-4 inline-flex items-center gap-1.5 text-xs font-mono text-muted-foreground hover:text-foreground transition-colors">
+          <ArrowLeft weight="bold" className="w-3.5 h-3.5" /> Back to Sequencing
         </Link>
       </div>
     )
@@ -40,18 +41,20 @@ export default function TransactionDetailPage() {
       <div className="container max-w-screen-xl mx-auto px-4 sm:px-6 py-6">
         <EmptyState message="Transaction not found" description="The requested transaction does not exist." />
         <div className="flex justify-center mt-4">
-          <Link to="/sequencing"><Button variant="default">Return to home</Button></Link>
+          <Link to="/sequencing" className="inline-flex items-center gap-1.5 text-xs font-mono text-muted-foreground hover:text-foreground transition-colors">
+            <ArrowLeft weight="bold" className="w-3.5 h-3.5" /> Back to Sequencing
+          </Link>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="container max-w-screen-xl mx-auto px-4 sm:px-6 py-6">
+    <div className="container max-w-screen-xl mx-auto px-4 sm:px-6 py-6 space-y-8">
       <TransactionDetail transaction={tx} />
-      <div className="mt-8">
-        <Link to="/sequencing">
-          <Button variant="default">Return to home</Button>
+      <div>
+        <Link to="/sequencing" className="inline-flex items-center gap-1.5 text-xs font-mono text-muted-foreground hover:text-foreground transition-colors">
+          <ArrowLeft weight="bold" className="w-3.5 h-3.5" /> Back to Sequencing
         </Link>
       </div>
     </div>

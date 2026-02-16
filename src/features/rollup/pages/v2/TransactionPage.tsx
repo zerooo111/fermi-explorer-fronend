@@ -72,7 +72,7 @@ export default function TransactionPage() {
         { label: `Transaction ${tx.id.slice(0, 12)}...` },
       ]} />
 
-      <h1 className="text-lg sm:text-xl font-bold text-foreground">Transaction Detail</h1>
+      <h1 className="font-pixel text-lg sm:text-xl font-bold text-foreground">Transaction Detail</h1>
 
       <Card variant="default">
         <CardContent className="p-0">

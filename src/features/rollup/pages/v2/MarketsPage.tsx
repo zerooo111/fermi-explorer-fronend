@@ -9,7 +9,7 @@ export default function MarketsPage() {
         { label: 'Markets' },
       ]} />
 
-      <h1 className="text-lg sm:text-xl font-bold text-foreground">Markets</h1>
+      <h1 className="font-pixel text-lg sm:text-xl font-bold text-foreground">Markets</h1>
 
       <MarketsGrid />
     </div>

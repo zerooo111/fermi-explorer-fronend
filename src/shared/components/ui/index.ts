@@ -1,4 +1,4 @@
-export { Skeleton, TableSkeleton, PageSkeleton, TransactionTableSkeleton, TicksTableSkeleton, CardSkeleton } from "./skeleton"
+export { Skeleton, TableSkeleton, PageSkeleton, TransactionTableSkeleton, TicksTableSkeleton, CardSkeleton, DetailSkeleton } from "./skeleton"
 export { AnimatedNumber, type AnimatedNumberProps, type FormatType } from "./animated-number"
 export { Button, buttonVariants, type ButtonProps } from "./button"
 export { Input, Field, FieldLabel, FieldDescription, FieldError, FieldControl, type InputProps } from "./input"

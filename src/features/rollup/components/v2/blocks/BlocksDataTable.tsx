@@ -1,5 +1,6 @@
 import { memo, useMemo } from 'react'
 import { Link } from '@tanstack/react-router'
+import { Cube } from '@phosphor-icons/react'
 import { useBlocks } from '@/features/rollup/api/hooks'
 import type { Block, BlocksListResponse } from '@/features/rollup/types/api'
 import {
@@ -21,12 +22,13 @@ function formatTimestamp(unixSeconds: number): string {
   return `${Math.floor(seconds / 86400)}d ago`
 }
 
-const BlockCard = memo(function BlockCard({ block }: { block: Block }) {
+const BlockCard = memo(function BlockCard({ block, isLatest }: { block: Block; isLatest?: boolean }) {
   return (
     <Link to="/execution/blocks/$height" params={{ height: String(block.height) }}>
-      <Card variant="interactive" className="p-4 gap-2">
+      <Card variant="interactive" className={`p-4 gap-2 border-l-2 transition-[border-color] duration-700 ${isLatest ? 'border-l-accent' : 'border-l-border'}`}>
         <div className="flex items-center justify-between">
-          <span className="font-mono text-sm font-medium text-foreground">
+          <span className="inline-flex items-center gap-2 font-mono text-sm font-medium text-foreground">
+            <Cube weight="bold" className="w-3 h-3 text-muted-foreground" />
             #{block.height.toLocaleString()}
           </span>
           <span className="font-mono text-xs text-muted-foreground">
@@ -80,8 +82,8 @@ export const BlocksDataTable = memo(function BlocksDataTable({
     <div aria-live="polite">
       {/* Mobile cards */}
       <div className="md:hidden flex flex-col gap-2">
-        {blocks.map(block => (
-          <BlockCard key={block.height} block={block} />
+        {blocks.map((block, i) => (
+          <BlockCard key={block.height} block={block} isLatest={i === 0} />
         ))}
       </div>
 

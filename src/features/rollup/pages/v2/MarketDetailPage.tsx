@@ -55,7 +55,7 @@ export default function MarketDetailPage() {
         { label: market.name },
       ]} />
 
-      <h1 className="text-lg sm:text-xl font-bold text-foreground">{market.name}</h1>
+      <h1 className="font-pixel text-lg sm:text-xl font-bold text-foreground">{market.name}</h1>
 
       <Card variant="default">
         <CardContent className="p-0">

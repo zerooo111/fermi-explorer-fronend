@@ -1,7 +1,8 @@
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
-import { ArrowDown, Wifi, WifiOff } from 'lucide-react'
+import { Link } from '@tanstack/react-router'
 import { useTickStream } from '@/features/continuum/api/hooks'
-import { Badge, Button, Skeleton } from '@/shared/components/ui'
+import { Badge, Button, Card, Skeleton } from '@/shared/components/ui'
+import { WifiHigh, WifiSlash, ArrowDown, Broadcast, Cube } from '@phosphor-icons/react'
 import { cn } from '@/shared/lib/utils'
 import { TimestampDisplay } from '../shared'
 import { EmptyState } from '../shared'
@@ -48,16 +49,17 @@ export const TickStream = memo(function TickStream({
     <div className={cn('flex flex-col gap-3', className)}>
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="font-mono text-sm uppercase tracking-[0.15em] text-foreground font-medium">
+        <h3 className="flex items-center gap-2 font-pixel text-sm uppercase tracking-[0.15em] text-foreground">
+          <Broadcast weight="duotone" className="w-4 h-4 text-accent" />
           Live Stream
         </h3>
         <Badge variant={isConnected ? 'success' : isConnecting ? 'warning' : 'muted'}>
           {isConnected ? (
-            <><Wifi className="w-3 h-3" /> Connected</>
+            <><WifiHigh weight="bold" className="w-3 h-3" /> Connected</>
           ) : isConnecting ? (
             'Connecting...'
           ) : (
-            <><WifiOff className="w-3 h-3" /> Disconnected</>
+            <><WifiSlash weight="bold" className="w-3 h-3" /> Disconnected</>
           )}
         </Badge>
       </div>
@@ -84,22 +86,22 @@ export const TickStream = memo(function TickStream({
             <EmptyState message="Stream disconnected" description="Attempting to reconnect..." />
           )
         ) : (
-          <div className="divide-y divide-border">
+          <div className="flex flex-col gap-1 p-1">
             {ticks.map(tick => (
-              <div
-                key={tick.tick_number}
-                className="flex items-center justify-between px-4 py-3 text-xs font-mono hover:bg-card transition-colors"
-              >
-                <div className="flex items-center gap-4">
-                  <span className="text-foreground font-medium tabular-nums">
-                    #{tick.tick_number.toLocaleString()}
-                  </span>
-                  <Badge variant={tick.transaction_count > 0 ? 'success' : 'muted'} className="text-[9px]">
-                    {tick.transaction_count} txn{tick.transaction_count !== 1 ? 's' : ''}
-                  </Badge>
-                </div>
-                <TimestampDisplay timestamp={tick.timestamp} />
-              </div>
+              <Link key={tick.tick_number} to="/sequencing/tick/$tickId" params={{ tickId: String(tick.tick_number) }}>
+                <Card variant="interactive" className="flex items-center justify-between px-4 py-3 text-xs font-mono">
+                  <div className="flex items-center gap-4">
+                    <span className="flex items-center gap-1.5 text-foreground font-medium tabular-nums">
+                      <Cube weight="duotone" className="w-3.5 h-3.5 text-accent" />
+                      #{tick.tick_number.toLocaleString()}
+                    </span>
+                    <Badge variant={tick.transaction_count > 0 ? 'success' : 'muted'} className="text-[9px]">
+                      {tick.transaction_count} txn{tick.transaction_count !== 1 ? 's' : ''}
+                    </Badge>
+                  </div>
+                  <TimestampDisplay timestamp={tick.timestamp} />
+                </Card>
+              </Link>
             ))}
           </div>
         )}
@@ -113,7 +115,7 @@ export const TickStream = memo(function TickStream({
             onClick={jumpToLatest}
             className="text-xs font-mono gap-2"
           >
-            <ArrowDown className="w-3 h-3" />
+            <ArrowDown weight="bold" className="w-3 h-3" />
             Jump to latest
           </Button>
         </div>
