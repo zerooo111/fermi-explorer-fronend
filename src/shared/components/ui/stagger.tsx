@@ -37,7 +37,7 @@ function Stagger({
       whileInView="visible"
       viewport={{ once }}
       className={cn(className)}
-      {...props}
+      {...(props as any)}
     >
       {children}
     </motion.div>
@@ -50,7 +50,7 @@ function StaggerItem({ className, children, ...props }: StaggerItemProps) {
       variants={itemVariants}
       transition={springs.gentle}
       className={cn(className)}
-      {...props}
+      {...(props as any)}
     >
       {children}
     </motion.div>

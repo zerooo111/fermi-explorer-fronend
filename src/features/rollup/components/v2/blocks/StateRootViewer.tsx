@@ -1,6 +1,6 @@
 import { memo, useState, useCallback } from 'react'
 import { TreeStructure, ArrowsLeftRight } from '@phosphor-icons/react'
-import { Badge, Button } from '@/shared/components/ui'
+import { Button } from '@/shared/components/ui'
 import { HashDisplay } from '@/features/continuum/components/v2/shared'
 
 interface StateRootViewerProps {
@@ -52,7 +52,7 @@ export const StateRootViewer = memo(function StateRootViewer({
           {showDiff && (
             <div className="font-mono text-xs flex flex-wrap gap-0.5 pb-1">
               {current.map((byte, i) => {
-                const changed = previous[i] !== undefined && previous[i] !== byte
+                const changed = previous?.[i] !== undefined && previous?.[i] !== byte
                 return (
                   <span
                     key={i}

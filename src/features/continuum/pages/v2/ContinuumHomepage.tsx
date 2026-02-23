@@ -23,8 +23,8 @@ function useDripFeed(polled: Transaction[], reduced: boolean) {
   const [freshHashes, setFreshHashes] = useState<Set<string>>(new Set())
   const queueRef = useRef<Transaction[]>([])
   const knownRef = useRef<Set<string>>(new Set())
-  const timerRef = useRef<ReturnType<typeof setTimeout>>()
-  const fadeTimerRef = useRef<ReturnType<typeof setTimeout>>()
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
+  const fadeTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
   const initialRef = useRef(true)
 
   const dripNext = useCallback(() => {

@@ -56,7 +56,7 @@ function Button({
       aria-busy={loading || undefined}
       whileTap={isDisabled ? undefined : { scale: 0.97 }}
       transition={{ type: "spring", stiffness: 500, damping: 30 }}
-      {...props}
+      {...(props as any)}
     >
       {loading && <Loader2 className="h-4 w-4 animate-spin" />}
       {children}

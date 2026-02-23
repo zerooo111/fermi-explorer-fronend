@@ -86,6 +86,7 @@ export function MarketsGrid({ className }: MarketsGridProps) {
           {(['All', 'Spot', 'Perp'] as FilterTab[]).map(tab => (
             <TabsTrigger
               key={tab}
+              value={tab}
               data-selected={filter === tab ? '' : undefined}
               onClick={() => handleFilter(tab)}
             >

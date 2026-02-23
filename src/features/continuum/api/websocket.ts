@@ -216,7 +216,7 @@ export class TickStreamClient {
           transaction_batch_hash: message.transaction_batch_hash,
           previous_output: message.previous_output,
           vdf_proof: message.vdf_proof,
-          transactions: message.transactions,
+          status: "confirmed",
         };
         this.handleThrottledTick(tick);
         break;
