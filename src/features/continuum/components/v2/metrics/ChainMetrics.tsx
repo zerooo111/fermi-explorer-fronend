@@ -9,10 +9,31 @@ import { MetricCard } from './MetricCard'
 
 const REFETCH_INTERVAL = 500
 const TPS_WINDOW_MS = 1000
+const HISTORY_SIZE = 30
 
-function useClientTps(totalTxns: number | undefined): number | undefined {
+function useMetricHistory(value: number | undefined): number[] {
+  const historyRef = useRef<number[]>([])
+  const [history, setHistory] = useState<number[]>([])
+  const lastRef = useRef<number | undefined>(undefined)
+
+  useEffect(() => {
+    if (value == null || value === lastRef.current) return
+    lastRef.current = value
+
+    const next = [...historyRef.current, value]
+    if (next.length > HISTORY_SIZE) next.shift()
+    historyRef.current = next
+    setHistory(next)
+  }, [value])
+
+  return history
+}
+
+function useClientTps(totalTxns: number | undefined): { tps: number | undefined; history: number[] } {
   const snapshotRef = useRef<{ time: number; count: number } | null>(null)
   const [tps, setTps] = useState<number | undefined>(undefined)
+  const historyRef = useRef<number[]>([])
+  const [history, setHistory] = useState<number[]>([])
 
   useEffect(() => {
     if (totalTxns == null) return
@@ -29,11 +50,17 @@ function useClientTps(totalTxns: number | undefined): number | undefined {
       const diff = totalTxns - snapshotRef.current.count
       const rate = Math.max(0, Math.round(diff / (elapsed / 1000)))
       setTps(rate)
+
+      const next = [...historyRef.current, rate]
+      if (next.length > HISTORY_SIZE) next.shift()
+      historyRef.current = next
+      setHistory(next)
+
       snapshotRef.current = { time: now, count: totalTxns }
     }
   }, [totalTxns])
 
-  return tps
+  return { tps, history }
 }
 
 export { useClientTps }
@@ -54,7 +81,15 @@ export const ChainMetrics = memo(function ChainMetrics() {
     refetchOnReconnect: true,
   })
 
-  const clientTps = useClientTps(metrics?.total_transactions)
+  const { tps: clientTps, history: tpsHistory } = useClientTps(metrics?.total_transactions)
+
+  const ticksPerSecValue = metrics?.ticks_per_second ? Math.round(metrics.ticks_per_second) : undefined
+  const tickTimeValue = metrics?.average_tick_time != null
+    ? metrics.average_tick_time
+    : metrics?.last_60_seconds?.mean_tick_time_micros
+
+  const ticksPerSecHistory = useMetricHistory(ticksPerSecValue)
+  const tickTimeHistory = useMetricHistory(tickTimeValue != null ? Math.round(tickTimeValue * 10) / 10 : undefined)
 
   return (
     <Stagger className="flex flex-col gap-4" aria-live="polite" aria-label="Chain metrics">
@@ -82,24 +117,23 @@ export const ChainMetrics = memo(function ChainMetrics() {
             icon={Lightning}
             value={clientTps}
             isLoading={isLoading}
+            sparklineData={tpsHistory}
           />
           <MetricCard
             label="Ticks/Sec"
             icon={Pulse}
-            value={metrics?.ticks_per_second ? Math.round(metrics.ticks_per_second) : undefined}
+            value={ticksPerSecValue}
             isLoading={isLoading}
+            sparklineData={ticksPerSecHistory}
           />
           <MetricCard
             label="Tick Time"
             icon={Timer}
-            value={
-              metrics?.average_tick_time != null
-                ? metrics.average_tick_time
-                : metrics?.last_60_seconds?.mean_tick_time_micros
-            }
+            value={tickTimeValue}
             decimals={1}
             suffix={'\u00B5s'}
             isLoading={isLoading}
+            sparklineData={tickTimeHistory}
           />
         </div>
       </StaggerItem>

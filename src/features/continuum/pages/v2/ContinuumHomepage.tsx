@@ -124,7 +124,7 @@ function ThroughputBadge() {
     return unsubscribe
   }, [queryClient])
 
-  const tps = useClientTps(totalTxns)
+  const { tps } = useClientTps(totalTxns)
 
   if (tps == null) return null
 
