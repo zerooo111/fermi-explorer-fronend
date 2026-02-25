@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { memo, useRef, useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import { Cube, Receipt, Lightning, Timer, Pulse } from '@phosphor-icons/react'
@@ -8,6 +8,35 @@ import { Stagger, StaggerItem } from '@/shared/components/ui'
 import { MetricCard } from './MetricCard'
 
 const REFETCH_INTERVAL = 500
+const TPS_WINDOW_MS = 1000
+
+function useClientTps(totalTxns: number | undefined): number | undefined {
+  const snapshotRef = useRef<{ time: number; count: number } | null>(null)
+  const [tps, setTps] = useState<number | undefined>(undefined)
+
+  useEffect(() => {
+    if (totalTxns == null) return
+
+    const now = Date.now()
+
+    if (!snapshotRef.current) {
+      snapshotRef.current = { time: now, count: totalTxns }
+      return
+    }
+
+    const elapsed = now - snapshotRef.current.time
+    if (elapsed >= TPS_WINDOW_MS) {
+      const diff = totalTxns - snapshotRef.current.count
+      const rate = Math.max(0, Math.round(diff / (elapsed / 1000)))
+      setTps(rate)
+      snapshotRef.current = { time: now, count: totalTxns }
+    }
+  }, [totalTxns])
+
+  return tps
+}
+
+export { useClientTps }
 
 export const ChainMetrics = memo(function ChainMetrics() {
 
@@ -24,6 +53,8 @@ export const ChainMetrics = memo(function ChainMetrics() {
     refetchOnMount: false,
     refetchOnReconnect: true,
   })
+
+  const clientTps = useClientTps(metrics?.total_transactions)
 
   return (
     <Stagger className="flex flex-col gap-4" aria-live="polite" aria-label="Chain metrics">
@@ -49,7 +80,7 @@ export const ChainMetrics = memo(function ChainMetrics() {
           <MetricCard
             label="Txns/Sec"
             icon={Lightning}
-            value={metrics?.txn_per_second ? Math.round(metrics.txn_per_second) : undefined}
+            value={clientTps}
             isLoading={isLoading}
           />
           <MetricCard

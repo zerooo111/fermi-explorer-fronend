@@ -2,7 +2,7 @@ import { useMemo, useRef, useState, useEffect, useCallback } from 'react'
 import { Link } from '@tanstack/react-router'
 import { motion, AnimatePresence } from 'motion/react'
 import { useQueryClient } from '@tanstack/react-query'
-import { ChainMetrics } from '@/features/continuum/components/v2/metrics'
+import { ChainMetrics, useClientTps } from '@/features/continuum/components/v2/metrics'
 import { useContinuumRecentTransactions } from '@/features/continuum/api/hooks'
 import type { ContinuumRecentTransactionsResponse } from '@/shared/types/shared/api'
 import type { StatusResponse } from '@/shared/types/api/health'
@@ -108,21 +108,23 @@ function useDripFeed(polled: Transaction[], reduced: boolean) {
 
 function ThroughputBadge() {
   const queryClient = useQueryClient()
-  const [tps, setTps] = useState<number | null>(null)
+  const [totalTxns, setTotalTxns] = useState<number | undefined>(undefined)
 
   useEffect(() => {
     const unsubscribe = queryClient.getQueryCache().subscribe((event) => {
       if (event?.query?.queryKey?.[0] === 'chain-status') {
         const data = queryClient.getQueryData<StatusResponse>(['chain-status'])
-        if (data?.txn_per_second != null) {
-          setTps(Math.round(data.txn_per_second))
+        if (data?.total_transactions != null) {
+          setTotalTxns(data.total_transactions)
         }
       }
     })
     const data = queryClient.getQueryData<StatusResponse>(['chain-status'])
-    if (data?.txn_per_second != null) setTps(Math.round(data.txn_per_second))
+    if (data?.total_transactions != null) setTotalTxns(data.total_transactions)
     return unsubscribe
   }, [queryClient])
+
+  const tps = useClientTps(totalTxns)
 
   if (tps == null) return null
 
