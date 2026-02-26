@@ -8,7 +8,6 @@ import { Stagger, StaggerItem } from '@/shared/components/ui'
 import { MetricCard } from './MetricCard'
 
 const REFETCH_INTERVAL = 500
-const TPS_WINDOW_MS = 1000
 const HISTORY_SIZE = 30
 
 function useMetricHistory(value: number | undefined): number[] {
@@ -29,42 +28,6 @@ function useMetricHistory(value: number | undefined): number[] {
   return history
 }
 
-function useClientTps(totalTxns: number | undefined): { tps: number | undefined; history: number[] } {
-  const snapshotRef = useRef<{ time: number; count: number } | null>(null)
-  const [tps, setTps] = useState<number | undefined>(undefined)
-  const historyRef = useRef<number[]>([])
-  const [history, setHistory] = useState<number[]>([])
-
-  useEffect(() => {
-    if (totalTxns == null) return
-
-    const now = Date.now()
-
-    if (!snapshotRef.current) {
-      snapshotRef.current = { time: now, count: totalTxns }
-      return
-    }
-
-    const elapsed = now - snapshotRef.current.time
-    if (elapsed >= TPS_WINDOW_MS) {
-      const diff = totalTxns - snapshotRef.current.count
-      const rate = Math.max(0, Math.round(diff / (elapsed / 1000)))
-      setTps(rate)
-
-      const next = [...historyRef.current, rate]
-      if (next.length > HISTORY_SIZE) next.shift()
-      historyRef.current = next
-      setHistory(next)
-
-      snapshotRef.current = { time: now, count: totalTxns }
-    }
-  }, [totalTxns])
-
-  return { tps, history }
-}
-
-export { useClientTps }
-
 export const ChainMetrics = memo(function ChainMetrics() {
 
   const { data: metrics, isLoading } = useQuery<StatusResponse>({
@@ -81,7 +44,8 @@ export const ChainMetrics = memo(function ChainMetrics() {
     refetchOnReconnect: true,
   })
 
-  const { tps: clientTps, history: tpsHistory } = useClientTps(metrics?.total_transactions)
+  const tpsValue = metrics?.txn_per_second != null ? Math.round(metrics.txn_per_second) : undefined
+  const tpsHistory = useMetricHistory(tpsValue)
 
   const ticksPerSecValue = metrics?.ticks_per_second ? Math.round(metrics.ticks_per_second) : undefined
   const tickTimeValue = metrics?.average_tick_time != null
@@ -115,7 +79,7 @@ export const ChainMetrics = memo(function ChainMetrics() {
           <MetricCard
             label="Txns/Sec"
             icon={Lightning}
-            value={clientTps}
+            value={tpsValue}
             isLoading={isLoading}
             sparklineData={tpsHistory}
           />
