@@ -16,14 +16,12 @@ export const ExecutionMetrics = memo(function ExecutionMetrics() {
   return (
     <Stagger className="flex flex-col gap-4" aria-live="polite" aria-label="Execution metrics">
       <StaggerItem>
-        <div className="border border-border">
-          <MetricCard
-            label="Block Height"
-            icon={Cube}
-            value={latestBlock?.block.height ?? status?.block_height}
-            isLoading={isLoading}
-          />
-        </div>
+        <MetricCard
+          label="Block Height"
+          icon={Cube}
+          value={latestBlock?.block.height ?? status?.block_height}
+          isLoading={isLoading}
+        />
       </StaggerItem>
     </Stagger>
   )

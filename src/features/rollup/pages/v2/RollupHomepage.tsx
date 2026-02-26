@@ -13,11 +13,12 @@ export default function RollupHomepage() {
 
   return (
     <div className="container mx-auto max-w-screen-xl px-4 sm:px-6 py-6 space-y-8">
-      <ExecutionMetrics />
-
-      {status?.state_root && (
-        <StateRootViewer current={status.state_root} />
-      )}
+      <div className="border border-border divide-y divide-border">
+        <ExecutionMetrics />
+        {status?.state_root && (
+          <StateRootViewer current={status.state_root} />
+        )}
+      </div>
 
       {/* Recent Blocks */}
       <section>
