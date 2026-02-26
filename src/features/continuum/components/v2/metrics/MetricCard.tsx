@@ -1,7 +1,8 @@
-import { memo, useState } from "react";
+import { memo, useState, useRef, useEffect } from "react";
 import type { Icon } from "@phosphor-icons/react";
+import { AnimatePresence, motion } from "motion/react";
 import { cn } from "@/shared/lib/utils";
-import { AnimatedNumber, Skeleton } from "@/shared/components/ui";
+import { Skeleton } from "@/shared/components/ui";
 import type { FormatType } from "@/shared/components/ui";
 
 interface MetricCardProps {
@@ -66,6 +67,97 @@ function Sparkline({ data }: { data: number[] }) {
   );
 }
 
+const DIGITS = '0123456789'
+
+function SlotDigit({ char, index }: { char: string; index: number }) {
+  const prevChar = useRef(char)
+  const [displayed, setDisplayed] = useState(char)
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(null)
+  const renderKey = useRef(0)
+
+  useEffect(() => {
+    if (prevChar.current === char) return
+    prevChar.current = char
+
+    const isDigit = DIGITS.includes(char)
+    if (!isDigit) {
+      setDisplayed(char)
+      return
+    }
+
+    const totalSteps = 6 + Math.floor(Math.random() * 4)
+    let step = 0
+    const baseDelay = index * 40
+
+    const tick = () => {
+      step++
+      renderKey.current++
+      if (step >= totalSteps) {
+        setDisplayed(char)
+        return
+      }
+      setDisplayed(DIGITS[Math.floor(Math.random() * 10)])
+      const progress = step / totalSteps
+      const interval = 50 + progress * 60
+      timerRef.current = setTimeout(tick, interval)
+    }
+
+    timerRef.current = setTimeout(tick, baseDelay)
+    return () => { if (timerRef.current) clearTimeout(timerRef.current) }
+  }, [char, index])
+
+  return (
+    <span className="inline-block overflow-hidden text-center relative" style={{ width: DIGITS.includes(char) ? '0.6em' : 'auto', height: '1.15em' }}>
+      <AnimatePresence initial={false}>
+        <motion.span
+          key={displayed + '-' + renderKey.current}
+          initial={{ y: '-110%', opacity: 0 }}
+          animate={{ y: '0%', opacity: 1 }}
+          exit={{ y: '110%', opacity: 0 }}
+          transition={{ duration: 0.12, ease: [0.25, 0.1, 0.25, 1] }}
+          style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        >
+          {displayed}
+        </motion.span>
+      </AnimatePresence>
+    </span>
+  )
+}
+
+function formatValue(value: number, format: FormatType, decimals?: number): string {
+  switch (format) {
+    case "compact":
+      return new Intl.NumberFormat("en-US", {
+        notation: "compact",
+        minimumFractionDigits: decimals ?? 1,
+        maximumFractionDigits: decimals ?? 1,
+      }).format(value)
+    case "percent":
+      return new Intl.NumberFormat("en-US", {
+        style: "percent",
+        minimumFractionDigits: decimals ?? 2,
+        maximumFractionDigits: decimals ?? 2,
+      }).format(value / 100)
+    case "raw":
+    default:
+      return new Intl.NumberFormat("en-US", {
+        minimumFractionDigits: decimals ?? 0,
+        maximumFractionDigits: decimals ?? 0,
+      }).format(value)
+  }
+}
+
+function SlotMachineNumber({ value, format = "raw", decimals }: { value: number; format?: FormatType; decimals?: number }) {
+  const formatted = formatValue(value, format, decimals)
+  return (
+    <span className="inline-flex items-center">
+      {formatted.split('').map((ch, i) => (
+        <SlotDigit key={i} char={ch} index={i} />
+      ))}
+    </span>
+  )
+}
+
 export const MetricCard = memo(function MetricCard({
   label,
   value,
@@ -95,7 +187,7 @@ export const MetricCard = memo(function MetricCard({
         <Skeleton className="h-7 sm:h-9 w-24" />
       ) : (
         <span className="relative text-xl sm:text-4xl  text-foreground font-pixel tabular-nums">
-          <AnimatedNumber
+          <SlotMachineNumber
             value={value ?? 0}
             format={format}
             decimals={decimals}

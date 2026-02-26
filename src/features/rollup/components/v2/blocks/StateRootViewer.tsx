@@ -23,23 +23,28 @@ function SlotChar({ char, index }: { char: string; index: number }) {
   const prevChar = useRef(char)
   const [displayed, setDisplayed] = useState(char)
   const timerRef = useRef<ReturnType<typeof setTimeout>>(null)
+  const renderKey = useRef(0)
 
   useEffect(() => {
     if (prevChar.current === char) return
     prevChar.current = char
 
-    const totalSteps = 5 + Math.floor(Math.random() * 3)
-    const baseDelay = index * 8 // stagger start per character position
+    const totalSteps = 6 + Math.floor(Math.random() * 4)
+    const baseDelay = index * 30
     let step = 0
 
     const tick = () => {
       step++
+      renderKey.current++
       if (step >= totalSteps) {
         setDisplayed(char)
         return
       }
       setDisplayed(HEX_CHARS[Math.floor(Math.random() * 16)])
-      timerRef.current = setTimeout(tick, 40)
+      // Slow down as we approach the final value (easing effect)
+      const progress = step / totalSteps
+      const interval = 50 + progress * 60
+      timerRef.current = setTimeout(tick, interval)
     }
 
     timerRef.current = setTimeout(tick, baseDelay)
@@ -48,14 +53,14 @@ function SlotChar({ char, index }: { char: string; index: number }) {
 
   return (
     <span className="inline-block w-[0.6em] h-[1.15em] overflow-hidden text-center relative">
-      <AnimatePresence mode="popLayout" initial={false}>
+      <AnimatePresence initial={false}>
         <motion.span
-          key={displayed}
-          initial={{ y: '-100%', opacity: 0.3 }}
+          key={displayed + '-' + renderKey.current}
+          initial={{ y: '-110%', opacity: 0 }}
           animate={{ y: '0%', opacity: 1 }}
-          exit={{ y: '100%', opacity: 0.3 }}
-          transition={{ duration: 0.05, ease: 'linear' }}
-          className="absolute inset-0 flex items-center justify-center"
+          exit={{ y: '110%', opacity: 0 }}
+          transition={{ duration: 0.12, ease: [0.25, 0.1, 0.25, 1] }}
+          style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
         >
           {displayed}
         </motion.span>
