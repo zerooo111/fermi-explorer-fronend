@@ -26,13 +26,14 @@ function Sparkline({ data }: { data: number[] }) {
 
   const w = 100;
   const h = 100;
-  const rawMin = Math.min(...data);
-  const rawMax = Math.max(...data);
   const mean = data.reduce((a, b) => a + b, 0) / data.length;
-  // pad the range so small dips don't normalize to the floor
-  const padding = Math.max(mean * 0.3, 1);
-  const min = rawMin - padding;
-  const max = rawMax + padding;
+  const variance = data.reduce((sum, v) => sum + (v - mean) ** 2, 0) / data.length;
+  const stddev = Math.sqrt(variance);
+  // Scale to ±2σ from mean so small fluctuations are visible
+  // Fall back to ±5% of mean when data is nearly flat
+  const spread = Math.max(stddev * 2, mean * 0.05, 1);
+  const min = mean - spread;
+  const max = mean + spread;
   const range = max - min;
   const step = w / (data.length - 1);
   const maxH = h * 0.8;
@@ -107,7 +108,7 @@ function SlotDigit({ char, index }: { char: string; index: number }) {
   }, [char, index])
 
   return (
-    <span className="inline-block overflow-hidden text-center relative" style={{ width: DIGITS.includes(char) ? '0.6em' : 'auto', height: '1.15em' }}>
+    <span className="inline-block overflow-hidden text-center relative" style={{ width: DIGITS.includes(char) ? '0.6em' : char === '.' ? '0.35em' : 'auto', height: '1.15em' }}>
       <AnimatePresence initial={false}>
         <motion.span
           key={displayed + '-' + renderKey.current}

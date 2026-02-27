@@ -53,7 +53,7 @@ export const ChainMetrics = memo(function ChainMetrics() {
     : metrics?.last_60_seconds?.mean_tick_time_micros
 
   const ticksPerSecHistory = useMetricHistory(ticksPerSecValue)
-  const tickTimeHistory = useMetricHistory(tickTimeValue != null ? Math.round(tickTimeValue * 10) / 10 : undefined)
+  const tickTimeHistory = useMetricHistory(tickTimeValue != null ? Math.round(tickTimeValue * 100) / 100 : undefined)
 
   return (
     <Stagger className="flex flex-col gap-4" aria-live="polite" aria-label="Chain metrics">
@@ -94,7 +94,7 @@ export const ChainMetrics = memo(function ChainMetrics() {
             label="Tick Time"
             icon={Timer}
             value={tickTimeValue}
-            decimals={1}
+            decimals={2}
             suffix={'\u00B5s'}
             isLoading={isLoading}
             sparklineData={tickTimeHistory}
