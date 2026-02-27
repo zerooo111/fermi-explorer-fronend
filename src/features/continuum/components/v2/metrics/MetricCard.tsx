@@ -108,7 +108,7 @@ function SlotDigit({ char, index }: { char: string; index: number }) {
   }, [char, index])
 
   return (
-    <span className="inline-block overflow-hidden text-center relative" style={{ width: DIGITS.includes(char) ? '0.6em' : char === '.' ? '0.35em' : 'auto', height: '1.15em' }}>
+    <span className="inline-block overflow-hidden text-center relative" style={{ width: DIGITS.includes(char) ? '0.6em' : char === '.' ? '0.35em' : char === ',' ? '0.4em' : 'auto', height: '1.15em' }}>
       <AnimatePresence initial={false}>
         <motion.span
           key={displayed + '-' + renderKey.current}
